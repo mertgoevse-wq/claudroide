@@ -33,6 +33,7 @@
   - **Task 018 erledigt (Gate):** „Hintergrundaufgaben“ — Lebenszyklusmodell (`TaskLifecycleState`) und `BackgroundTaskManager.kt` mit Start, Pause, Abbruch und Bereinigung implementiert (`done_since_last_edit: true`).
 - **Welle 6 (W6) in Arbeit:**
   - **Task 020 erledigt:** „Logo und App-Symbol“ — Maskottchen-Logo (`assets/claudroide-mascot-logo.jpg`) und Adaptive-Icon-Spezifikation (108 dp Canvas, 66 dp Safe Zone, A56 FHD+ Dichteskalierung) verifiziert (`done_since_last_edit: true`).
+  - **Task 021 erledigt:** „Eigene App-Bilder“ — Leerstufen- und Zustandskatalog (EmptyChat, EmptyProject, Offline, Approval) mit Vektor-Vorrang und 50 KB Deckel spezifiziert (`done_since_last_edit: true`).
   - **Task 022 erledigt:** „Kopf- und Bannerbilder“ — 16:9-Banner (`assets/claudroide-banner.jpg`), Safe-Content-Zonen, Kompression und Alternativtexte implementiert (`done_since_last_edit: true`).
 - **Neu:** Jede Aufgabendatei trägt YAML-Frontmatter (`id`, `title`, `wave`, `depends_on`, `files`, `skills`, `status`, `gate`, `done_since_last_edit`, `content-hash`). Quelle der Wahrheit ist `tools/sync_frontmatter.py`; `--check` prüft, `--status ID=...` setzt Status. Ein `done` gilt nur bei unverändertem Inhalt als verifiziert.
 - **Neu:** `tasks/DEPENDENCIES.md` Lücken geschlossen: 091 in W19, 125 in W24, 131 in W27; neue Sperrkanten 088+089→091, 124→131, 070→125, W24→W25 als Extra-Abhängigkeit von 106.
@@ -48,9 +49,9 @@
 - `adaptive`, `android-profiler`, `android-permissions-security`, `testing-setup` — `android/skills`.
 
 ## Aktuelle Arbeit
-- **Task 022 abgeschlossen:** `tasks/022-header-and-banner-assets.md` fertiggestellt und verifiziert. Banner `assets/claudroide-banner.jpg` integriert.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (21 erledigt, 114 offen).
-- Bereit für Commit und Push von Task 022. Nächste freie Aufgaben in W6: 021, 023, 024; in W10: 043–045, 060; in W18: 081, 082, 084, 087, 088, 092.
+- **Task 021 abgeschlossen:** `tasks/021-chat-illustrations.md` fertiggestellt und verifiziert.
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (22 erledigt, 113 offen).
+- Bereit für Commit und Push von Task 021. Nächste freie Aufgaben in W6: 023, 024; in W10: 043–045, 060; in W18: 081, 082, 084, 087, 088, 092.
 
 ## Nächster Schritt
 1. Claude Code im Projektordner starten und entweder `Baue weiter bis zum finalen Produkt` sagen oder `/claudroide-resume` nutzen.
