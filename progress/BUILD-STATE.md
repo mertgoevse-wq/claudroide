@@ -27,6 +27,7 @@
 - **Welle 5 (W5) in Arbeit:**
   - **Task 013 erledigt:** „Ersteinrichtung“ — 4-Stufen-Onboarding (`OnboardingScreen.kt`) mit Willkommen, Sprache/Theme, BYOK-Transparenz und Erstem Projekt erstellt (`done_since_last_edit: true`).
   - **Task 014 erledigt:** „Sprache automatisch erkennen“ — `LanguageManager.kt`, englische Lokalisierung (`values-en/strings.xml`) und Locale-Fallback-Tests erstellt (`done_since_last_edit: true`).
+  - **Task 015 erledigt:** „Sprache manuell wechseln“ — `LanguagePreferences.kt`, `LanguageSelectionDialog.kt` und `LanguagePreferenceTest.kt` implementiert (`done_since_last_edit: true`).
 - **Neu:** Jede Aufgabendatei trägt YAML-Frontmatter (`id`, `title`, `wave`, `depends_on`, `files`, `skills`, `status`, `gate`, `done_since_last_edit`, `content-hash`). Quelle der Wahrheit ist `tools/sync_frontmatter.py`; `--check` prüft, `--status ID=...` setzt Status. Ein `done` gilt nur bei unverändertem Inhalt als verifiziert.
 - **Neu:** `tasks/DEPENDENCIES.md` Lücken geschlossen: 091 in W19, 125 in W24, 131 in W27; neue Sperrkanten 088+089→091, 124→131, 070→125, W24→W25 als Extra-Abhängigkeit von 106.
 - **Neu:** `CLAUDE.md` mit autonomer Bau-Schleife (5 Schritte, klare Stopp-Punkte), Medienregeln (Media Bridge des Nutzers, PNG/WebP, kein SVG, kein Platzhalter) und Repo-Pflege-Regeln.
@@ -41,9 +42,9 @@
 - `adaptive`, `android-profiler`, `android-permissions-security`, `testing-setup` — `android/skills`.
 
 ## Aktuelle Arbeit
-- **Task 014 abgeschlossen:** `tasks/014-language-detection.md` fertiggestellt und verifiziert. `LanguageManager.kt`, `values-en/strings.xml` und `LanguageManagerTest.kt` implementiert.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (15 erledigt, 120 offen).
-- Bereit für Commit und Push von Task 014. Nächste freie Aufgaben in W5: 015–018; in W6: 020–024.
+- **Task 015 abgeschlossen:** `tasks/015-language-switch.md` fertiggestellt und verifiziert. `LanguagePreferences.kt`, `LanguageSelectionDialog.kt` und `LanguagePreferenceTest.kt` implementiert.
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (16 erledigt, 119 offen).
+- Bereit für Commit und Push von Task 015. Nächste freie Aufgaben in W5: 016–018; in W6: 020–024.
 
 ## Nächster Schritt
 1. Claude Code im Projektordner starten und entweder `Baue weiter bis zum finalen Produkt` sagen oder `/claudroide-resume` nutzen.
