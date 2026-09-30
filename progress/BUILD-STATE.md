@@ -24,12 +24,13 @@
 - **Welle 4 (W4) vollständig abgeschlossen:**
   - **Task 011 erledigt:** „Bauweg direkt am A56“ — Fundierte Machbarkeitsanalyse zu W^X-Restriktionen, SELinux, RAM-Peaks und Akkubelastung bei In-App-Builds erstellt (`done_since_last_edit: true`).
   - **Task 012 erledigt:** „Online-Bau vom Handy aus“ — Vergleich der Cloud-Bauwege; GitHub Actions APK-Pipeline (`.github/workflows/build-apk.yml`) mit OpenJDK 17 und Artefakt-Bereitstellung implementiert (`done_since_last_edit: true`).
-- **Welle 5 (W5) in Arbeit:**
+- **Welle 5 (W5) vollständig abgeschlossen:**
   - **Task 013 erledigt:** „Ersteinrichtung“ — 4-Stufen-Onboarding (`OnboardingScreen.kt`) mit Willkommen, Sprache/Theme, BYOK-Transparenz und Erstem Projekt erstellt (`done_since_last_edit: true`).
   - **Task 014 erledigt:** „Sprache automatisch erkennen“ — `LanguageManager.kt`, englische Lokalisierung (`values-en/strings.xml`) und Locale-Fallback-Tests erstellt (`done_since_last_edit: true`).
   - **Task 015 erledigt:** „Sprache manuell wechseln“ — `LanguagePreferences.kt`, `LanguageSelectionDialog.kt` und `LanguagePreferenceTest.kt` implementiert (`done_since_last_edit: true`).
   - **Task 016 erledigt:** „App-Einstellungen“ — `AppSettings.kt` mit Freigabestufen, Maskierung sensibler Tokens (`maskApiKey`) und Warnungsschaltern implementiert (`done_since_last_edit: true`).
   - **Task 017 erledigt (Gate):** „Android-Erlaubnisse“ — Least Privilege verankert, kein `MANAGE_EXTERNAL_STORAGE`, `PermissionManager.kt` mit SAF-Persistierung und Denial-Handling implementiert (`done_since_last_edit: true`).
+  - **Task 018 erledigt (Gate):** „Hintergrundaufgaben“ — Lebenszyklusmodell (`TaskLifecycleState`) und `BackgroundTaskManager.kt` mit Start, Pause, Abbruch und Bereinigung implementiert (`done_since_last_edit: true`).
 - **Neu:** Jede Aufgabendatei trägt YAML-Frontmatter (`id`, `title`, `wave`, `depends_on`, `files`, `skills`, `status`, `gate`, `done_since_last_edit`, `content-hash`). Quelle der Wahrheit ist `tools/sync_frontmatter.py`; `--check` prüft, `--status ID=...` setzt Status. Ein `done` gilt nur bei unverändertem Inhalt als verifiziert.
 - **Neu:** `tasks/DEPENDENCIES.md` Lücken geschlossen: 091 in W19, 125 in W24, 131 in W27; neue Sperrkanten 088+089→091, 124→131, 070→125, W24→W25 als Extra-Abhängigkeit von 106.
 - **Neu:** `CLAUDE.md` mit autonomer Bau-Schleife (5 Schritte, klare Stopp-Punkte), Medienregeln (Media Bridge des Nutzers, PNG/WebP, kein SVG, kein Platzhalter) und Repo-Pflege-Regeln.
@@ -44,9 +45,9 @@
 - `adaptive`, `android-profiler`, `android-permissions-security`, `testing-setup` — `android/skills`.
 
 ## Aktuelle Arbeit
-- **Task 017 abgeschlossen (Gate):** `tasks/017-device-permissions.md` fertiggestellt und verifiziert. `PermissionManager.kt` und `PermissionManagerTest.kt` implementiert.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (18 erledigt, 117 offen).
-- Bereit für Commit und Push von Task 017. Nächste freie Aufgaben in W5: 018; in W6: 020–024.
+- **Welle 5 (W5) abgeschlossen:** Alle 6 Aufgaben der Welle W5 (013–018) sind verifiziert und auf `status: done`. `BackgroundTaskManager.kt` und `BackgroundTaskManagerTest.kt` implementiert.
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (19 erledigt, 116 offen).
+- Bereit für Commit und Push von Task 018. Nächste freigeschaltete Aufgaben: W6 (020–024), W10 (043–045, 060), W18 (081, 082, 084, 087, 088, 092).
 
 ## Nächster Schritt
 1. Claude Code im Projektordner starten und entweder `Baue weiter bis zum finalen Produkt` sagen oder `/claudroide-resume` nutzen.
