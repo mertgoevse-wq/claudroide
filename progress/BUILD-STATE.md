@@ -21,8 +21,9 @@
   - **Task 008 erledigt:** „Bauen nur mit dem Telefon“ — Vergleich beider Baupfade; GitHub Actions als akkuschonender Primärweg festgelegt, lokaler On-Device-Bau als transparenter Rückfallweg dokumentiert (`done_since_last_edit: true`).
 - **Welle 3 (W3) vollständig abgeschlossen:**
   - **Task 010 erledigt:** „Android-App-Grundlage“ — Vollständiges Android-Scaffold (`app/`, Gradle KTS, Jetpack Compose Material 3 Adaptive AppShell, Dark AMOLED Theme, Unit-Tests) erstellt (`done_since_last_edit: true`).
-- **Welle 4 (W4) in Arbeit:**
+- **Welle 4 (W4) vollständig abgeschlossen:**
   - **Task 011 erledigt:** „Bauweg direkt am A56“ — Fundierte Machbarkeitsanalyse zu W^X-Restriktionen, SELinux, RAM-Peaks und Akkubelastung bei In-App-Builds erstellt (`done_since_last_edit: true`).
+  - **Task 012 erledigt:** „Online-Bau vom Handy aus“ — Vergleich der Cloud-Bauwege; GitHub Actions APK-Pipeline (`.github/workflows/build-apk.yml`) mit OpenJDK 17 und Artefakt-Bereitstellung implementiert (`done_since_last_edit: true`).
 - **Neu:** Jede Aufgabendatei trägt YAML-Frontmatter (`id`, `title`, `wave`, `depends_on`, `files`, `skills`, `status`, `gate`, `done_since_last_edit`, `content-hash`). Quelle der Wahrheit ist `tools/sync_frontmatter.py`; `--check` prüft, `--status ID=...` setzt Status. Ein `done` gilt nur bei unverändertem Inhalt als verifiziert.
 - **Neu:** `tasks/DEPENDENCIES.md` Lücken geschlossen: 091 in W19, 125 in W24, 131 in W27; neue Sperrkanten 088+089→091, 124→131, 070→125, W24→W25 als Extra-Abhängigkeit von 106.
 - **Neu:** `CLAUDE.md` mit autonomer Bau-Schleife (5 Schritte, klare Stopp-Punkte), Medienregeln (Media Bridge des Nutzers, PNG/WebP, kein SVG, kein Platzhalter) und Repo-Pflege-Regeln.
@@ -37,9 +38,9 @@
 - `adaptive`, `android-profiler`, `android-permissions-security`, `testing-setup` — `android/skills`.
 
 ## Aktuelle Arbeit
-- **Task 011 abgeschlossen:** `tasks/011-phone-build-path.md` fertiggestellt und verifiziert.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (12 erledigt, 123 offen).
-- Bereit für Commit und Push von Task 011. Nächste freie Aufgaben in W4: 012; in W5: 013–018; in W6: 020–024.
+- **Welle 4 (W4) abgeschlossen:** Beide Aufgaben (011, 012) sind verifiziert und auf `status: done`. GitHub Actions CI-Build `.github/workflows/build-apk.yml` eingerichtet.
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (13 erledigt, 122 offen).
+- Bereit für Commit und Push von Task 012. Nächste freigeschaltete Aufgaben: W5 (013–018), W6 (020–024), W7 (025–030), W18 (081, 082, 084, 087, 088, 092).
 
 ## Nächster Schritt
 1. Claude Code im Projektordner starten und entweder `Baue weiter bis zum finalen Produkt` sagen oder `/claudroide-resume` nutzen.
