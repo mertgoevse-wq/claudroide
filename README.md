@@ -1,15 +1,27 @@
 # Claudroide
 
-![Phase](https://img.shields.io/badge/Phase-Entwurfsplanung-informational)
-![Aufgaben](https://img.shields.io/badge/Bauaufgaben-135-blue)
-![Status](https://img.shields.io/badge/App--Code-0%20%2F%20135-red)
-![Repo](https://img.shields.io/badge/Repo-privat-success)
+<p align="center">
+  <img src="assets/claudroide-mascot-logo.jpg" alt="Claudroide Maskottchen" width="160" style="border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.35);" />
+  <br>
+  <b>Claudroide</b> — Eigenständiger mobiler KI-Coding-Assistent für Android
+  <br>
+  <sub>Native Touch-Bedienung · BYOK (Bring Your Own Key) · A56 5G optimiert · Privater GitHub Sync</sub>
+</p>
 
-Claudroide ist eine geplante, eigenständige Android-App für KI-gestützte Projektarbeit (Claude-Code-artig, aber eigene Marke und eigener Code). Zielgerät zuerst: Samsung Galaxy A56. Dieses Repository enthält Spezifikation, 135 Bauaufgaben und die Regeln, damit Claude Code daraus selbständig die App baut — aktuell ist **kein App-Code** vorhanden.
+<p align="center">
+  <img src="https://img.shields.io/badge/Phase-Entwurfsplanung-informational" alt="Phase" />
+  <img src="https://img.shields.io/badge/Bauaufgaben-135-blue" alt="Aufgaben" />
+  <img src="https://img.shields.io/badge/App--Code-4%20%2F%20135%20erledigt-yellow" alt="Status" />
+  <img src="https://img.shields.io/badge/Welle%200-abgeschlossen-success" alt="W0" />
+  <img src="https://img.shields.io/badge/Zielger%C3%A4t-Galaxy%20A56%205G-orange" alt="Gerät" />
+  <img src="https://img.shields.io/badge/Repo-privat-success" alt="Repo" />
+</p>
 
-**Logo:** Noch nicht gerendert. Es wird erst über die vorhandene Claude Media Bridge erzeugt (PNG/WebP, kein SVG). Der genaue Bildauftrag steht in [`assets/logo-brief.md`](assets/logo-brief.md).
+Claudroide ist eine eigenständige Android-App für KI-gestützte Projektarbeit (Claude-Code-artig, aber eigene Marke und eigener Code). Erstes Zielgerät: Samsung Galaxy A56 5G. Dieses Repository enthält die Spezifikation, 135 maschinenlesbare Bauaufgaben und die autonome Bau-Schleife.
 
-**Inhalt:** [Schnellstart](#schnellstart-in-claude-code) · [Wie der Bau abläuft](#wie-der-bau-abläuft) · [Status](#status) · [Bilder](#bilder-und-grafiken) · [Grenzen](#sicherheits--und-produktgrenzen) · [Dokumente](#alle-dokumente)
+> **Unabhängigkeitshinweis:** Claudroide ist ein unabhängiges Open-Source-Projekt und steht in keiner geschäftlichen oder offiziellen Verbindung zu Anthropic, PBC. Claude ist eine eingetragene Marke von Anthropic. Claudroide ermöglicht die Nutzung offizieller Entwickler-Schnittstellen auf Basis eigener API-Schlüssel (BYOK).
+
+**Inhalt:** [Schnellstart](#schnellstart-in-claude-code) · [Wie der Bau abläuft](#wie-der-bau-abläuft) · [Status](#status) · [Bilder & Maskottchen](#bilder-und-maskottchen) · [Grenzen](#sicherheits--und-produktgrenzen) · [Dokumente](#alle-dokumente)
 
 ---
 
@@ -79,7 +91,7 @@ Die Zählung unten kommt aus den Frontmatter-Köpfen und wird vom Sync-Skript ge
 
 | Bereich | Aufgaben | Stand |
 |---|---|---|
-| W0–W2 · Grundlagen, Machbarkeit, Geräteprüfung | 001–008 | ⬜ offen |
+| W0–W2 · Grundlagen, Machbarkeit, Geräteprüfung | 001–008 | 🟡 4 / 8 erledigt (W0 abgeschlossen) |
 | W3–W6 · App-Grundlage, Baupfade, Gestaltung | 009–024 | ⬜ offen |
 | W7–W9b · Oberfläche und Chat | 025–042 | ⬜ offen |
 | W10–W14 · Anbieter, Modelle, Datenschutz | 043–069 | ⬜ offen |
@@ -134,21 +146,21 @@ Maßgeblich sind die Einzeln-Abhängigkeiten in [`tasks/DEPENDENCIES.md`](tasks/
 
 ---
 
-## Bilder und Grafiken
+## Bilder und Maskottchen
 
-Grafiken (Logo, App-Icon, Illustrationen, README-Bilder) entstehen über die **vorhandene Claude Media Bridge** des Nutzers. Regelkette, damit kein KI-Slop entsteht:
+Grafiken (Logo, App-Icon, Illustrationen, Banner) entstehen über die **Claude Media Bridge** des Nutzers. Regelkette, damit kein KI-Slop entsteht:
 
 ```mermaid
 flowchart LR
-    A[Bildauftrag<br/>assets/logo-brief.md] --> B[Claude Media Bridge<br/>Nano Banana Pro/2]
+    A[Bildauftrag<br/>assets/logo-brief.md] --> B[Claude Media Bridge<br/>Nano Banana / Flux]
     B --> C{Prüfung:<br/>eigenständig, keine<br/>Markenähnlichkeit?}
-    C -- ja --> D[assets/ · PNG oder WebP<br/>kein SVG]
+    C -- ja --> D[assets/ · PNG, WebP oder JPG<br/>kein SVG]
     C -- nein --> B
-    D --> E[README verweist<br/>auf echte Datei]
+    D --> E[README & Tasks verweisen<br/>auf echte Datei]
 ```
 
-- Kein SVG als fertiges Logo, kein Platzhalter- oder Zufallsbild, keine Behauptung „generiert“, wenn nichts generiert wurde.
-- Solange keine Datei existiert, zeigt der README-Kopf den Status ehrlich an, statt ein Fake-Bild einzubinden.
+- **Maskottchen-Logo gerendert:** [`assets/claudroide-mascot-logo.jpg`](assets/claudroide-mascot-logo.jpg) (Grüner Android-Bot mit warm leuchtendem KI-Akzent).
+- Kein SVG als fertiges Logo oder Illustration. Fertige Grafiken liegen ausschließlich als PNG, WebP oder JPG vor (geprüft durch CI `.github/workflows/repo-health.yml`).
 
 ---
 

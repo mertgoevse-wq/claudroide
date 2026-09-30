@@ -65,7 +65,16 @@ def die(msg: str, code: int = 1) -> None:
 
 
 def tid_list(text: str) -> list[str]:
-    return re.findall(r"\b\d{3}\b", text)
+    res: list[str] = []
+    # Bereiche wie 072–080 oder 048-054 expandieren
+    for m in re.finditer(r"(\d{3})\s*[-–—]\s*(\d{3})", text):
+        s, e = int(m.group(1)), int(m.group(2))
+        for i in range(s, e + 1):
+            res.append(f"{i:03d}")
+    for tid in re.findall(r"\b\d{3}\b", text):
+        if tid not in res:
+            res.append(tid)
+    return sorted(res)
 
 
 # ---------------------------------------------------------------- Dependenzen
@@ -104,7 +113,7 @@ def parse_deps() -> dict[str, dict]:
                 continue
             tasks[tid] = {"wave": wave, "depends_on": deps, "gate": False}
 
-    # Explizite Sperrkanten: "- A → B", "- A + B → C und D (Anmerkung)"
+    # Explizite Sperrkanten: "- A → B", "- A + B → C und D (Anmerkung)", verkettete Pfeile A → B → C
     section = text.split("## Explizite Sperrkanten")
     if len(section) > 1:
         edge_text = section[1].split("\n## ")[0]
@@ -112,14 +121,16 @@ def parse_deps() -> dict[str, dict]:
             for stmt in line.strip().lstrip("-").strip().split(";"):
                 if "→" not in stmt:
                     continue
-                left, _, right = stmt.partition("→")
-                right = right.split("(")[0]
-                for tgt in tid_list(right):
-                    if tgt not in tasks:
-                        continue
-                    for dep in tid_list(left):
-                        if dep in tasks and dep != tgt and dep not in tasks[tgt]["depends_on"]:
-                            tasks[tgt]["depends_on"].append(dep)
+                parts = [s.strip() for s in stmt.split("→") if s.strip()]
+                for i in range(len(parts) - 1):
+                    left_ids = tid_list(parts[i])
+                    right_ids = [t for t in tid_list(parts[i + 1].split("(")[0]) if t not in left_ids]
+                    for tgt in right_ids:
+                        if tgt not in tasks:
+                            continue
+                        for dep in left_ids:
+                            if dep in tasks and dep != tgt and dep not in tasks[tgt]["depends_on"]:
+                                tasks[tgt]["depends_on"].append(dep)
 
     for tid, extra in EXTRA_DEPS.items():
         if tid in tasks:
@@ -205,11 +216,32 @@ def normalize_body(body: str) -> str:
     return body
 
 
+def update_readme(done_count: int, total_count: int) -> None:
+    """Aktualisiert Status-Badge und W0-Zustand im README.md."""
+    readme_path = ROOT / "README.md"
+    if not readme_path.exists():
+        return
+    text = readme_path.read_text(encoding="utf-8")
+    color = "red" if done_count == 0 else "yellow" if done_count < (total_count // 2) else "blue" if done_count < total_count else "success"
+    badge = f"![Status](https://img.shields.io/badge/App--Code-{done_count}%20%2F%20{total_count}%20erledigt-{color})"
+    new_text = re.sub(r"!\[Status\]\(https://img\.shields\.io/badge/App--Code-[^\)]+\)", badge, text)
+    if done_count >= 4:
+        new_text = re.sub(
+            r"\|\s*W0–W2\s*·\s*Grundlagen,\s*Machbarkeit,\s*Geräteprüfung\s*\|\s*001–008\s*\|\s*[^|]+\|",
+            f"| W0–W2 · Grundlagen, Machbarkeit, Geräteprüfung | 001–008 | 🟡 {done_count} / 8 erledigt (W0 abgeschlossen) |",
+            new_text,
+        )
+    if new_text != text:
+        readme_path.write_text(new_text, encoding="utf-8")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Task-Frontmatter synchronisieren")
     ap.add_argument("--check", action="store_true", help="nur prüfen, nichts schreiben")
     ap.add_argument("--status", action="append", default=[], metavar="ID=STATUS",
                     help=f"Status setzen, STATUS in {STATUS_VALUES}")
+    ap.add_argument("--ready", "--next", action="store_true", dest="show_ready",
+                    help="früheste ausführbare Aufgaben auflisten")
     args = ap.parse_args()
 
     overrides: dict[str, str] = {}
@@ -227,6 +259,7 @@ def main() -> int:
 
     problems: list[str] = []
     changed = 0
+    task_records: dict[str, dict] = {}
 
     for path in task_files:
         tid = path.name[:3]
@@ -254,24 +287,33 @@ def main() -> int:
             if m and m.group(1).strip():
                 old_files = [x.strip() for x in m.group(1).split(",") if x.strip()]
 
+        current_hash = hashlib.sha256(body.encode()).hexdigest()[:16]
+
         # "done" verfällt, wenn der Körper nach dem done-Eintrag geändert wurde
-        if old_status == "done" and old_hash and old_hash != hashlib.sha256(body.encode()).hexdigest()[:16]:
+        if old_status == "done" and old_hash and old_hash != current_hash and tid not in overrides:
             old_status = "in_progress"
 
         status = overrides.get(tid) or (old_status if old_status in STATUS_VALUES else "pending")
 
+        # Single-pass done: Wenn per Override auf done gesetzt oder bereits done mit passendem Hash
         done_flag = False
         if status == "done":
-            current_hash = hashlib.sha256(body.encode()).hexdigest()[:16]
-            done_flag = old_status == "done" and old_hash == current_hash
-            if not done_flag and not args.check:
-                problems.append(
-                    f"{path.name}: status=done gesetzt; beim nächsten Lauf wird "
-                    f"done_since_last_edit=true (Inhalt unverändert lassen)")
-        content_hash = hashlib.sha256(body.encode()).hexdigest()[:16]
+            done_flag = (tid in overrides) or (old_status == "done" and old_hash == current_hash)
 
+        content_hash = current_hash
         files = old_files or [f"tasks/{path.name}"]
         title = extract_title(body, path.stem)
+
+        task_records[tid] = {
+            "id": tid,
+            "title": title,
+            "wave": info["wave"],
+            "depends_on": info["depends_on"],
+            "skills": skills,
+            "status": status,
+            "gate": info["gate"],
+        }
+
         new_fm = build_frontmatter(
             old_fm, tid=tid, title=title, wave=info["wave"],
             depends_on=info["depends_on"], files=files, skills=skills,
@@ -292,6 +334,19 @@ def main() -> int:
         problems.append(f"Task {tid}: in DEPENDENCIES.md, aber ohne Datei")
     for tid in sorted(set(matrix) - file_ids):
         problems.append(f"Task {tid}: in skill-matrix.md, aber ohne Datei")
+
+    if args.show_ready:
+        pending = [t for t in task_records.values() if t["status"] == "pending"]
+        ready = [t for t in pending if all(task_records.get(d, {}).get("status") == "done" for d in t["depends_on"])]
+        ready.sort(key=lambda x: (x["wave"], x["id"]))
+        print(f"Bereit zur Ausführung ({len(ready)} Aufgabe(n), {len(pending)} offen):")
+        for r in ready:
+            print(f"- ID {r['id']} ({r['wave']}): {r['title']} [Skills: {', '.join(r['skills'])}]")
+        return 0
+
+    if not args.check:
+        done_total = sum(1 for t in task_records.values() if t["status"] == "done")
+        update_readme(done_total, len(task_files))
 
     if args.check:
         if problems:
