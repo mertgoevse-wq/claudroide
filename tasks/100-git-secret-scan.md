@@ -1,3 +1,15 @@
+---
+id: "100"
+title: "Geheimnisse vor Git finden"
+wave: "W21"
+depends_on: [045, 095, 096]
+files: [tasks/100-git-secret-scan.md]
+skills: [`android-permissions-security`, `testing-setup`]
+status: pending
+gate: true
+done_since_last_edit: false
+content-hash: "29a051245a871e11"
+---
 # Aufgabe 100 — Geheimnisse vor Git finden
 
 ## Ziel
@@ -13,5 +25,6 @@ Lokaler Scan, Trefferanzeige ohne Geheimniswert und sichere Ausschluss-/Entfernu
 ## Schutz
 Treffer werden nicht an einen Online-Scanner gesendet.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Git-Secret-Scanning-Skill suchen; Quelle, Lizenz und lokale Datenverarbeitung prüfen, Nutzer vor Installation fragen.

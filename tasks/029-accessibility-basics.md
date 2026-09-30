@@ -1,3 +1,15 @@
+---
+id: "029"
+title: "Zugänglichkeit"
+wave: "W7"
+depends_on: [010, 023, 024]
+files: [tasks/029-accessibility-basics.md]
+skills: [`adaptive`, `testing-setup`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "018ccd0d5237be89"
+---
 # Aufgabe 029 — Zugänglichkeit
 
 ## Ziel
@@ -13,5 +25,6 @@ Beschriftungen, Fokusreihenfolge, Tastaturbedienung, Kontrast und Vergrößerung
 ## Schutz
 Sicherheits- und Datenschutzhinweise bleiben bei Hilfstechnologien wahrnehmbar.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Android-Accessibility-Skill suchen; Quelle, Lizenz und Prüfmethode prüfen; Installation bestätigen lassen.

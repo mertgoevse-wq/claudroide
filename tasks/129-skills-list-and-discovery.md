@@ -1,3 +1,15 @@
+---
+id: "129"
+title: "Skills finden"
+wave: "W27"
+depends_on: [001, 002, 017]
+files: [tasks/129-skills-list-and-discovery.md]
+skills: [`/swarm-planner`, `android-permissions-security`]
+status: pending
+gate: true
+done_since_last_edit: false
+content-hash: "7d1735acbc0a6fff"
+---
 # Aufgabe 129 — Skills finden
 
 ## Ziel
@@ -13,5 +25,6 @@ Suchbegriffe, Kandidaten, Fundort, Lizenz, Kompatibilität und Begründung dokum
 ## Schutz
 Keine Installation während der Suche.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Skill-Discovery-Skill suchen; Suchquelle, Lizenz und Berechtigungen prüfen, Nutzer vor Installation um Freigabe bitten.

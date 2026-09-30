@@ -1,0 +1,31 @@
+name: repo-health
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  konsistenz:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Task-Frontmatter prüfen (135 Aufgaben, Wellen, Skills, Status)
+        run: python3 tools/sync_frontmatter.py --check
+
+      - name: Kein SVG als Logo/Illustration
+        run: |
+          if compgen -G "assets/*.svg" > /dev/null; then
+            echo "::error::SVG in assets/ gefunden — fertige Grafiken nur als PNG/WebP/JPG (siehe CLAUDE.md)."
+            exit 1
+          fi
+
+      - name: Checkpoint vorhanden
+        run: |
+          test -s progress/BUILD-STATE.md || { echo "::error::progress/BUILD-STATE.md fehlt oder ist leer."; exit 1; }

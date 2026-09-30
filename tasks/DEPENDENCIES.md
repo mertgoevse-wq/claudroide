@@ -2,6 +2,16 @@
 
 Dieses Dokument ist die Arbeitskarte für `/swarm-planner`, `/parallel-task` und `/claudroide-resume`. Task-Titel stehen in `claudroide-spec.md`; zwei konkrete Skills je Task stehen in `tasks/skill-matrix.md`.
 
+Jede Task-Datei trägt einen maschinenlesbaren Kopf (YAML-Frontmatter) mit `id`, `title`, `wave`, `depends_on`, `files`, `skills`, `status` und `gate`. Diese Datei und die Frontmatter-Zweige müssen übereinstimmen; das Pflege-Skript `tools/sync_frontmatter.py` prüft und repariert das. Statusänderungen werden **nur** über `tools/sync_frontmatter.py` und den Checkpoint gemacht, nie von Hand in einzelnen Dateien.
+
+## Autonomer Bau-Loop (für Claude Code ohne Nachfrage)
+
+1. `status: pending`-Tasks nach `depends_on` sortiert nehmen; einen Task erst starten, wenn alle `depends_on`-IDs `status: done` haben.
+2. Vor dem Start: beide Skills aus dem Frontmatter laden und Verfügbarkeit bestätigen; `gate: true`-Tasks zusätzlich die unter „Sicherheitsgates“ genannten Prüfungen ausführen.
+3. Task abarbeiten, Tests laufen lassen, Ergebnis in `progress/BUILD-STATE.md` als `status: in_progress` → `status: done` eintragen.
+4. Nach jedem erledigten Task oder Wellenblock: `tools/sync_frontmatter.py` laufen lassen, Checkpoint aktualisieren, einen einzigen Commit machen.
+5. Anhalten und nachfragen nur bei: offenem Entscheidungs-Gate, fehlendem Schlüssel/Gerätewert,Push/externen Nebenwirkungen, fehlgeschlagenen Tests nach zweitem Reparaturversuch.
+
 ## Harte Regeln für parallele Arbeit
 
 1. Aufgaben dürfen gleichzeitig starten, wenn ihre Abhängigkeiten erfüllt sind, keine gemeinsame Entscheidung offen ist und die Arbeitsdateien getrennt sind.
@@ -40,16 +50,16 @@ Dieses Dokument ist die Arbeitskarte für `/swarm-planner`, `/parallel-task` und
 | W17 — Agent-Erweiterung | 077 | 073, 078, 090, 099 | Getrennte Versuche erst nach Datei-/Git-Isolation. |
 | W18 — Projektzugriff | 081, 082, 084, 087, 088, 092 | 010, 017 | Datei-/Projektkomponenten aufteilen. |
 | W18b — Projektanweisungen | 093 | 003, 122 | Erst Vertrauensgrenzen aus 122 festlegen. |
-| W19 — Zugriffsfolgen | 083, 085, 086, 089, 094 | 082; 086 zusätzlich 085; 089 zusätzlich 088; 094 zusätzlich 093 | Rechte, USB, Diff und Vertrauensanzeige. |
+| W19 — Zugriffsfolgen | 083, 085, 086, 089, 091, 094 | 082; 086 zusätzlich 085; 089 zusätzlich 088; 091 zusätzlich 088 und 089; 094 zusätzlich 093 | Rechte, USB, Diff, Konflikt- und Vertrauensschutz. |
 | W19b — Dateiannahme | 090 | 088, 089, 119, 120 | Schreiben erst nach Schutz- und Vergleichsprüfung. |
 | W20 — Git-Grundlage | 095, 098, 103 | 017, 045, 059 | Zugang, Änderungsliste und Historie getrennt. |
 | W21 — Git-Schreibpfad | 096, 097, 099, 100, 102, 104 | 095; 097/099/100/102/104 zusätzlich 096; 099/102 zusätzlich 098; 100 zusätzlich 045 | Clone zuerst; Repository-Erstellung bleibt explizit genehmigungspflichtig. |
 | W22 — Git-Upload | 101 | 097, 099, 100, 098, 095 | Letztes Gate; niemals parallel zu Commit-/Geheimnisprüfung. |
 | W23 — Befehlsmachbarkeit | 105 | 007, 008, 010, 017 | Kein Befehlsrunner, bevor Android-Sandbox-Weg belegt ist. |
-| W24 — Sicherheitskern | 117, 118, 119, 120, 121, 122, 126, 127 | 017, 045; 121 zusätzlich 082 | Sicherheitsgates vor Befehlen und externen Werkzeugen abschließen. |
+| W24 — Sicherheitskern | 117, 118, 119, 120, 121, 122, 125, 126, 127 | 017, 045; 121 zusätzlich 082; 125 zusätzlich 070 | Sicherheitsgates vor Befehlen und externen Werkzeugen abschließen. |
 | W25 — Befehle und Tests | 106, 107, 110, 111, 112, 114 | 105, 119, 120; 112 zusätzlich 105 | 110 ist nur Zusatzschutz, nie Sandbox-Ersatz. |
 | W26 — Freigaben und Laufzeit | 108, 109, 113, 115, 116 | 017, 018, 105, 107; 109 zusätzlich 108; 116 zusätzlich 100 | Risikoentscheidungen vor weniger-Rückfragen-Modus. |
-| W27 — Skills | 129, 130, 123, 124 | 001, 002, 017; 124 zusätzlich 123/130 | Skill finden, prüfen und installieren strikt getrennt. |
+| W27 — Skills | 123, 124, 129, 130, 131 | 001, 002, 017; 124 zusätzlich 123/130; 131 zusätzlich 124 | Skill finden, prüfen, installieren und global installieren strikt getrennt. |
 | W28 — Agents/externe Tools | 132, 133, 134, 135 | 070, 117, 119, 122; 133 zusätzlich 132; 135 zusätzlich 134 | Keine echte Verbindung ohne Rechte- und Datenansicht. |
 | W29 — Tests & Abschluss | 128 | 045, 046, 059, 067, 090, 100, 101, 106, 108, 119, 120, 122, 127, 134, 135 | Startet erst, wenn die jeweils zu testenden Komponenten vorhanden sind. |
 
@@ -65,12 +75,12 @@ Dieses Dokument ist die Arbeitskarte für `/swarm-planner`, `/parallel-task` und
 - 045 + 067 → 068; 066 → Datenübertragungsfreigabe; 069 → automatisches Nachsenden bleibt aus, bis ausdrücklich konfiguriert.
 - 048/049/052/053/054 → 070; 070 + 071 → Agenten-Werkzeuge 072–080.
 - 070 → 040 (Chat-Projektkontext); 047/052/059 → 036 (Streaming).
-- 082 → 083; 085 → 086; 088 → 089 → 090; 119/120 → 090.
+- 082 → 083; 085 → 086; 088 → 089 → 090; 119/120 → 090; 088 + 089 → 091 (Konfliktprüfung erst nach Vorschau und Diff).
 - 122 → 093 (Projektanweisungen nur nach festgelegter Vertrauensgrenze).
 - 095 → 096; 098 + 099 + 100 + 097 → 101 (Push).
 - 105 → jede Befehlsausführung; W24 (119/120) muss vor W25 (106) abgeschlossen sein.
 - 108 → 109; 018 + Android-Regeln → 113.
-- 123 + 130 → 124; 134 → 135.
+- 123 + 130 → 124; 134 → 135; 124 → 131 (globale Skill-Installation nur nach bestätigter Freigabe); 070 → 125 (Datenfluss erst am gemeinsamen Agent-Vertrag belegen).
 
 ## Gemeinsame Dateibereiche vor Start zuweisen
 

@@ -1,3 +1,15 @@
+---
+id: "063"
+title: "Ersatzmodell einstellen"
+wave: "W13b"
+depends_on: [062, 064, 065]
+files: [tasks/063-model-fallback-settings.md]
+skills: [`android-permissions-security`, `testing-setup`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "6c3cd61b585123d6"
+---
 # Aufgabe 063 — Ersatzmodell einstellen
 
 ## Ziel
@@ -13,5 +25,6 @@ Einstellung pro Projekt mit Standard „vorher fragen“ und sichtbarem Ersatzan
 ## Schutz
 Keine stille Übertragung an anderen Anbieter.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen KI-Routing-/Datenschutz-Skill suchen, Quelle/Lizenz prüfen und Zustimmung vor Installation einholen.

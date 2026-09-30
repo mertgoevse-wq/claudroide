@@ -1,3 +1,15 @@
+---
+id: "057"
+title: "Anbieter pausieren und löschen"
+wave: "W11"
+depends_on: [044, 045]
+files: [tasks/057-provider-disable-and-delete.md]
+skills: [`android-permissions-security`, `testing-setup`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "19d07fc059ed7ddb"
+---
 # Aufgabe 057 — Anbieter pausieren und löschen
 
 ## Ziel
@@ -13,5 +25,6 @@ Deaktivieren, Schlüssel entfernen, Chatmodell als nicht mehr verfügbar markier
 ## Schutz
 Zugänge sofort aus aktivem Speicher entfernen.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Android-Datenlebenszyklus-Skill suchen; Quelle und Lizenz prüfen und Nutzer vor Installation fragen.

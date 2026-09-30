@@ -1,3 +1,15 @@
+---
+id: "088"
+title: "Dateien ansehen"
+wave: "W18"
+depends_on: [010, 017]
+files: [tasks/088-file-preview.md]
+skills: [`android-permissions-security`, `testing-setup`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "e0a6f6c167f824a0"
+---
 # Aufgabe 088 — Dateien ansehen
 
 ## Ziel
@@ -13,5 +25,6 @@ Vorschau mit Dateityp, Zeichensatz, Größe und nicht unterstützten Inhalten.
 ## Schutz
 Vorschau führt keine Skripte oder eingebetteten Inhalte aus.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen sicheren Datei-Viewer-/Android-Skill suchen; Herkunft/Lizenz prüfen und Nutzer vor Installation fragen.

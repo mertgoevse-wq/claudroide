@@ -1,3 +1,15 @@
+---
+id: "007"
+title: "NPU-Machbarkeit"
+wave: "W2"
+depends_on: [002, 006]
+files: [tasks/007-npu-feasibility.md]
+skills: [`android-profiler`, `testing-setup`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "f343b5ef1b9ba3c6"
+---
 # Aufgabe 007 — NPU-Machbarkeit
 
 ## Ziel
@@ -13,5 +25,6 @@ Reproduzierbarer Gerätestest für genaues Modell und Android-Version, mit Ergeb
 ## Schutz
 Keine inoffiziellen Treiber, Systemänderungen oder Root-Rechte voraussetzen.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Android-On-Device-KI-Skill suchen, Quellcode/Lizenz und Geräteanforderungen prüfen; Installation Nutzer-bestätigt.

@@ -1,3 +1,15 @@
+---
+id: "066"
+title: "Übertragene Daten prüfen"
+wave: "W14"
+depends_on: [039, 042, 062, 067]
+files: [tasks/066-request-data-preview.md]
+skills: [`android-permissions-security`, `testing-setup`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "73c4efa1f81c4371"
+---
 # Aufgabe 066 — Übertragene Daten prüfen
 
 ## Ziel
@@ -13,5 +25,6 @@ Vorschau mit Dateinamen, Auszügen, Empfänger, Ausschlüssen und Senden-/Abbrec
 ## Schutz
 Vorschau selbst speichert keine unnötige Kopie der Inhalte.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Datenschutz-/Datenfluss-Skill suchen, Quelle/Lizenz prüfen und vor Installation fragen.

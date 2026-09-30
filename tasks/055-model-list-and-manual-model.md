@@ -1,3 +1,15 @@
+---
+id: "055"
+title: "Modellnamen verwalten"
+wave: "W11"
+depends_on: [044, 045]
+files: [tasks/055-model-list-and-manual-model.md]
+skills: [`adaptive`, `testing-setup`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "e4257071e242bbbe"
+---
 # Aufgabe 055 — Modellnamen verwalten
 
 ## Ziel
@@ -13,5 +25,6 @@ Modellwahl mit Herkunft, Verfügbarkeit, Fähigkeiten und optionalem letzten Pr�
 ## Schutz
 Modellwahl überträgt keine Anfrage bis der Nutzer sendet.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Modellkatalog-/Provider-Skill suchen, Lizenz und Quelle prüfen; Installation nur nach Zustimmung.

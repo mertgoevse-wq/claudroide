@@ -1,3 +1,15 @@
+---
+id: "102"
+title: "Git-Konflikte"
+wave: "W21"
+depends_on: [095, 096, 098]
+files: [tasks/102-git-merge-conflicts.md]
+skills: [`/code-review`, `testing-setup`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "01552192efba87e3"
+---
 # Aufgabe 102 — Git-Konflikte
 
 ## Ziel
@@ -13,5 +25,6 @@ Konfliktübersicht, betroffene Abschnitte und kontrollierte Auswahl.
 ## Schutz
 Originalstände erhalten, bis Nutzer Lösung bestätigt.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Git-Merge-/Konflikt-Skill suchen; Quelle und Lizenz prüfen, vor Installation Zustimmung einholen.

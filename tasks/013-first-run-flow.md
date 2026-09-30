@@ -1,3 +1,15 @@
+---
+id: "013"
+title: "Ersteinrichtung"
+wave: "W5"
+depends_on: [010]
+files: [tasks/013-first-run-flow.md]
+skills: [`adaptive`, `/code-review`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "4da4c70f3699c177"
+---
 # Aufgabe 013 — Ersteinrichtung
 
 ## Ziel
@@ -13,5 +25,6 @@ Kurze, überspringbare Einrichtung mit klarer Erklärung möglicher Anbieter-Kos
 ## Schutz
 Keine stillen Konten, Downloads, Berechtigungen oder Datenübertragungen.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen UX-/Onboarding-Skill suchen; Quelle, Lizenz und Datenschutzbezug prüfen, Installation nur nach Bestätigung.

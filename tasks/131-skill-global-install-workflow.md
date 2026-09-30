@@ -1,3 +1,15 @@
+---
+id: "131"
+title: "Globalen Skill installieren"
+wave: "W27"
+depends_on: [001, 002, 017, 124]
+files: [tasks/131-skill-global-install-workflow.md]
+skills: [`android-permissions-security`, `testing-setup`]
+status: pending
+gate: true
+done_since_last_edit: false
+content-hash: "41285de246ac5d76"
+---
 # Aufgabe 131 — Globalen Skill installieren
 
 ## Ziel
@@ -13,5 +25,6 @@ Installationsvorschau, Sicherung vorhandener Dateien, Ergebnisprüfung und Entfe
 ## Schutz
 Installation ändert Dateien und benötigt deshalb ausdrückliche Zustimmung.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen sicheren globalen-Installer-Skill suchen; Herkunft/Lizenz prüfen und vor Installation Nutzerfreigabe einholen.

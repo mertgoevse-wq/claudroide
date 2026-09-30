@@ -1,3 +1,15 @@
+---
+id: "086"
+title: "USB-Verlust abfangen"
+wave: "W19"
+depends_on: [082, 085]
+files: [tasks/086-usb-disconnect-recovery.md]
+skills: [`android-permissions-security`, `testing-setup`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "3752af011d13fcf3"
+---
 # Aufgabe 086 — USB-Verlust abfangen
 
 ## Ziel
@@ -13,5 +25,6 @@ Schreibstopp, Warnung, ungespeicherte Änderungen und Wiederverbindung prüfen.
 ## Schutz
 Keine automatische Kopie an unbekannten Ort.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Android-Wechselspeicher-/Datensicherheits-Skill suchen; Quelle/Lizenz prüfen, Installation vom Nutzer bestätigen lassen.

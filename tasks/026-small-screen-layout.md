@@ -1,3 +1,15 @@
+---
+id: "026"
+title: "Smartphone-Ansichten"
+wave: "W7"
+depends_on: [010, 023, 024]
+files: [tasks/026-small-screen-layout.md]
+skills: [`adaptive`, `testing-setup`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "36423f4090dff7d6"
+---
 # Aufgabe 026 — Smartphone-Ansichten
 
 ## Ziel
@@ -13,5 +25,6 @@ Ansichten für Hochformat, Tastatur offen, große Schrift und Systemleisten doku
 ## Schutz
 Bestätigen/Ablehnen stets klar unterscheidbar und ausreichend groß.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Android-Responsive-Layout-Skill suchen, Lizenz/Quelle prüfen und Nutzer vor Installation fragen.

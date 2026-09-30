@@ -1,3 +1,15 @@
+---
+id: "068"
+title: "Nur nötigen Projektkontext wählen"
+wave: "W14"
+depends_on: [039, 042, 062, 067, 045]
+files: [tasks/068-minimal-context-selection.md]
+skills: [`/claude-api`, `android-permissions-security`]
+status: pending
+gate: true
+done_since_last_edit: false
+content-hash: "a8406394ddf21774"
+---
 # Aufgabe 068 — Nur nötigen Projektkontext wählen
 
 ## Ziel
@@ -13,5 +25,6 @@ Dateisuche, begrenzte Ausschnitte, Quellenanzeige und Erweiterung nur wenn nöti
 ## Schutz
 Geheimnisfilter wird vor Kontextversand angewendet.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Codebase-Kontext-/Privatsphäre-Skill suchen, Quelle/Lizenz prüfen und Nutzer vor Installation fragen.

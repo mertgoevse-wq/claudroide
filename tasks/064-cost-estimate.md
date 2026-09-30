@@ -1,3 +1,15 @@
+---
+id: "064"
+title: "Kostenschätzung"
+wave: "W13c"
+depends_on: [002, 043, 055]
+files: [tasks/064-cost-estimate.md]
+skills: [`/claude-api`, `testing-setup`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "2c84cb70f94d978f"
+---
 # Aufgabe 064 — Kostenschätzung
 
 ## Ziel
@@ -13,5 +25,6 @@ Datiertes Preis-/Verbrauchsmodell mit Kennzeichnung „Schätzung“ und unbekan
 ## Schutz
 Keine Anfrage starten, um Kosten ohne Wissen des Nutzers zu testen.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Kostenanzeige-/Provider-Skill suchen; Quelle, Lizenz und Genauigkeit prüfen, Nutzer vor Installation fragen.

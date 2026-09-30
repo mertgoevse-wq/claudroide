@@ -1,3 +1,15 @@
+---
+id: "069"
+title: "Offline-Verhalten"
+wave: "W14"
+depends_on: [039, 042, 062, 067]
+files: [tasks/069-offline-chat-state.md]
+skills: [`testing-setup`, `android-permissions-security`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "04aa5d2ea7132b59"
+---
 # Aufgabe 069 — Offline-Verhalten
 
 ## Ziel
@@ -13,5 +25,6 @@ Offlinekennzeichnung, sicherer Aufgabenstatus und Wiederaufnahme nach Netzrückk
 ## Schutz
 Keine wiederholte Anfrage oder Kosten nach Verbindungswiederkehr ohne Zustimmung.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Android-Offline-/Datenspeicher-Skill suchen; Quelle und Lizenz prüfen, Installation vom Nutzer bestätigen lassen.

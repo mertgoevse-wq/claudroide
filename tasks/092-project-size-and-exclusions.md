@@ -1,3 +1,15 @@
+---
+id: "092"
+title: "Große Projekte"
+wave: "W18"
+depends_on: [010, 017]
+files: [tasks/092-project-size-and-exclusions.md]
+skills: [`android-profiler`, `testing-setup`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "3dec446a2beb908a"
+---
 # Aufgabe 092 — Große Projekte
 
 ## Ziel
@@ -13,5 +25,6 @@ Größenhinweise, Begrenzung, Ausschlüsse und Nutzerwahl vor Indexierung.
 ## Schutz
 Geheimnis-Ausschlüsse gelten unabhängig von Größenregeln.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen ressourcenschonenden Codebase-Index-Skill suchen; Lizenz/Quelle prüfen und Installation bestätigen lassen.

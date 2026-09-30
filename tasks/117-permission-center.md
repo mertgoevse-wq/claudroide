@@ -1,3 +1,15 @@
+---
+id: "117"
+title: "Freigabeübersicht"
+wave: "W24"
+depends_on: [017, 045]
+files: [tasks/117-permission-center.md]
+skills: [`adaptive`, `android-permissions-security`]
+status: pending
+gate: true
+done_since_last_edit: false
+content-hash: "7d38ec6770c03d0f"
+---
 # Aufgabe 117 — Freigabeübersicht
 
 ## Ziel
@@ -13,5 +25,6 @@ Alle projektbezogenen Zugriffe und Erlaubnisse auffindbar machen.
 ## Schutz
 Keine Freigabe über eine andere Einstellung unbemerkt verlängern.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Android-Berechtigungsübersicht-Skill suchen; Quelle/Lizenz prüfen und Installation mit Nutzer abstimmen.

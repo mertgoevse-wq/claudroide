@@ -1,3 +1,15 @@
+---
+id: "006"
+title: "A56-Gerätebestand"
+wave: "W0"
+depends_on: []
+files: [tasks/006-a56-device-inventory.md]
+skills: [`android-profiler`, `testing-setup`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "f101402be6b852d6"
+---
 # Aufgabe 006 — A56-Gerätebestand
 
 ## Ziel
@@ -13,5 +25,6 @@ Ein datensparsamer Testbogen: Modellkennung, Android-Version, Arbeitsspeicher, f
 ## Schutz
 Keine Seriennummer, IMEI oder unnötige Gerätekennung speichern.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Android-Geräte-Test-Skill suchen und dessen Quelle, Lizenz und Datenerhebung prüfen; vor Installation Zustimmung einholen.

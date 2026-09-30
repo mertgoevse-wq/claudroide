@@ -1,3 +1,15 @@
+---
+id: "073"
+title: "Agentenlauf speichern"
+wave: "W16"
+depends_on: [070, 071]
+files: [tasks/073-agent-run-state.md]
+skills: [`testing-setup`, `android-permissions-security`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "514f88d45a80b90b"
+---
 # Aufgabe 073 — Agentenlauf speichern
 
 ## Ziel
@@ -13,5 +25,6 @@ Zustände für geplant, wartend auf Zustimmung, aktiv, beendet, abgebrochen und 
 ## Schutz
 Keine Zugangsdaten im Laufstatus sichern.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Android-Agent-Status-Skill suchen; Quelle/Lizenz prüfen und vor Installation Nutzerzustimmung einholen.

@@ -2,7 +2,7 @@
 
 ## Status
 
-**Kein generiertes Bild vorhanden.** In der verfügbaren Arbeitsumgebung gibt es keine Claude Media Bridge und keinen Nano-Banana-Bildgenerator; eine Dateisuche fand auch keine eingerichtete Bridge. Deshalb wird kein SVG oder anderes Ersatzbild als fertiges Logo ausgegeben.
+**Kein generiertes Bild vorhanden.** Der Nutzer hat eine Claude Media Bridge; das Rendern passiert in seinen Claude-Code-Sitzungen. Bis eine geprüfte PNG-/WebP-Datei unter `assets/` liegt, wird kein SVG oder anderes Ersatzbild als fertiges Logo ausgegeben.
 
 ## Geplanter Bildauftrag für Nano Banana Pro oder Nano Banana 2
 

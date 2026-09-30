@@ -1,3 +1,15 @@
+---
+id: "121"
+title: "Links und Sonderdateien"
+wave: "W24"
+depends_on: [017, 045, 082]
+files: [tasks/121-symlink-and-special-file-defense.md]
+skills: [`android-permissions-security`, `testing-setup`]
+status: pending
+gate: true
+done_since_last_edit: false
+content-hash: "aa58582f5b8a52e6"
+---
 # Aufgabe 121 — Links und Sonderdateien
 
 ## Ziel
@@ -13,5 +25,6 @@ Erkennungs- und Behandlungsregeln für Links, Gerätedateien und ungewöhnliche 
 ## Schutz
 Keine Linkverfolgung ohne erneute Begrenzungsprüfung.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Filesystem-Security-Skill suchen; Quelle/Lizenz und bekannte Risiken prüfen, Nutzer vor Installation fragen.

@@ -1,3 +1,15 @@
+---
+id: "123"
+title: "Skill-Quelle prüfen"
+wave: "W27"
+depends_on: [001, 002, 017]
+files: [tasks/123-skill-source-review.md]
+skills: [`android-permissions-security`, `/swarm-planner`]
+status: pending
+gate: true
+done_since_last_edit: false
+content-hash: "c4f5ddd3b9b42068"
+---
 # Aufgabe 123 — Skill-Quelle prüfen
 
 ## Ziel
@@ -13,5 +25,6 @@ Kandidat, Herkunft, Repository, Lizenz, Inhalt, benötigte Werkzeuge und begrün
 ## Schutz
 Suche ist keine automatische Installationsfreigabe.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Skill-Supply-Chain-Review-Skill suchen; eigene Quelle/Lizenz prüfen und Nutzerzustimmung vor Installation einholen.

@@ -1,3 +1,15 @@
+---
+id: "081"
+title: "Projektübersicht"
+wave: "W18"
+depends_on: [010, 017]
+files: [tasks/081-project-home.md]
+skills: [`adaptive`, `testing-setup`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "8654698353aa4636"
+---
 # Aufgabe 081 — Projektübersicht
 
 ## Ziel
@@ -13,5 +25,6 @@ Projektname, Ordner, letzte Arbeit, Änderungen, offene Freigaben und Tests.
 ## Schutz
 Geheimnisse und vollständige Dateiinhalte nicht in Übersichtsvorschau anzeigen.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Mobile-Projektübersichts-Skill suchen; Lizenz/Quelle prüfen und vor Installation Nutzer fragen.

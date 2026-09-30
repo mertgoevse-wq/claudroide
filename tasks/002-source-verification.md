@@ -1,3 +1,15 @@
+---
+id: "002"
+title: "Quellen und Aktualität prüfen"
+wave: "W0"
+depends_on: []
+files: [tasks/002-source-verification.md]
+skills: [`/swarm-planner`, `testing-setup`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "98d21c658f25bedc"
+---
 # Aufgabe 002 — Quellen und Aktualität prüfen
 
 ## Ziel
@@ -13,5 +25,6 @@ Jede zeitabhängige Aussage nennt eine Primärquelle, Abrufdatum und betroffene 
 ## Schutz
 Keine Zugangsdaten oder privaten Projektinformationen an Recherche-Webseiten senden.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Skill für technische Recherche/Quellenprüfung suchen; Inhalt, Quelle und Lizenz prüfen, dann vor Installation Nutzerzustimmung einholen.

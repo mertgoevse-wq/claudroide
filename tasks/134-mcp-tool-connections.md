@@ -1,3 +1,15 @@
+---
+id: "134"
+title: "Externe Werkzeuge verbinden"
+wave: "W28"
+depends_on: [070, 117, 119, 122]
+files: [tasks/134-mcp-tool-connections.md]
+skills: [`android-permissions-security`, `/claude-api`]
+status: pending
+gate: true
+done_since_last_edit: false
+content-hash: "768750e36bbfe97a"
+---
 # Aufgabe 134 — Externe Werkzeuge verbinden
 
 ## Ziel
@@ -13,5 +25,6 @@ Verbindungskatalog mit Herkunft, Serveradresse, Werkzeugen, Anmeldung und Projek
 ## Schutz
 Keine fremden MCP-Server starten oder Schlüssel senden ohne Nutzerfreigabe.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen offiziellen MCP-/Android-Skill suchen; Protokoll, Quelle, Lizenz und Rechte prüfen, vor Installation fragen.

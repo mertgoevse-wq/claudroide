@@ -1,3 +1,15 @@
+---
+id: "125"
+title: "Datenschutz je Anbieter"
+wave: "W24"
+depends_on: [017, 045, 070]
+files: [tasks/125-provider-data-privacy.md]
+skills: [`/claude-api`, `android-permissions-security`]
+status: pending
+gate: true
+done_since_last_edit: false
+content-hash: "a9994cfd34785229"
+---
 # Aufgabe 125 — Datenschutz je Anbieter
 
 ## Ziel
@@ -13,5 +25,6 @@ Anbieterprofil mit Datenschutzquelle, möglicher Speicherung, Region falls beleg
 ## Schutz
 Keine vertraulichen Daten senden, bevor der Nutzer Ziel und Umfang kennt.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Anbieter-Datenschutz-Skill suchen, Quelle/Lizenz prüfen und Nutzer vor Installation fragen.

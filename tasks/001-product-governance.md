@@ -1,3 +1,15 @@
+---
+id: "001"
+title: "Produktregeln und offene Entscheidungen"
+wave: "W0"
+depends_on: []
+files: [tasks/001-product-governance.md]
+skills: [`/swarm-planner`, `/code-review`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "e663d64d73b00c93"
+---
 # Aufgabe 001 — Produktregeln und offene Entscheidungen
 
 ## Ziel
@@ -13,5 +25,6 @@ Eine überprüfbare Liste aus Ziel, Nicht-Zielen, Freigabewegen, offenen Entsche
 ## Schutz
 Keine Online-Aktion, kein Commit/Push und keine fremde Fähigkeit ohne passende Freigabe.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Bei Ausführung global nach einem Produktanforderungen-/Projektplanung-Skill suchen; Quelle, Lizenz und Sicherheit prüfen. Den Skillnamen erst nach Fund und Nutzerbestätigung eintragen; nicht ungefragt installieren.

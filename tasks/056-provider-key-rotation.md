@@ -1,3 +1,15 @@
+---
+id: "056"
+title: "Schlüssel wechseln"
+wave: "W11"
+depends_on: [044, 045]
+files: [tasks/056-provider-key-rotation.md]
+skills: [`android-permissions-security`, `testing-setup`]
+status: pending
+gate: false
+done_since_last_edit: false
+content-hash: "a9725e3291c3cc89"
+---
 # Aufgabe 056 — Schlüssel wechseln
 
 ## Ziel
@@ -13,5 +25,6 @@ Ablauf zum Hinzufügen, Testen, Aktivieren und Löschen eines Schlüssels.
 ## Schutz
 Schlüsselwerte erscheinen nie in Verlauf oder Bestätigungsdialog.
 
-## Skill
+## Skills (aus skill-matrix.md)
+Bei Ausführung **beide** Skills tatsächlich laden und ihre Verwendung im Checkpoint (`progress/BUILD-STATE.md`) notieren. Fehlt einer, nach CLAUDE.md ersetzen statt zu raten.
 Global einen Credential-Management-Skill suchen, Quelle/Lizenz und Risiken prüfen; vor Installation Zustimmung einholen.
