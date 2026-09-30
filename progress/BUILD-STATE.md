@@ -7,6 +7,7 @@
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
 - Genau 135 nummerierte Aufgabendateien unter `tasks/`, plus `skill-matrix.md` und `DEPENDENCIES.md`.
 - **Task 001 erledigt:** „Produktregeln und offene Entscheidungen“ (W0) — Governance-Matrix, Produktziele, harte Nicht-Ziele, Freigabestufen und Zuständigkeiten vollständig spezifiziert und synchronisiert (`done_since_last_edit: true`).
+- **Task 002 erledigt:** „Quellen und Aktualität prüfen“ (W0) — Verzeichnis verifizierter Primärquellen für Android (SAF, Services, NNAPI Deprecation), Anthropic API, OpenRouter, Google, OpenAI-Format und Markenrichtlinien erstellt (`done_since_last_edit: true`).
 - **Neu:** Jede Aufgabendatei trägt YAML-Frontmatter (`id`, `title`, `wave`, `depends_on`, `files`, `skills`, `status`, `gate`, `done_since_last_edit`, `content-hash`). Quelle der Wahrheit ist `tools/sync_frontmatter.py`; `--check` prüft, `--status ID=...` setzt Status. Ein `done` gilt nur bei unverändertem Inhalt als verifiziert.
 - **Neu:** `tasks/DEPENDENCIES.md` Lücken geschlossen: 091 in W19, 125 in W24, 131 in W27; neue Sperrkanten 088+089→091, 124→131, 070→125, W24→W25 als Extra-Abhängigkeit von 106.
 - **Neu:** `CLAUDE.md` mit autonomer Bau-Schleife (5 Schritte, klare Stopp-Punkte), Medienregeln (Media Bridge des Nutzers, PNG/WebP, kein SVG, kein Platzhalter) und Repo-Pflege-Regeln.
@@ -21,9 +22,9 @@
 - `adaptive`, `android-profiler`, `android-permissions-security`, `testing-setup` — `android/skills`.
 
 ## Aktuelle Arbeit
-- **Task 001 abgeschlossen:** `tasks/001-product-governance.md` fertiggestellt und verifiziert.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (1 erledigt, 134 offen).
-- Bereit für Commit und Push von Task 001. Nächste freie Aufgaben in W0: 002, 003, 006.
+- **Task 002 abgeschlossen:** `tasks/002-source-verification.md` fertiggestellt und verifiziert.
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (2 erledigt, 133 offen).
+- Bereit für Commit und Push von Task 002. Nächste freie Aufgaben in W0: 003, 006.
 
 ## Nächster Schritt
 1. Claude Code im Projektordner starten und entweder `Baue weiter bis zum finalen Produkt` sagen oder `/claudroide-resume` nutzen.
