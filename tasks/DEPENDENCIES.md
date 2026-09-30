@@ -26,8 +26,6 @@ Dieses Dokument ist die Arbeitskarte für `/swarm-planner`, `/parallel-task` und
 | W6 — Gestaltung | 020, 021, 022, 023, 024 | 003, 019 | Eigene Grafikbereiche getrennt; 023/024 können parallel zu Grafiken laufen. |
 | W7 — UI-Grundlagen | 025, 026, 027, 028, 029, 030 | 010, 023, 024 | Separate UI-/Testbereiche; gemeinsame Designwerte erst durch Leitung festschreiben. |
 | W8 — Chat | 031, 032, 033, 034, 035, 037, 042 | 025, 016 | Abgetrennte Screens/Komponenten möglich. |
-| W8b — Kostenanzeige | 064 | 043, 055; zusätzlich 002 | Anbieter und aktuelle Preisdaten zuerst prüfen. |
-| W13c — Modellanzeige | 041 | 043, 055, 061 | Fähigkeiten erst nach belegtem Modellkatalog anzeigen. |
 | W9 — Chat-Laufzeit | 038, 039 | 031, 035 | Abbruch und Persistenz. |
 | W9b — Streaming | 036 | 031, 035, 047, 052, 059 | Streaming braucht getesteten Provider-Vertrag. |
 | W10 — Anbietergrundlage | 043, 044, 045, 060 | 005, 016, 017 | Katalog, UI, Speicher und Compliance getrennt; Schlüsselvertrag zuerst abstimmen. |
@@ -35,6 +33,7 @@ Dieses Dokument ist die Arbeitskarte für `/swarm-planner`, `/parallel-task` und
 | W12 — Konkrete Anbieter | 048, 049, 050, 051, 053, 054 | 004, 005, 047, 052, 059 | Anbieteradapter parallel nur mit separaten Dateien; 050/051 stoppen bei nicht belegtem Zugang. |
 | W13 — Modell & Kontext | 061, 062, 065, 067 | 043, 055; 067 zusätzlich 045 | Fähigkeit, Limits und Ausschlüsse. |
 | W13b — Fallback | 063 | 062, 064, 065 | Erst nach Modell- und Kostenanzeige festlegen. |
+| W13c — Modell-/Kostenanzeige | 041, 064 | 043, 055; 041 zusätzlich 061; 064 zusätzlich 002 | Fähigkeiten und aktuelle Preisdaten zuerst belegen. |
 | W14 — Datenübertragung/offline | 066, 068, 069 | 039, 042, 062, 067 | Datenvorschau vor Modellkontext; Offline-Zustand darf unabhängig UI bekommen. |
 | W15 — Agent-Grundlage | 070, 071 | 048, 049, 052, 053, 054; 071 zusätzlich 001 | Gemeinsame Verträge und Aufgabenplanung vor Tool-Loop. |
 | W16 — Agent-Ausführung | 040, 072, 073, 074, 075, 076, 078, 079, 080 | 070, 071; 040 zusätzlich 031, 035; 074 zusätzlich 067, 068; 080 zusätzlich 061 | Separate Teilsysteme; Ressourcen und Wiederholung unabhängig testen. |

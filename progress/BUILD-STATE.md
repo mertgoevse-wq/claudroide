@@ -19,12 +19,12 @@
 
 ## Aktuelle Arbeit
 - Markdown-Dateien sind geprüft; `mertgoevse-wq/claudroide` wurde erstellt und von GitHub als privat bestätigt.
-- Lokale Dateien werden jetzt in das verifizierte private Repository übertragen.
+- Initialer Commit `fc684fd` wurde erfolgreich nach `main` im verifizierten privaten Repository gepusht.
 
 ## Offen
 - PNG-/WebP-Logo erst über tatsächlich verfügbare Claude Media Bridge generieren; diese Umgebung hat keine Bridge.
 - A56-Gerätewerte, Android-Version, Anbieterregeln, Bauweg, Lizenz und Sicherheitsarchitektur vor App-Implementierung bestätigen.
 
 ## Nächster Schritt
-- 135 nummerierte Task-Dateien und 135 Skill-Zuordnungen bestätigen.
-- Dokumente committen und in `https://github.com/mertgoevse-wq/claudroide` pushen.
+- Nach dem kleinen Dependency-Plan-Fix diesen Checkpoint ebenfalls committen und pushen.
+- Später Logo über Nano Banana generieren, sobald Claude Media Bridge verfügbar ist.
