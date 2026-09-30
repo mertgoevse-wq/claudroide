@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Secrets & Environment
+*.env
+*.env.*
+!.env.example
+*.pem
+*.key
+*.token
+
+# OS & Editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# Android / Build (future)
+.gradle/
+build/
+*.apk
+*.aab
