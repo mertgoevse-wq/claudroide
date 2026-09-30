@@ -91,7 +91,7 @@ Die Zählung unten kommt aus den Frontmatter-Köpfen und wird vom Sync-Skript ge
 
 | Bereich | Aufgaben | Stand |
 |---|---|---|
-| W0–W2 · Grundlagen, Machbarkeit, Geräteprüfung | 001–008 | 🟡 6 / 8 erledigt (W0 abgeschlossen) |
+| W0–W2 · Grundlagen, Machbarkeit, Geräteprüfung | 001–008 | 🟡 7 / 8 erledigt (W0 abgeschlossen) |
 | W3–W6 · App-Grundlage, Baupfade, Gestaltung | 009–024 | ⬜ offen |
 | W7–W9b · Oberfläche und Chat | 025–042 | ⬜ offen |
 | W10–W14 · Anbieter, Modelle, Datenschutz | 043–069 | ⬜ offen |
