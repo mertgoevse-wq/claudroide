@@ -5,9 +5,9 @@ wave: "W18"
 depends_on: [010, 017]
 files: [tasks/088-file-preview.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "e0a6f6c167f824a0"
 ---
 # Aufgabe 088 — Dateien ansehen

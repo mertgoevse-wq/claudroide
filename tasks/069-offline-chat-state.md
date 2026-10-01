@@ -5,9 +5,9 @@ wave: "W14"
 depends_on: [039, 042, 062, 067]
 files: [tasks/069-offline-chat-state.md]
 skills: [`testing-setup`, `android-permissions-security`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "04aa5d2ea7132b59"
 ---
 # Aufgabe 069 — Offline-Verhalten

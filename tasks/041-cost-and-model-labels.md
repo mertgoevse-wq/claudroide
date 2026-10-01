@@ -5,9 +5,9 @@ wave: "W13c"
 depends_on: [043, 055, 061]
 files: [tasks/041-cost-and-model-labels.md]
 skills: [`adaptive`, `/code-review`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "c2d66512dd99bba5"
 ---
 # Aufgabe 041 — Anbieter und Kosten anzeigen

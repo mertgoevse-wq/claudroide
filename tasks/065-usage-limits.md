@@ -5,9 +5,9 @@ wave: "W13"
 depends_on: [043, 055, 064]
 files: [tasks/065-usage-limits.md]
 skills: [`testing-setup`, `android-permissions-security`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "4455d9fa2f1bc058"
 ---
 # Aufgabe 065 — Nutzungsgrenzen

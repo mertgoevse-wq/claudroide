@@ -32,3 +32,6 @@ build/
 
 # Machine-specific Android SDK path — never commit
 local.properties
+
+# Kotlin build session data
+.kotlin/
