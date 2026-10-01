@@ -49,6 +49,7 @@
   - **Task 032 erledigt:** „Chat-Suche und Filter“ — Lokale Volltextsuche nach Titel, Nachricht und Projektname (`ChatSearchEngine`), Snippet-Extraktion (`SearchResultMatch`), Datums- und Projektfilterung und garantierter Ausschluss gelöschter Chats mit Unit-Tests (`ChatSearchTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 033 erledigt:** „Chats erstellen und umbenennen“ — Lokaler Chat-Lebenszyklus (`ConversationManager`, `ManagedConversation`), automatische Titelerzeugung mit Geheimnisbereinigung, Umbenennung und reversible Archivierung mit Unit-Tests (`ConversationManagerTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 034 erledigt:** „Chats löschen und exportieren“ — Export in Markdown und JSON (`ChatExportManager`), automatische Geheimnisbereinigung in Exportdateien, transparente Umfangsübersicht (`ExportScopeSummary`) und bestätigungspflichtiges permanentes Löschen mit Unit-Tests (`ChatExportTest.kt`) verifiziert (`done_since_last_edit: true`).
+  - **Task 035 erledigt:** „Nachrichtenfeld“ — Transparente Modell- und Kostenvorschau (`ProviderSendDisclosures`), Entwurfssicherung (`DraftState`) und Schutz vor Doppel-Submissions (`MessageComposerEngine`) mit Unit-Tests (`MessageComposerTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Assets & Dokumentation:**
   - 16:9 Header-Banner (`assets/claudroide-banner.jpg`) mit Android-Bot und Terrakotta-KI-Funken via Claude Media Bridge generiert.
   - Zweisprachige GitHub-Dokumentation: Englisches Haupt-README (`README.md`) mit interaktivem Sprachwechsler zu deutschem `README.de.md`.
@@ -66,17 +67,17 @@
 - `adaptive`, `android-profiler`, `android-permissions-security`, `testing-setup` — `android/skills`.
 
 ## Aktuelle Arbeit
-- **Task 034 abgeschlossen:** „Chats löschen und exportieren“ (W8) — `ChatExportManager.kt`, `ChatExportTest.kt` verifiziert.
-- **Nächste Aufgabe: Task 035:** „Nachrichtenfeld“ (W8, Abhängigkeiten: 016, 025 erledigt).
-  - Ziel: Nachrichtenanzeige mit klaren Rollen (Nutzer, Assistent, System), Zeitstempeln, Kopierfunktionen und Statusindikatoren implementieren.
-  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/MessageDisplayModels.kt`, `tasks/035-message-field.md`, `progress/BUILD-STATE.md`.
-  - Geladene Skills: `adaptive`, `testing-setup`.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (34 erledigt, 101 offen).
+- **Task 035 abgeschlossen:** „Nachrichtenfeld“ (W8) — `MessageComposerEngine.kt`, `MessageComposerTest.kt` verifiziert.
+- **Nächste Aufgabe: Task 037:** „Code und Antworten anzeigen“ (W8, Abhängigkeiten: 016, 025 erledigt).
+  - Ziel: Sichere, performante Codeblock-Darstellung mit horizontalem Scrollen, Syntax-Hervorhebung und verlustfreiem Kopieren.
+  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/CodeBlockRenderer.kt`, `tasks/037-code-display.md`, `progress/BUILD-STATE.md`.
+  - Geladene Skills: `adaptive`, `/code-review`.
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (35 erledigt, 100 offen).
 
 ## Nächster Schritt
-1. Task 035 („Nachrichtenfeld“) umsetzen und verifizieren.
-2. Nach Task 035 committen, stagen und an `origin main` pushen.
-3. Anschließende W8-Aufgaben (037 Codeanzeige, 042 Datenschutz) autonom abarbeiten.
+1. Task 037 („Code und Antworten anzeigen“) umsetzen und verifizieren.
+2. Nach Task 037 committen, stagen und an `origin main` pushen.
+3. Anschließende W8-Aufgabe 042 (Gesprächsdatenschutz) autonom abarbeiten.
 
 ## Offen
 - PNG-/WebP-Logo über die Media Bridge des Nutzers rendern und prüfen.
