@@ -5,9 +5,9 @@ wave: "W14"
 depends_on: [039, 042, 062, 067, 045]
 files: [tasks/068-minimal-context-selection.md]
 skills: [`/claude-api`, `android-permissions-security`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "a8406394ddf21774"
 ---
 # Aufgabe 068 — Nur nötigen Projektkontext wählen

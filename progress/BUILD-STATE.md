@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-01 (sechste Sitzung)
-**Status:** 72 von 135 Aufgaben verifiziert. Task 063 (Ersatzmodell) abgeschlossen — siehe „Wiederaufnahme 2026-10-01 (sechste Sitzung)“. 063 war die früheste offene Aufgabe mit erfüllten Abhängigkeiten.
+**Status:** 73 von 135 Aufgaben verifiziert. Tasks 063 (Ersatzmodell) und 068 (Gate: minimaler Projektkontext) abgeschlossen — siehe „Wiederaufnahme 2026-10-01 (sechste Sitzung)“.
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -261,3 +261,27 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 **Geladene Skills:** `android-permissions-security` (Least Privilege auf den Datenweg: die Freigabe des Hauptanbieters gilt nie für den Ersatzanbieter, jede Scope braucht eine eigene Einrichtung) und `testing-setup` (Ablenkung über Grenzwerte — Alter der Einrichtung, Alter der Preisquelle, fehlende Bedingungen — und ein *begründeter* Blockierungsgrund, nicht nur „wurde abgelehnt“).
 
 **Teststand:** `./gradlew :app:testDebugUnitTest` → **617 Tests, 0 Fehler, 0 übersprungen** (vorher 613, +4 neue). Verteilung `ModelFallbackTest` 34 (zuvor 30). Geheimnis-Scan über `app/src/main/` findet nur zwei Beispiele in Doc-Kommentaren bereits committeter Dateien.
+
+## Task 068 erledigt (Gate) — „Nur nötigen Projektkontext wählen“
+
+`ContextSelectionPolicy.kt` + `ContextSelectionTest.kt` (33 Tests).
+
+**Zwei Zusagen strukturell abgesichert, nicht nur per Test:**
+- **Jede gesendete Datei ist benennbar.** `SelectedContext.describe()` nennt Dateityp, Pfad, Zeilenbereich, Auswahlgrund und Tokenzahl; `ContextSelection.disclosureLines()` listet gewählte *und* ausgelassene Dateien. Es gibt kein Feld, um ein Element ohne Beschreibung durchzureichen.
+- **Kein stilles Vollprojektladen.** Das Budget ist doppelt begrenzt: höchstens `MAX_PROJECT_FRACTION` (25 %) des Modellfensters und nie mehr als `HARD_PROJECT_TOKEN_CEILING` (60 000 Tokens) — auch bei einem 1-Mio.-Token-Fenster. `selectWholeProject()` lehnt ohne ausdrückliche Bestätigung ab und bleibt selbst danach unter derselben Obergrenze. `expand()` kann nur die ausdrücklich verlangten Pfade nachrücken, nie den ganzen Bestand.
+- **Geheimnisfilter vor dem Versand.** `ProjectExclusionPolicy` entscheidet als erster Schritt in der Auswahl; ein `BLOCKED_SECRET` ist weder über `expand()` noch über eine Vollprojekt-Bestätigung erreichbar.
+
+**Fenstergrößen gegen die Anbieterquelle geprüft, nicht aus dem Gedächtnis.** Der in der Skill-Matrix zugewiesene Skill `/claude-api` ist in dieser Sitzung **nicht verfügbar** (nur die sechs globalen Skills plus die Projekt-Skills). Ersatz nach CLAUDE.md: die benötigte Einzelheit direkt aus der offiziellen Anbieterdokumentation gelesen statt behauptet — `https://platform.claude.com/docs/en/models/overview`, abgerufen 2026-10-01. Ergebnis: Opus 5.5, Sonnet 5.5 und Fable 5.1 je 1 Mio. Eingabe- und 128 000 Ausgabetokens; Haiku 4.5 mit 200 000 und 64 000. Die Werte stehen mit Quelle und Prüfdatum in `ModelContextLimits.TABLE`. Für ein unbekanntes Modell wird **kein** Fenster geraten: es gilt der konservative Wert `UNKNOWN_WINDOW_TOKENS` mit `isWindowKnown = false`, und die Oberfläche sagt das.
+
+**Kein semantisches Ranking.** `RelevanceSignal` ist absichtlich mechanisch und überprüfbar: von Hand benannt, aus dem Dateinamen gegen den Aufgabentext, Projektanweisung, sonst `NONE`. `NONE` wird **nicht** aufgenommen — eine Datei ohne benennbaren Grund zu senden widerspräche der ersten Zusage. Der Dateiinhalt wird nicht durchsucht, weil das Geheimnisse und Kosten von der Datei abhängig machte.
+
+**Zwei Fehler in der eigenen ersten Fassung behoben, bevor sie getestet wurden:**
+1. `expand()` ignorierte seinen eigenen Parameter `requestedPaths` und zog still den gesamten Kandidatenbestand nach — also genau das Verhalten, das die Aufgabe verbietet. Jetzt werden nur die verlangten Pfade berücksichtigt.
+2. `selectWithBudget()` war als Duplikat von `select()` abgeschrieben; die Prüfung der harten Obergrenze stand nur im Duplikat. Beide nutzen jetzt denselben Kern, und `require()` in `selectWithBudget()` erzwingt die Obergrenze für **jedes** Budget — auch für ein ausdrücklich erhöhtes.
+
+**Ein Testerwartungsfehler, den der Test aufdeckte:** `anOmittedFile_isAlsoNamedWithItsReason` schlug fehl, weil der Grund für ausgelassene Dateien anders formuliert war als die Beschriftung `RelevanceSignal.NONE.germanLabel`, die die Oberfläche an anderer Stelle zeigt. Nicht der Test wurde geändert: der Grund verwendet jetzt dieselbe Beschriftung, damit ein Grund an zwei Stellen nicht unterschiedlich benannt sein kann.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **650 Tests, 0 Fehler, 0 übersprungen** (vorher 617, +33 aus `ContextSelectionTest`). Geheimnis-Scan über `feature/project/` ohne Treffer.
+
+**Geladene Skills:** `android-permissions-security` (Least Privilege auf den Datenweg: das Budget ist der schmalste Weg, ein Geheimnis hat keinen Weg, und eine Erweiterung ist keine Ausnahme von der Geheimnisregel) und als Ersatz für das fehlende `/claude-api` die direkte Quellenprüfung der Anbieterdokumentation.
+
