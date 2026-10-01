@@ -51,6 +51,7 @@
 - **Welle 10 (W10) vollständig abgeschlossen:**
 - **Welle 11 (W11) in Arbeit:**
   - **Task 046 erledigt (Gate):** „Geheimnisse verbergen“ — Zentrale Secret-Redaction (`SecretMasker`, `RedactionAuditReport`), Filterung von Anthropic Keys, OpenAI Keys, Bearer Tokens, Passwörtern und PEM-Blöcken, Defense-in-Depth Invariante mit Unit-Tests (`SecretMaskerTest.kt`) verifiziert (`done_since_last_edit: true`).
+  - **Task 047 erledigt:** „Verbindung testen“ — Minimale Testanfrage (`ProviderPingTester`, 1 Token Ping), Abwesenheit von Projektdaten, transparente Kostenangabe und Blockade unsicherer Weiterleitungen mit Unit-Tests (`ProviderPingTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 043 erledigt:** „Anbieter-Katalog“ — Typisierter Katalog für erlaubte Anbieter (`ProviderCatalogRegistry`, `ProviderCatalogEntry`), Dokumentationsbelege, Authentifizierungsarten (x-api-key, Bearer, No-Auth Local), Protokollformate und Fähigkeiten ohne hartcodierte Schlüssel mit Unit-Tests (`ProviderCatalogTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 044 erledigt:** „Anbieter hinzufügen“ — Validierung eigener Anbieteranschlüsse (`ProviderConfigValidator`), HTTPS-Zwang für Remote-Server, Localhost-Freigabe, Modellvalidierung und Vorab-Prüfungsansicht mit maskiertem Schlüssel (`ProviderReviewSummary`) mit Unit-Tests (`ProviderConfigTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 045 erledigt (Gate):** „Schlüssel sicher speichern“ — Hardware-gestützte Keystore-Architektur (`AndroidKeystoreSecurityPolicy`, AES-256-GCM), zwingender Ausschluss aus Cloud-/Auto-Backups, Verbot von Klartextspeicherung und sichere Schlüsseltresor-Schnittstelle (`KeyVaultStorage`, `InMemorySecureKeyVault`) mit Unit-Tests (`SecureKeyStorageTest.kt`) verifiziert (`done_since_last_edit: true`).
@@ -86,6 +87,7 @@
 - **Welle 10 (W10) vollständig abgeschlossen:**
 - **Welle 11 (W11) in Arbeit:**
   - **Task 046 erledigt (Gate):** „Geheimnisse verbergen“ — Zentrale Secret-Redaction (`SecretMasker`, `RedactionAuditReport`), Filterung von Anthropic Keys, OpenAI Keys, Bearer Tokens, Passwörtern und PEM-Blöcken, Defense-in-Depth Invariante mit Unit-Tests (`SecretMaskerTest.kt`) verifiziert (`done_since_last_edit: true`).
+  - **Task 047 erledigt:** „Verbindung testen“ — Minimale Testanfrage (`ProviderPingTester`, 1 Token Ping), Abwesenheit von Projektdaten, transparente Kostenangabe und Blockade unsicherer Weiterleitungen mit Unit-Tests (`ProviderPingTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 043 erledigt:** „Anbieter-Katalog“ — Typisierter Katalog für erlaubte Anbieter (`ProviderCatalogRegistry`, `ProviderCatalogEntry`), Dokumentationsbelege, Authentifizierungsarten (x-api-key, Bearer, No-Auth Local), Protokollformate und Fähigkeiten ohne hartcodierte Schlüssel mit Unit-Tests (`ProviderCatalogTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 044 erledigt:** „Anbieter hinzufügen“ — Validierung eigener Anbieteranschlüsse (`ProviderConfigValidator`), HTTPS-Zwang für Remote-Server, Localhost-Freigabe, Modellvalidierung und Vorab-Prüfungsansicht mit maskiertem Schlüssel (`ProviderReviewSummary`) mit Unit-Tests (`ProviderConfigTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 045 erledigt (Gate):** „Schlüssel sicher speichern“ — Hardware-gestützte Keystore-Architektur (`AndroidKeystoreSecurityPolicy`, AES-256-GCM), zwingender Ausschluss aus Cloud-/Auto-Backups, Verbot von Klartextspeicherung und sichere Schlüsseltresor-Schnittstelle (`KeyVaultStorage`, `InMemorySecureKeyVault`) mit Unit-Tests (`SecureKeyStorageTest.kt`) verifiziert (`done_since_last_edit: true`).
@@ -94,10 +96,11 @@
 - **Welle 10 (W10) vollständig abgeschlossen:** Tasks 043, 044, 045, 060 verifiziert.
 - **Welle 11 (W11) in Arbeit:**
   - **Task 046 erledigt (Gate):** „Geheimnisse verbergen“ — Zentrale Secret-Redaction (`SecretMasker`, `RedactionAuditReport`), Filterung von Anthropic Keys, OpenAI Keys, Bearer Tokens, Passwörtern und PEM-Blöcken, Defense-in-Depth Invariante mit Unit-Tests (`SecretMaskerTest.kt`) verifiziert (`done_since_last_edit: true`).
-- **Nächste Aufgabe: Task 047:** „Verbindung testen“ (W11, Abhängigkeiten: 044, 045 erledigt).
-  - Ziel: Sparsame Testanfrage zur Verifikation von Serveradresse, Authentifizierung und Modellverfügbarkeit mit Fehleraufschlüsselung.
+  - **Task 047 erledigt:** „Verbindung testen“ — Minimale Testanfrage (`ProviderPingTester`, 1 Token Ping), Abwesenheit von Projektdaten, transparente Kostenangabe und Blockade unsicherer Weiterleitungen mit Unit-Tests (`ProviderPingTest.kt`) verifiziert (`done_since_last_edit: true`).
+- **Nächste Aufgabe: Task 052:** „Eigener Endpunkt“ (W11, Abhängigkeiten: 044, 045 erledigt).
+  - Ziel: Härtung frei konfigurierbarer API-Endpunkte mit Schutz vor internen Netzwerkausbrüchen (SSRF-Schutz) und strikter TLS-Validierung.
   - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/RetryAndAbortController.kt`, `tasks/038-retry-and-abort.md`, `progress/BUILD-STATE.md`.
-  - Geladene Skills: `/claude-api`, `testing-setup`.
+  - Geladene Skills: `android-permissions-security`, `testing-setup`.
 - `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (44 erledigt, 91 offen).
 
 ## Nächster Schritt
