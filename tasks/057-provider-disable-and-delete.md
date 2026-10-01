@@ -5,9 +5,9 @@ wave: "W11"
 depends_on: [044, 045]
 files: [tasks/057-provider-disable-and-delete.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "19d07fc059ed7ddb"
 ---
 # Aufgabe 057 — Anbieter pausieren und löschen

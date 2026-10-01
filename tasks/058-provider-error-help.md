@@ -5,9 +5,9 @@ wave: "W11"
 depends_on: [044, 045]
 files: [tasks/058-provider-error-help.md]
 skills: [`adaptive`, `/code-review`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "be25b1296a4b0c3f"
 ---
 # Aufgabe 058 — Anbieterfehler erklären

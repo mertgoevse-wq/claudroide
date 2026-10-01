@@ -5,9 +5,9 @@ wave: "W11"
 depends_on: [044, 045, 052]
 files: [tasks/059-network-security.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "cf5b0b7fd1471c39"
 ---
 # Aufgabe 059 — Netzwerkschutz
