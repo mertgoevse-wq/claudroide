@@ -5,9 +5,9 @@ wave: "W13b"
 depends_on: [062, 064, 065]
 files: [tasks/063-model-fallback-settings.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "6c3cd61b585123d6"
 ---
 # Aufgabe 063 — Ersatzmodell einstellen

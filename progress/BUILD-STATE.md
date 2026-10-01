@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
-**Stand:** 2026-10-01 (vierte Sitzung)
-**Status:** 68 von 135 Aufgaben verifiziert. Tasks 041, 065, 069, 088, 120 abgeschlossen. Bei der Prüfung wurden **sieben echte Fehler** gefunden und behoben — siehe „Wiederaufnahme 2026-10-01 (vierte Sitzung)".
+**Stand:** 2026-10-01 (sechste Sitzung)
+**Status:** 72 von 135 Aufgaben verifiziert. Task 063 (Ersatzmodell) abgeschlossen — siehe „Wiederaufnahme 2026-10-01 (sechste Sitzung)“. 063 war die früheste offene Aufgabe mit erfüllten Abhängigkeiten.
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -241,4 +241,23 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Geladene Skills:** `android-permissions-security` (Prüfung auf Least Privilege für Datei- und Befehlswerkzeuge; ein Weg darf nicht laxer sein als der andere) und `testing-setup` (Ablenkung über Grenzwerte und ein erwarteter Grund, nicht nur „wurde abgelehnt").
 
-**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 063, 068 (Gate), 071, 081, 082, 084 (Gate), 087, 092, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+**Nächste freigegebene Aufgaben** (21, alle Abhängigkeiten erfüllt): 068 (Gate), 071, 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+
+## Wiederaufnahme 2026-10-01 (sechste Sitzung) — verifizierter Stand
+
+**Ausgangslage:** Der Checkpoint war erneut veraltet (nannte 70 erledigte Aufgaben, tatsächlich waren es nach Abgleich mit `sync_frontmatter.py` und Git **71**). Uncommitted lag die vollständige Implementierung von Task 063 mit Testdatei — die Vorarbeit der abgebrochenen Sitzung war nicht verloren, aber auch nicht geprüft.
+
+**Task 063 erledigt — „Ersatzmodell einstellen“:** `ModelFallbackPolicy.kt` + `ModelFallbackTest.kt`. Reine Kotlin-Logik ohne Android-Importe, damit jede Zusage auf der JVM prüfbar bleibt. Drei Zusagen strukturell abgesichert: ohne `FallbackSetup` immer `AskUser` (kein eingebauter Ersatz, kein Raten), eine Ablehnung des Hauptanbieters führt nie zu einem Ausweichen, und Preise/Bedingungen werden bei **jedem** `decide()` neu gelesen statt aus der Einrichtung zwischengespeichert.
+
+**Zwei echte Fehler gefunden und behoben — beide im Sicherheitsverhalten, nicht in der Oberfläche:**
+
+1. **Ein „Ersatz“ auf genau das Modell, das gerade scheiterte, wurde als Ersatz akzeptiert.** `decide()` verglich Anbieter und Modell des Ersatzes nicht mit denen der fehlgeschlagenen Anfrage. Ein Nutzer, der Haiku als Ersatz für Haiku eingestellt hatte, bekam bei einer Haiku-Störung `UseFallback` — dieselbe Anfrage an dasselbe Kontingent, mit erneuter Kostenbelastung, ohne ein anderes Modell zu erreichen. Behoben: gleicher Anbieter **und** gleiches Modell führt zu `AskUser` mit der Begründung, dass ein erneuter Versuch eine eigene Entscheidung ist. Gleicher Modellname bei **anderem** Anbieter bleibt ein Ersatz — das ist ein anderer Datenweg und wird getestet.
+2. **Der Stale-Preis-Grund wurde per Textsuche in einer Zeile gesucht, die es dort nicht gibt.** `blocked += cost.lines.firstOrNull { it.startsWith("Alter der Preisquelle") }` — diese Zeile stammt aus `CostEstimator.buildDetailLines`, nicht aus den `lines` von `reassessCosts`. Der Ausdruck konnte nie greifen und fiel ersatzlos auf „Die Preisquelle ist zu alt.“ zurück: die Begründung war jedes Mal die generische, obwohl das konkrete Alter bekannt war. Behoben durch das neue Feld `CostReassessment.priceAgeInDays` — das Alter wird als Zahl geführt, nicht aus einem Anzeigetext herausgesucht, damit eine Umbenennung der Oberfläche die Entscheidung nicht verändert.
+
+**Ein weiterer Fund beim Lesen:** `askUser()` bot im Zweig ohne Einrichtung `Beim Modell „unbekannt“ erneut versuchen` an — ein erfundener Modellname in einer echten Nutzerentscheidung. Jetzt `Beim bisherigen Modell erneut versuchen`, wenn kein Ersatz eingetragen ist.
+
+**Eine Testerwartung war falsch, nicht der Code:** `assertEquals(BigDecimal.ZERO, BigDecimal.ZERO)` verglich einen Wert mit sich selbst und bewies nichts. Ersetzt durch echte Prüfungen der Tabellenwerte (Fable 60, Haiku 6 je eine Million Tokens) — mit `compareTo`, weil `BigDecimal.equals` auch die Nachkommastellen vergleicht und `60.00` ungleich `60` ist.
+
+**Geladene Skills:** `android-permissions-security` (Least Privilege auf den Datenweg: die Freigabe des Hauptanbieters gilt nie für den Ersatzanbieter, jede Scope braucht eine eigene Einrichtung) und `testing-setup` (Ablenkung über Grenzwerte — Alter der Einrichtung, Alter der Preisquelle, fehlende Bedingungen — und ein *begründeter* Blockierungsgrund, nicht nur „wurde abgelehnt“).
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **617 Tests, 0 Fehler, 0 übersprungen** (vorher 613, +4 neue). Verteilung `ModelFallbackTest` 34 (zuvor 30). Geheimnis-Scan über `app/src/main/` findet nur zwei Beispiele in Doc-Kommentaren bereits committeter Dateien.
