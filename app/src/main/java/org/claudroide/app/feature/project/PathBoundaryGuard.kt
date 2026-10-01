@@ -72,7 +72,9 @@ object PathBoundaryGuard {
      *                         caller could not resolve it. When supplied it is the
      *                         authoritative check: a null value is treated as "unresolved"
      *                         and the logical check alone decides, because a file that
-     *                         does not exist yet has no real target.
+     *                         does not exist yet has no real target. Callers that *write*
+     *                         must therefore resolve the parent directory instead, so a
+     *                         new file behind a symlink is still checked.
      * @param realRoot         The real target of [projectRoot] after following symlinks,
      *                         or null when unknown. When both real paths are known they
      *                         must agree on the prefix.
@@ -176,14 +178,20 @@ object PathBoundaryGuard {
      * forward slashes, duplicate separators collapse, `.` segments are dropped.
      * Trailing `/` is removed so `a/b` and `a/b/` are the same path.
      *
+     * A leading backslash counts as absolute, exactly like a leading forward slash.
+     * `\etc\passwd` is rooted just as `/etc/passwd` is, and treating only one of
+     * the two as rooted would let a Windows-style traversal be pasted onto the
+     * project root and read as a harmless relative name.
+     *
      * Deliberately does NOT resolve `..` — that is [resolveWithinRoot]'s job, and
      * doing it here would hide the very thing this gate exists to detect.
      */
-    private fun normalise(path: String): String =
-        path.trim()
-            .replace('\\', '/')
+    private fun normalise(path: String): String {
+        val slashed = path.trim().replace('\\', '/')
+        val joined = slashed
             .split('/')
             .filter { it.isNotEmpty() && it != SELF }
             .joinToString("/")
-            .let { if (path.trim().startsWith("/")) "/$it" else it }
+        return if (slashed.startsWith("/")) "/$joined" else joined
+    }
 }

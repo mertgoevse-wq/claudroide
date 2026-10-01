@@ -5,9 +5,9 @@ wave: "W14"
 depends_on: [039, 042, 062, 067]
 files: [tasks/066-request-data-preview.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "73c4efa1f81c4371"
 ---
 # Aufgabe 066 — Übertragene Daten prüfen

@@ -5,9 +5,9 @@ wave: "W24"
 depends_on: [017, 045]
 files: [tasks/119-project-boundary-enforcement.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "6e81c0856693effe"
 ---
 # Aufgabe 119 — Projektgrenze durchsetzen

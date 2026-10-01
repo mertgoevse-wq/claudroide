@@ -233,4 +233,157 @@ class PathBoundaryTest {
         assertEquals(PathDecision.ALLOWED, verdict.decision)
         assertTrue("an allowed path needs no explanation", verdict.message.isBlank())
     }
+
+    // ── Review of task 120: attack candidates against the guard ───────────────
+
+    @Test
+    fun aLeadingBackslashIsRooted_justLikeALeadingSlash() {
+        // Real gap (fixed): the normaliser only recognised a leading forward slash,
+        // so `\etc\passwd` was read as a relative name and pasted onto the root.
+        listOf("\\etc\\passwd", "\\data\\data\\com.other.app\\files\\x", "\\..\\..\\etc\\passwd")
+            .forEach { path ->
+                assertEquals(
+                    "$path must be treated as an absolute path and refused",
+                    PathDecision.OUTSIDE_PROJECT,
+                    decisionOf(path)
+                )
+            }
+    }
+
+    @Test
+    fun aLeadingSlashRepeated_isStillRooted() {
+        assertEquals(PathDecision.OUTSIDE_PROJECT, decisionOf("//etc/passwd"))
+    }
+
+    @Test
+    fun aBackslashInsideThePath_staysRelative() {
+        // Only a *leading* backslash is rooted; `src\main.kt` is a normal relative path.
+        assertEquals(PathDecision.ALLOWED, decisionOf("src\\main.kt"))
+        assertEquals(PathDecision.ALLOWED, decisionOf("src\\..\\docs\\readme.md"))
+    }
+
+    @Test
+    fun emptySegmentsInTheMiddle_doNotCreateAnEscape() {
+        assertEquals(PathDecision.ALLOWED, decisionOf("src//sub///main.kt"))
+        assertEquals(PathDecision.OUTSIDE_PROJECT, decisionOf("src//..//..//..//etc/passwd"))
+    }
+
+    @Test
+    fun aBareParentSegment_isRefused() {
+        assertEquals(PathDecision.OUTSIDE_PROJECT, decisionOf(".."))
+        assertEquals(PathDecision.OUTSIDE_PROJECT, decisionOf("../"))
+        assertEquals(PathDecision.OUTSIDE_PROJECT, decisionOf("/.."))
+    }
+
+    @Test
+    fun windowsTrailingDotsAndSpaces_stayOrdinaryNameCharacters() {
+        // `src. ` keeps its dot after trimming, so it stays an ordinary name — on
+        // Android/Linux that is a real file name and cannot leave the project.
+        assertEquals(PathDecision.ALLOWED, decisionOf("src. "))
+        assertEquals(PathDecision.ALLOWED, decisionOf("src/.../main.kt"))
+        // `.. ` loses its trailing space to the trim, becomes `..` and is refused.
+        // Windows would read the space as part of the name; being stricter than the
+        // file system here is the safe direction, so this is intended, not a bug.
+        assertEquals(PathDecision.OUTSIDE_PROJECT, decisionOf(".. "))
+    }
+
+    @Test
+    fun comparisonIsCaseSensitive_likeTheFileSystemItself() {
+        // Android's ext4/f2fs is case sensitive, so `DEMO` is a different folder.
+        // Matching case-insensitively would be the actual bug; this pins the correct
+        // behaviour so nobody "fixes" it into one.
+        val wrongCase = "/data/user/0/org.claudroide.app/files/projects/DEMO/secret.txt"
+        assertEquals(PathDecision.OUTSIDE_PROJECT, decisionOf(wrongCase))
+        assertEquals(PathDecision.ALLOWED, decisionOf("SRC/main.kt"))
+    }
+
+    @Test
+    fun unicodeLookalikeSeparators_areOrdinaryNameCharacters() {
+        // Pinned explicitly: U+FF0F, U+2215 and U+FF0E are not separators on Android,
+        // so they cannot express a traversal — the path is simply one odd file name
+        // inside the project.
+        listOf("src／main.kt", "src∕main.kt", "src．．main.kt").forEach { path ->
+            assertEquals("$path must be a plain name", PathDecision.ALLOWED, decisionOf(path))
+        }
+    }
+
+    @Test
+    fun aRootThatIsOnlyAPrefixOfTheSibling_isRefused() {
+        // Both a trailing separator and no separator at all must be refused.
+        assertEquals(PathDecision.OUTSIDE_PROJECT, decisionOf("$root-evil/x"))
+        assertEquals(PathDecision.OUTSIDE_PROJECT, decisionOf("$root/../demo-evil/x"))
+    }
+
+    @Test
+    fun anUnknownRealPath_aloneFallsBackToTheLogicalCheck() {
+        // Documented contract: a file that does not exist yet has no real target, so
+        // the written path decides. Callers that write must resolve the parent
+        // directory; this test pins that the fallback is the logical check and not
+        // an accidental allow-everything.
+        assertEquals(
+            PathDecision.OUTSIDE_PROJECT,
+            PathBoundaryGuard.check(
+                candidate = "../../../etc/passwd",
+                projectRoot = root,
+                resolvedRealPath = null,
+                realRoot = root
+            ).decision
+        )
+        assertEquals(
+            PathDecision.ALLOWED,
+            PathBoundaryGuard.check(
+                candidate = "src/main.kt",
+                projectRoot = root,
+                resolvedRealPath = null,
+                realRoot = root
+            ).decision
+        )
+    }
+
+    @Test
+    fun aMissingRealRoot_aloneAlsoFallsBackToTheLogicalCheck() {
+        assertEquals(
+            PathDecision.OUTSIDE_PROJECT,
+            PathBoundaryGuard.check(
+                candidate = "/etc/passwd",
+                projectRoot = root,
+                resolvedRealPath = root + "/link",
+                realRoot = null
+            ).decision
+        )
+        assertEquals(
+            PathDecision.ALLOWED,
+            PathBoundaryGuard.check(
+                candidate = "link/main.kt",
+                projectRoot = root,
+                resolvedRealPath = root + "/src/main.kt",
+                realRoot = null
+            ).decision
+        )
+    }
+
+    @Test
+    fun theRealRootDecides_whenItDiffersFromTheLogicalRoot() {
+        // The project root is a symlink itself: the real target of `src/main.kt`
+        // is under /…/real/demo and must be accepted on the strength of realRoot.
+        val real = "/storage/emulated/0/Projects/demo"
+        assertEquals(
+            PathDecision.ALLOWED,
+            PathBoundaryGuard.check(
+                candidate = "src/main.kt",
+                projectRoot = root,
+                resolvedRealPath = "$real/src/main.kt",
+                realRoot = real
+            ).decision
+        )
+        assertEquals(
+            PathDecision.SYMLINK_ESCAPE,
+            PathBoundaryGuard.check(
+                candidate = "src/main.kt",
+                projectRoot = root,
+                resolvedRealPath = "/storage/emulated/0/Projects/other/main.kt",
+                realRoot = real
+            ).decision
+        )
+    }
 }

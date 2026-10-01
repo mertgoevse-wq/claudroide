@@ -216,3 +216,29 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 **Teststand:** `./gradlew :app:testDebugUnitTest` → **492 Tests, 0 Fehler, 0 übersprungen** (vorher 388). Neuer Klassen: `CostLabelTest` 17, `UsageLimitTest` 22, `OfflineChatTest` 17, `FilePreviewTest` 24, `PathBoundaryTest` 25. Geheimnis-Scan über `app/src/main/` ohne Treffer.
 
 **Nächste freigegebene Aufgaben** (23, alle Abhängigkeiten erfüllt): 063, 066, 068 (Gate), 071, 081, 082, 084 (Gate), 087, 092, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 119 (Gate), 122 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+
+## Wiederaufnahme 2026-10-01 (fünfte Sitzung) — verifizierter Stand
+
+**Ausgangslage:** Der Checkpoint war veraltet (nannte 23 offene Aufgaben, nannte aber 122 als offen, obwohl der letzte Commit `d6b3dd2` ihn abgeschlossen hatte). Verifikation über `sync_frontmatter.py --check`, Git und Dateien: **70 Aufgaben `done`, 65 offen**; alle 135 Dateien konsistent. Acht Commits liegen vor `origin/main`; Push weiterhin nicht freigegeben.
+
+**Task 119 erledigt (Gate) — „Projektgrenze durchsetzen":**
+- `ProjectBoundaryEnforcer.kt` (neu): eine einzige Prüffunktion `evaluate()` für Lesen, Schreiben, Löschen und Ausführen. `ToolKind.parse()` liefert bei unbekanntem Werkzeugnamen `null`, niemals `ALLOWED`. `ActionOrigin` trennt Nutzer von Modell: nur `USER` darf weitere Projektordner beitragen, `MODEL` und `UNKNOWN` werden mit `GRANTS_NOT_FROM_USER` abgelehnt. `ProjectAccessRegistry` führt einen Generationszähler, damit ein Widerruf sofort wirkt statt erst beim nächsten Appstart.
+- `PathBoundaryGuard.normalise()` erkennt jetzt auch einen **führenden Backslash** als absolut. Vorher wurde `\etc\passwd` als relativer Name gelesen und auf den Projektordner gesetzt — der gleiche Fehler in Windows-Schreibweise.
+
+**Drei echte Fehler gefunden und behoben — alle im Befehlspfad von 119.** Sie fielen nur auf, weil das Verhalten vorher mit einer temporären Sonde gemessen und nicht aus dem Code gelesen wurde:
+
+1. **Ausführen umging die Projektgrenze vollständig (Sicherheitsleck).** Absolute Pfade *innerhalb* eines Befehls wurden nie geprüft. `cat /data/data/com.other.app/shared_prefs/prefs.xml` bekam `ALLOWED` — dieselbe Datei wird als `READ`-Aktion abgelehnt. Dieselbe Zieldatei, zwei Urteile, je nachdem wie sie benannt war. Behoben: jeder absolute Pfad im Befehl läuft durch dieselbe `PathBoundaryGuard`-Prüfung wie ein Dateipfad.
+2. **Der Arbeitsordner-Vergleich lief verkehrt herum.** Geprüft wurde `check(root, workDir)` statt `check(workDir, root)`. Folge: `workingDirectory = "/"` ergab `ALLOWED` (jeder Pfad liegt darunter), während ein legitimes Unterverzeichnis `<root>/app` abgelehnt wurde — also genau der Fall, den ein echter Build braucht. Behoben durch die richtige Richtung.
+3. **Der Ordnerwechsel-Regel fehlte der Fall „mitten im Befehl".** Das Muster war auf Zeilenbeginn verankert (`(?m)^\s*`), daher kam `ls && cd /data/data/…` durch. Auf `(^|[\s;|&(])(cd|pushd)\s+` erweitert.
+4. **Der Tokenisierer lief ins Leere.** `split('\'').joinToString(" ") { "" }` liefert für einen Befehl **ohne** einfaches Anführungszeichen einen leeren String — die Pfadprüfung aus Punkt 1 hätte also bei genau den Befehlen nie gegriffen, für die sie nötig ist. Das war der Grund, warum der erste Fix zunächst wirkungslos blieb. Behoben über `filterIndexed { index, _ -> index % 2 == 0 }`.
+
+**Zwei Testerwartungen waren falsch, nicht der Code:** Zwei Tests verlangten für `ls && cd /data/…` und `echo $(cat /data/…)` genau `FORBIDDEN_COMMAND`. Nach den neuen Prüfungen wird beides vom Pfad-Regelwerk zuerst abgelehnt und trägt deshalb `OUTSIDE_PROJECT`. Die Ablehnung ist in beiden Fällen richtig, nur der genannte Grund unterscheidet sich — die Tests wurden darauf korrigiert.
+
+**Task 066 erledigt — „Übertragene Daten prüfen":**
+- `RequestDataPreview.kt` (neu): `ContentRef` hält Pfad und Zeilenbereich, **niemals Text** — die Schutzregel der Aufgabe („Vorschau speichert keine unnötige Kopie") ist damit strukturell, nicht nur per Test. `pendingToSend` ist die einzige Wahrheit, `summaryLines` werden daraus abgeleitet, damit eine Entfernung keine veraltete Zahl stehen lassen kann. Geheimnisse werden schon beim Bauen aussortiert und tauchen gar nicht erst in der Liste auf.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **576 Tests, 0 Fehler, 0 übersprungen** (vorher 570, +6 aus den Regressionstests; die Zahl stieg, weil 7 Tests dazukamen und einer umbenannt wurde). Verteilung neu: `ProjectBoundaryTest` 36, `RequestDataPreviewTest` 22, `PathBoundaryTest` 37. Geheimnis-Scan über `app/src/main/` findet nur ein Beispiel in einem Doc-Kommentar (`AppSettings.kt:23`).
+
+**Geladene Skills:** `android-permissions-security` (Prüfung auf Least Privilege für Datei- und Befehlswerkzeuge; ein Weg darf nicht laxer sein als der andere) und `testing-setup` (Ablenkung über Grenzwerte und ein erwarteter Grund, nicht nur „wurde abgelehnt").
+
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 063, 068 (Gate), 071, 081, 082, 084 (Gate), 087, 092, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
