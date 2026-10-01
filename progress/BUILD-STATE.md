@@ -44,6 +44,8 @@
   - **Task 028 erledigt:** „Hell und dunkel“ — Theme-Modi (`ThemeMode.kt`), AMOLED-Dunkelmodus als energiesparender A56-Standard, Hell-Theme und WCAG AA (>= 4.5:1) Kontrastgarantie für Code- und Gefahrenbereiche mit Unit-Tests (`ThemeModeTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 029 erledigt:** „Zugänglichkeit“ — TalkBack-Ansagen für Freigaben und Diffs (`AccessibilityPolicy`), Nicht-Allein-Farbe-Invariante (Farbe + Icon + Textbeschreibung), Skalierung bis 200% Systemschrift und Fokus-Hierarchie mit Unit-Tests (`AccessibilityTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 030 erledigt:** „Lade- und Fehlerzustände“ — Transparente Statusanzeige (`DataTransmissionStatus`), strukturierte UI-Fehler mit separaten Wiederholen/Abbrechen-Aktionen (`AppUiError`) und automatische Geheimnismaskierung (`ErrorSanitizer`) mit Unit-Tests (`ErrorStateTest.kt`) verifiziert (`done_since_last_edit: true`).
+- **Welle 8 (W8) in Arbeit:**
+  - **Task 031 erledigt:** „Chatliste“ — Datenmodell (`ChatSummaryItem`), chronologische Sortierung, Projektfilterung, Leerzustandserkennung (`ChatListUiState`) und Schutz vor Geheimnis-Lecks in Vorschautexten (`ChatPreviewSanitizer`) mit Unit-Tests (`ChatListTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Assets & Dokumentation:**
   - 16:9 Header-Banner (`assets/claudroide-banner.jpg`) mit Android-Bot und Terrakotta-KI-Funken via Claude Media Bridge generiert.
   - Zweisprachige GitHub-Dokumentation: Englisches Haupt-README (`README.md`) mit interaktivem Sprachwechsler zu deutschem `README.de.md`.
@@ -61,17 +63,17 @@
 - `adaptive`, `android-profiler`, `android-permissions-security`, `testing-setup` — `android/skills`.
 
 ## Aktuelle Arbeit
-- **Welle 7 (W7) vollständig abgeschlossen:** Tasks 025, 026, 027, 028, 029, 030 verifiziert.
-- **Nächste Aufgabe: Task 031:** „Chatliste“ (W8, Abhängigkeiten: 025, 016 erledigt).
-  - Ziel: Gespeicherte Unterhaltungen übersichtlich, schnell ladend und mit Projektbezug auf dem Smartphone darstellen.
-  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/ChatListModels.kt`, `tasks/031-chat-history-list.md`, `progress/BUILD-STATE.md`.
-  - Geladene Skills: `adaptive`, `testing-setup`.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (30 erledigt, 105 offen).
+- **Task 031 abgeschlossen:** „Chatliste“ (W8) — `ChatListModels.kt`, `ChatListTest.kt` verifiziert.
+- **Nächste Aufgabe: Task 032:** „Chat-Suche und Filter“ (W8, Abhängigkeiten: 016, 025 erledigt).
+  - Ziel: Lokale Sofortsuche in Unterhaltungen nach Titel, Inhalt und Projektfilter ohne Datenabfluss an externe Server.
+  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/ChatSearchManager.kt`, `tasks/032-chat-search-and-filter.md`, `progress/BUILD-STATE.md`.
+  - Geladene Skills: `testing-setup`, `/code-review`.
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (31 erledigt, 104 offen).
 
 ## Nächster Schritt
-1. Start von Welle 8 mit Task 031 („Chatliste“) umsetzen und verifizieren.
-2. Nach Task 031 committen, stagen und an `origin main` pushen.
-3. Anschließende W8-Aufgaben (032 Suche, 033 Aktionen, 034 Export/Löschen, 035 Eingabefluss, 037 Codeanzeige, 042 Datenschutz) autonom abarbeiten.
+1. Task 032 („Chat-Suche und Filter“) umsetzen und verifizieren.
+2. Nach Task 032 committen, stagen und an `origin main` pushen.
+3. Anschließende W8-Aufgaben (033 Aktionen, 034 Export/Löschen, 035 Eingabefluss, 037 Codeanzeige, 042 Datenschutz) autonom abarbeiten.
 
 ## Offen
 - PNG-/WebP-Logo über die Media Bridge des Nutzers rendern und prüfen.
