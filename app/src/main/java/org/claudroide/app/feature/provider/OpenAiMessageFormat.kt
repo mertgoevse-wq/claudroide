@@ -54,7 +54,7 @@ object OpenAiMessageFormatter {
         val invalidRole = messages.firstOrNull { it.role !in listOf("user", "assistant") }
         if (invalidRole != null) {
             return MessageFormatResult.FormatError(
-                "Ungültige Rolle „${invalidRole.role}". Erlaubt: user, assistant."
+                "Ungültige Rolle „${invalidRole.role}“. Erlaubt: user, assistant."
             )
         }
 
@@ -97,20 +97,20 @@ object OpenAiMessageFormatter {
         }
 
         val choices = responseBody["choices"] as? List<*>
-            ?: return MessageFormatResult.FormatError("Antwortformat ungültig: „choices" fehlt.")
+            ?: return MessageFormatResult.FormatError("Antwortformat ungültig: „choices“ fehlt.")
 
         if (choices.isEmpty()) {
-            return MessageFormatResult.FormatError("Leere „choices"-Liste in der Antwort.")
+            return MessageFormatResult.FormatError("Leere „choices“-Liste in der Antwort.")
         }
 
         val firstChoice = choices[0] as? Map<*, *>
             ?: return MessageFormatResult.FormatError("Antwortformat ungültig: erstes choice kein Objekt.")
 
         val message = firstChoice["message"] as? Map<*, *>
-            ?: return MessageFormatResult.FormatError("Antwortformat ungültig: „message" in choice fehlt.")
+            ?: return MessageFormatResult.FormatError("Antwortformat ungültig: „message“ in choice fehlt.")
 
         val content = message["content"] as? String
-            ?: return MessageFormatResult.FormatError("Antwortformat ungültig: „content" ist kein String.")
+            ?: return MessageFormatResult.FormatError("Antwortformat ungültig: „content“ ist kein String.")
 
         val finishReason = firstChoice["finish_reason"] as? String
 

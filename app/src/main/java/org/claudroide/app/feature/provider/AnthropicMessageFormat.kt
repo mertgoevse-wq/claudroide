@@ -74,7 +74,7 @@ object AnthropicMessageFormatter {
         val invalidRole = messages.firstOrNull { it.role !in listOf("user", "assistant") }
         if (invalidRole != null) {
             return MessageFormatResult.FormatError(
-                "Ungültige Rolle „${invalidRole.role}". Erlaubt: user, assistant."
+                "Ungültige Rolle „${invalidRole.role}“. Erlaubt: user, assistant."
             )
         }
 
@@ -109,7 +109,7 @@ object AnthropicMessageFormatter {
         }
 
         val contentList = responseBody["content"] as? List<*>
-            ?: return MessageFormatResult.FormatError("Antwortformat ungültig: „content" fehlt.")
+            ?: return MessageFormatResult.FormatError("Antwortformat ungültig: „content“ fehlt.")
 
         val textBlocks = contentList
             .filterIsInstance<Map<*, *>>()

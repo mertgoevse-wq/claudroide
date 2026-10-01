@@ -5,9 +5,9 @@ wave: "W9b"
 depends_on: [031, 035, 047, 052, 059]
 files: [tasks/036-streaming-responses.md]
 skills: [`/claude-api`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "053d2332bcddd03f"
 ---
 # Aufgabe 036 — Laufende Antworten

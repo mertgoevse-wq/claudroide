@@ -131,18 +131,18 @@ object NetworkSecurityPolicy {
      */
     fun describeTlsFailure(kind: TlsFailureKind, host: String): String = when (kind) {
         TlsFailureKind.CERTIFICATE_EXPIRED ->
-            "Das Sicherheitszertifikat von „$host" ist abgelaufen. " +
+            "Das Sicherheitszertifikat von „$host“ ist abgelaufen. " +
                 "Verbindung wurde nicht hergestellt."
         TlsFailureKind.UNTRUSTED_CERTIFICATE ->
-            "Das Zertifikat von „$host" ist nicht vertrauenswürdig (unbekannte CA oder selbst signiert). " +
+            "Das Zertifikat von „$host“ ist nicht vertrauenswürdig (unbekannte CA oder selbst signiert). " +
                 "Verbindung wurde nicht hergestellt."
         TlsFailureKind.HOSTNAME_MISMATCH ->
-            "Der Hostname „$host" stimmt nicht mit dem Zertifikat überein. " +
+            "Der Hostname „$host“ stimmt nicht mit dem Zertifikat überein. " +
                 "Verbindung wurde nicht hergestellt."
         TlsFailureKind.HANDSHAKE_TIMEOUT ->
-            "Der TLS-Verbindungsaufbau zu „$host" hat das Zeitlimit überschritten."
+            "Der TLS-Verbindungsaufbau zu „$host“ hat das Zeitlimit überschritten."
         TlsFailureKind.OTHER ->
-            "Sicherheitsfehler bei der Verbindung zu „$host". " +
+            "Sicherheitsfehler bei der Verbindung zu „$host“. " +
                 "Details wurden nicht protokolliert."
     }
 

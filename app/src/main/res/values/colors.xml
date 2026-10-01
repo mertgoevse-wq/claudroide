@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Launcher icon placeholder colors (used by adaptive-icon XML) -->
+    <color name="launcher_bg">#1B2A1B</color>
+    <color name="launcher_fg">#3DDC84</color>
+</resources>

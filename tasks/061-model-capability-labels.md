@@ -5,9 +5,9 @@ wave: "W13"
 depends_on: [043, 055]
 files: [tasks/061-model-capability-labels.md]
 skills: [`/claude-api`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "aa43c4c947acc8d0"
 ---
 # Aufgabe 061 — Modellfähigkeiten

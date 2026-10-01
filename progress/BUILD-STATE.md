@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
-**Stand:** 2026-09-30
-**Status:** Spezifikation, 135 maschinenlesbare Task-Pläne, Bau-Automatisierung; kein Android-App-Code begonnen.
+**Stand:** 2026-10-01
+**Status:** 58 von 135 Aufgaben verifiziert. App-Code, Unit-Tests laufen grün (267 Tests, 0 Fehler).
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -103,17 +103,37 @@
   - **Task 047 erledigt:** „Verbindung testen“ — Minimale Testanfrage (`ProviderPingTester`, 1 Token Ping), Abwesenheit von Projektdaten, transparente Kostenangabe und Blockade unsicherer Weiterleitungen mit Unit-Tests (`ProviderPingTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 052 erledigt (Gate):** „Eigener Endpunkt“ — Sicherheitsprüfung für benutzerdefinierte Server (`CustomEndpointGuard`), TLS-Zwang für Remote-Server, SSRF-Blockade privater LAN-IP-Bereiche und striktes Host-Pinning für API-Schlüssel mit Unit-Tests (`CustomEndpointTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 055 erledigt:** „Modellnamen verwalten“ — Modellkatalog und manuelle Eingabe (`ModelRegistry`, `ModelDescriptor`), Unterscheidung verifizierter Modelle von manuellen Nutzereingaben (`ModelOrigin`) und anfragefreie Modellauswahl mit Unit-Tests (`ModelNameTest.kt`) verifiziert (`done_since_last_edit: true`).
-- **Nächste Aufgabe: Task 056:** „Schlüssel wechseln“ (W11, Abhängigkeiten: 044, 045 erledigt).
-  - Ziel: Sichere Schlüsselrotation mit unterbrechungsfreiem Übergang, Erhalt bestehender Unterhaltungen und Validierung des neuen Schlüssels vor Ersetzung.
-  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/RetryAndAbortController.kt`, `tasks/038-retry-and-abort.md`, `progress/BUILD-STATE.md`.
-  - Geladene Skills: `android-permissions-security`, `testing-setup`.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (47 erledigt, 88 offen).
+- **Nächste Aufgabe: Task 061:** „Modellfähigkeiten“ (W13, Abhängigkeiten: keine, Skills `/claude-api` + `testing-setup`).
+  - Ziel: Fähigkeiten eines Modells (Streaming, Werkzeugaufrufe, Bildeingabe) nur aus belegter Quelle ableiten, nie aus dem Modellnamen raten. Ohne Beleg: „unbekannt“, Aktion wird blockiert statt geraten.
+  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/provider/ModelCapabilityRegistry.kt` (liegt bereits uncommitted vor), zugehörige Testdatei, `tasks/061-model-capability-labels.md`, `progress/BUILD-STATE.md`.
+  - Geladene Skills: `/claude-api`, `testing-setup`.
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (58 erledigt, 77 offen).
+
+## Wiederaufnahme 2026-10-01 — verifizierter Stand
+
+Der alte Checkpoint war veraltet (nannte Task 056 als „nächste Aufgabe“, obwohl der letzte Commit W12 abgeschlossen hatte). Verifikation gegen Git und Dateien ergab: W11 und W12 sind erledigt, Task 036 war die früheste offene Aufgabe mit erfüllten Abhängigkeiten.
+
+**Vorgeschaltete Reparatur des Builds (kein Task, aber Voraussetzung für jede Prüfung):**
+- `app/build.gradle.kts`: `NavigationSuiteScaffold` war nicht auflösbar, weil das Artefakt `androidx.compose.material3:material3-adaptive-navigation-suite` weder deklariert noch im Cache war. Ergänzt (Version 1.0.0) — damit kompiliert die App überhaupt erst.
+- `org.json` fehlt auf dem JVM-Test-Classpath (nur Android-Plattform). `testImplementation("org.json:json:20240303")` ergänzt, damit SSE-JSON wirklich getestet und nicht gegen einen Stub geprüft wird.
+- **Echter Barrierefreiheitsfehler gefunden und behoben:** `SemanticThemeColors.LightWarningText` (#E65100) erreichte auf `LightWarningBackground` nur 3,46:1 und lag damit unter WCAG AA (4,5:1) — der Test hatte den Istwert nie geprüft, nur die Farbe nachgeschlagen. Ersatz #BF360C (5,11:1), warmer Ton bleibt erhalten. Die Kommentare „5.2:1“ und „6.1:1“ waren ebenfalls falsch und wurden auf gemessene Werte korrigiert.
+- `TypeAndSpacingTest.codeFont_usesMonospace` prüfte `toString()` eines Compose-Objekts („Monospace“ statt „FontFamily.Monospace“). Statt die Zeichenkette zu verbiegen, vergleicht der Test jetzt das `FontFamily`-Objekt selbst — die Debug-`toString()` ist kein Vertrag.
+
+**Task 036 erledigt — „Laufende Antworten“:**
+- `StreamingResponseEngine.kt` / `SseEventParser.kt` in `feature/chat/`: Zustandsautomat (IDLE → CONNECTING → RECEIVING → COMPLETED/ABORTED/FAILED) über reine, synchrone Datenklassen — kein Socket, kein Coroutine, daher auf der JVM prüfbar.
+- Nur `COMPLETED` gilt als fertige Antwort; `isComplete` ist bei Abbruch und Fehler immer `false`. Ereignisse nach einem Endzustand werden verworfen, damit ein spät eintreffendes Delta den Text nicht verdoppelt.
+- **Echter Parserfehler gefunden und behoben:** das letzte SSE-Frame ging verloren, wenn die Verbindung direkt nach `data:` schloss. Genau das passiert bei Abbruch — das `message_stop`, das die Antwort als fertig markiert, wäre ausgefallen. `parseAll()` spült jetzt den Puffer am Streamende.
+- Werkzeug-Argumente (`partial_json`) werden in Index-Reihenfolge zusammengesetzt und nie als sichtbarer Text gerendert; `thinking_delta` wird geparst, aber nie angezeigt. Unbekannte Ereignistypen und kaputte JSON-Zeilen brechen den Stream nicht ab.
+- Unit-Tests: `StreamingResponseTest.kt` (18 Tests) deckt beide „Fertig, wenn“-Kriterien ab.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → 267 Tests, 0 Fehler (vorher 249, davon 2 rot seit dem 30.09.). Keine Geheimnisse in den neuen Dateien.
 
 ## Nächster Schritt
-1. Task 047 („Verbindung testen“) umsetzen und verifizieren.
-2. Nach Task 047 committen, stagen und an `origin main` pushen.
-3. Anschließend mit Welle 11 (Anbieterhärtung) und Welle 12 (Konkrete Anbieter) fortfahren.
+1. Task 061 („Modellfähigkeiten“) umsetzen: `ModelCapabilityRegistry.kt` liegt bereits uncommitted vor und muss gegen die Belegpflicht geprüft und mit Tests versehen werden.
+2. Nach Task 061 committen und stagen; Push nur nach ausdrücklicher Freigabe (siehe Offen).
+3. Anschließend Task 062 („Modellwahl“), dann W13c (064 Preise, 065 Limits).
 
 ## Offen
 - PNG-/WebP-Logo über die Media Bridge des Nutzers rendern und prüfen.
 - A56-Gerätewerte, Android-Version, Lizenz, finale Anbieterwege vor Implementierung bestätigen.
+- **Nicht nachgefragt — Entscheidung nötig:** Viele Dateien liegen seit dem Abbruch uncommitted vor. Betroffen sind (a) reine Kosmetik — typografische Anführungszeichen in vier Provider-Dateien, (b) `ModelCapabilityRegistry.kt` und `ModelSelectionManager.kt` (vermutlich W13-Vorarbeit zu den Tasks 061/062), (c) Build-Gerüst: `gradlew`, `gradlew.bat`, `gradle/`, `gradle.properties`, `mipmap-*`, `values/colors.xml`, `proguard-rules.pro`. Ohne Freigabe nichts davon gestaged oder gepusht. `local.properties` enthält `sdk.dir` und gehört **nie** ins Repository — es ist in keiner `.gitignore`-Regel abgedeckt und muss vor jedem `git add -A` ausgeschlossen bleiben.

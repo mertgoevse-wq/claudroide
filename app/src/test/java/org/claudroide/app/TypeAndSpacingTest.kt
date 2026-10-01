@@ -4,6 +4,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.claudroide.app.core.design.TypeTokens
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -26,6 +27,11 @@ class TypeAndSpacingTest {
 
     @Test
     fun codeFont_usesMonospace() {
-        assertEquals("Monospace", TypeTokens.CodeFontFamily.toString())
+        // Compare the font family itself, not its toString(): the debug string is a
+        // Compose implementation detail and carries no contract.
+        assertSame(
+            androidx.compose.ui.text.font.FontFamily.Monospace,
+            TypeTokens.CodeFontFamily
+        )
     }
 }

@@ -148,9 +148,9 @@ class ProviderLifecycleManager(
         conversationCount: Int
     ): String {
         val keyLine = if (hasKey) {
-            "Der gespeicherte Schlüssel für „$displayName" wird dauerhaft vom Gerät entfernt."
+            "Der gespeicherte Schlüssel für „$displayName“ wird dauerhaft vom Gerät entfernt."
         } else {
-            "„$displayName" hat keinen gespeicherten Schlüssel."
+            "„$displayName“ hat keinen gespeicherten Schlüssel."
         }
         val chatLine = if (conversationCount > 0) {
             " $conversationCount Unterhaltung(en) bleiben erhalten und sind weiterhin lesbar."

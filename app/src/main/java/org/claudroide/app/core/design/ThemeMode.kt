@@ -28,7 +28,7 @@ object SemanticThemeColors {
     val LightCodeBackground = Color(0xFFF1F5F2)
     val LightCodeText = Color(0xFF1B5E20)
     val LightWarningBackground = Color(0xFFFFF3E0)
-    val LightWarningText = Color(0xFFE65100) // 5.2:1 contrast against LightWarningBackground
+    val LightWarningText = Color(0xFFBF360C) // 5.11:1 contrast against LightWarningBackground (WCAG AA)
     val LightErrorBackground = Color(0xFFFFEBEE)
     val LightErrorText = Color(0xFFC62828)   // 6.1:1 contrast against LightErrorBackground
 }
