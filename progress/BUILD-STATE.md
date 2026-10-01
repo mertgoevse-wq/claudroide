@@ -45,6 +45,8 @@
   - **Task 029 erledigt:** „Zugänglichkeit“ — TalkBack-Ansagen für Freigaben und Diffs (`AccessibilityPolicy`), Nicht-Allein-Farbe-Invariante (Farbe + Icon + Textbeschreibung), Skalierung bis 200% Systemschrift und Fokus-Hierarchie mit Unit-Tests (`AccessibilityTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 030 erledigt:** „Lade- und Fehlerzustände“ — Transparente Statusanzeige (`DataTransmissionStatus`), strukturierte UI-Fehler mit separaten Wiederholen/Abbrechen-Aktionen (`AppUiError`) und automatische Geheimnismaskierung (`ErrorSanitizer`) mit Unit-Tests (`ErrorStateTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Welle 8 (W8) vollständig abgeschlossen:**
+- **Welle 9 (W9) in Arbeit:**
+  - **Task 038 erledigt:** „Stoppen und Wiederholen“ — Abbruch- und Wiederholungssteuerung (`ExecutionControlEngine`), Unterdrückung unaufgeforderter Auto-Retries, Propagierung des Abbruchsignals an Werkzeuge und ehrliche Protokollierung irreversibler Nebenwirkungen mit Unit-Tests (`ExecutionControllerTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 031 erledigt:** „Chatliste“ — Datenmodell (`ChatSummaryItem`), chronologische Sortierung, Projektfilterung, Leerzustandserkennung (`ChatListUiState`) und Schutz vor Geheimnis-Lecks in Vorschautexten (`ChatPreviewSanitizer`) mit Unit-Tests (`ChatListTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 032 erledigt:** „Chat-Suche und Filter“ — Lokale Volltextsuche nach Titel, Nachricht und Projektname (`ChatSearchEngine`), Snippet-Extraktion (`SearchResultMatch`), Datums- und Projektfilterung und garantierter Ausschluss gelöschter Chats mit Unit-Tests (`ChatSearchTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 033 erledigt:** „Chats erstellen und umbenennen“ — Lokaler Chat-Lebenszyklus (`ConversationManager`, `ManagedConversation`), automatische Titelerzeugung mit Geheimnisbereinigung, Umbenennung und reversible Archivierung mit Unit-Tests (`ConversationManagerTest.kt`) verifiziert (`done_since_last_edit: true`).
@@ -70,16 +72,19 @@
 
 ## Aktuelle Arbeit
 - **Welle 8 (W8) vollständig abgeschlossen:** Tasks 031, 032, 033, 034, 035, 037, 042 verifiziert.
-- **Nächste Aufgabe: Task 038:** „Wiederholen und abbrechen“ (W9, Abhängigkeiten: 031, 035 erledigt).
-  - Ziel: Sicheres Wiederholen fehlgeschlagener Anfragen ohne doppelte Kosten oder Nebenwirkungen und sauberer Abbruch laufender Streams.
+- **Welle 9 (W9) in Arbeit:**
+  - **Task 038 erledigt:** „Stoppen und Wiederholen“ — Abbruch- und Wiederholungssteuerung (`ExecutionControlEngine`), Unterdrückung unaufgeforderter Auto-Retries, Propagierung des Abbruchsignals an Werkzeuge und ehrliche Protokollierung irreversibler Nebenwirkungen mit Unit-Tests (`ExecutionControllerTest.kt`) verifiziert (`done_since_last_edit: true`).
+- **Task 038 abgeschlossen:** „Stoppen und Wiederholen“ (W9) — `ExecutionController.kt`, `ExecutionControllerTest.kt` verifiziert.
+- **Nächste Aufgabe: Task 039:** „Sitzungen fortsetzen“ (W9, Abhängigkeiten: 031, 035 erledigt).
+  - Ziel: Nahtloses Fortsetzen früherer Unterhaltungen ohne unbeabsichtigte Wiederholung geschützter Aktionen oder Nebenwirkungen.
   - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/RetryAndAbortController.kt`, `tasks/038-retry-and-abort.md`, `progress/BUILD-STATE.md`.
   - Geladene Skills: `testing-setup`, `android-permissions-security`.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (37 erledigt, 98 offen).
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (38 erledigt, 97 offen).
 
 ## Nächster Schritt
-1. Start von Welle 9 mit Task 038 („Wiederholen und abbrechen“) umsetzen und verifizieren.
-2. Nach Task 038 committen, stagen und an `origin main` pushen.
-3. Anschließende W9-Aufgabe 039 (Sitzungen fortsetzen) autonom abarbeiten.
+1. Task 039 („Sitzungen fortsetzen“) umsetzen und verifizieren (schließt Welle 9 ab!).
+2. Nach Task 039 committen, stagen und an `origin main` pushen.
+3. Anschließend mit Welle 9b (Task 036 SSE-Streaming) und Welle 10 (Anbieter) fortfahren.
 
 ## Offen
 - PNG-/WebP-Logo über die Media Bridge des Nutzers rendern und prüfen.
