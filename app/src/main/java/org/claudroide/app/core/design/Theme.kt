@@ -55,13 +55,26 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun ClaudroideTheme(
-    darkTheme: Boolean = true, // AMOLED Dark als Standard für maximale Effizienz auf dem A56
+    themeMode: ThemeMode = ThemeMode.DARK, // AMOLED Dark als Standard für maximale Akku-Effizienz auf dem A56
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val isSystemDark = isSystemInDarkTheme()
+    val isDark = ThemeModeResolver.isDarkThemeActive(themeMode, isSystemDark)
+    val colorScheme = if (isDark) DarkColorScheme else LightColorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,
+        content = content
+    )
+}
+
+@Composable
+fun ClaudroideTheme(
+    darkTheme: Boolean,
+    content: @Composable () -> Unit
+) {
+    ClaudroideTheme(
+        themeMode = if (darkTheme) ThemeMode.DARK else ThemeMode.LIGHT,
         content = content
     )
 }

@@ -41,6 +41,7 @@
   - **Task 025 erledigt:** „Navigation“ — Type-Safe `Screen` Navigation (`NavRoutes.kt`), TopLevel-Hierarchie, Backstack-Management, Projekt-Badge-Bindung (`projectBadgeText`), destruktive Sicherheitsisolation (`NavigationSafetyPolicy`) und Unit-Tests (`NavigationStructureTest.kt`) implementiert (`done_since_last_edit: true`).
   - **Task 026 erledigt:** „Smartphone-Ansichten“ — Viewport-Tokens für Galaxy A56 (`MobileViewportTokens.kt`), Einspalten-Umschaltung (< 600 dp), IME-Höhenberechnung, Einhand-Ergonomie und Knopftrennungsregeln (48 dp, 16 dp Sicherheitsabstand) mit Unit-Tests (`MobileLayoutTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 027 erledigt:** „Eingabe und Tastatur“ — Mehrzeiliges Eingabefeld-Modell (`ChatInputState.kt`), nahtloser Wechsel zwischen Senden und Stoppen während Stream (`InputActionButtonState`), Anhangstransparenz und Provider-Consent-Prüfung (`AttachmentPolicy`) mit Unit-Tests (`ChatInputTest.kt`) implementiert (`done_since_last_edit: true`).
+  - **Task 028 erledigt:** „Hell und dunkel“ — Theme-Modi (`ThemeMode.kt`), AMOLED-Dunkelmodus als energiesparender A56-Standard, Hell-Theme und WCAG AA (>= 4.5:1) Kontrastgarantie für Code- und Gefahrenbereiche mit Unit-Tests (`ThemeModeTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Assets & Dokumentation:**
   - 16:9 Header-Banner (`assets/claudroide-banner.jpg`) mit Android-Bot und Terrakotta-KI-Funken via Claude Media Bridge generiert.
   - Zweisprachige GitHub-Dokumentation: Englisches Haupt-README (`README.md`) mit interaktivem Sprachwechsler zu deutschem `README.de.md`.
@@ -58,17 +59,17 @@
 - `adaptive`, `android-profiler`, `android-permissions-security`, `testing-setup` — `android/skills`.
 
 ## Aktuelle Arbeit
-- **Task 027 abgeschlossen:** „Eingabe und Tastatur“ (W7) — `ChatInputState.kt`, `ChatInputTest.kt` verifiziert.
-- **Nächste Aufgabe: Task 028:** „Hell und dunkel“ (W7, Abhängigkeiten: 010, 023, 024 erledigt).
-  - Ziel: Theme-Modi (System, Dunkel AMOLED, Hell), nahtlose Theme-Umschaltung ohne Neustart, OLED-Akkuschonung auf dem Galaxy A56 und Kontrasteinhaltung absichern.
-  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/core/design/ThemeMode.kt`, `tasks/028-light-and-dark-themes.md`, `progress/BUILD-STATE.md`.
+- **Task 028 abgeschlossen:** „Hell und dunkel“ (W7) — `ThemeMode.kt`, `Theme.kt`, `ThemeModeTest.kt` verifiziert.
+- **Nächste Aufgabe: Task 029:** „Zugänglichkeit“ (W7, Abhängigkeiten: 010, 023, 024 erledigt).
+  - Ziel: Screenreader-Semantik (TalkBack), ContentDescriptions in DE/EN, Skalierbarkeit für vergrößerte Systemschriften (bis 200%) und Tastatur-/Fokus-Indikatoren absichern.
+  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/core/design/AccessibilityTokens.kt`, `tasks/029-accessibility.md`, `progress/BUILD-STATE.md`.
   - Geladene Skills: `adaptive`, `testing-setup`.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (27 erledigt, 108 offen).
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (28 erledigt, 107 offen).
 
 ## Nächster Schritt
-1. Task 028 („Hell und dunkel“) umsetzen und verifizieren.
-2. Nach Task 028 committen, stagen und an `origin main` pushen.
-3. Anschließende W7-Aufgaben (029 Barrierefreiheit, 030 Ladezustände) autonom abarbeiten.
+1. Task 029 („Zugänglichkeit“) umsetzen und verifizieren.
+2. Nach Task 029 committen, stagen und an `origin main` pushen.
+3. Anschließende W7-Aufgabe 030 (Lade- und Fehlerzustände) autonom abarbeiten.
 
 ## Offen
 - PNG-/WebP-Logo über die Media Bridge des Nutzers rendern und prüfen.
