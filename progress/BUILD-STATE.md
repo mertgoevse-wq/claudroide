@@ -48,6 +48,8 @@
 - **Welle 9 (W9) vollständig abgeschlossen:**
   - **Task 038 erledigt:** „Stoppen und Wiederholen“ — Abbruch- und Wiederholungssteuerung (`ExecutionControlEngine`), Unterdrückung unaufgeforderter Auto-Retries, Propagierung des Abbruchsignals an Werkzeuge und ehrliche Protokollierung irreversibler Nebenwirkungen mit Unit-Tests (`ExecutionControllerTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 039 erledigt:** „Sitzungen fortsetzen“ — Saubere Sitzungswiederherstellung (`SessionResumptionManager`, `ResumedSessionState`), Bindung von Projekt, Modell und Provider, manuelle Überprüfungspflicht für unterbrochene Werkzeuge und Sendesperre vor Kontextprüfung mit Unit-Tests (`SessionResumptionTest.kt`) verifiziert (`done_since_last_edit: true`).
+- **Welle 10 (W10) in Arbeit:**
+  - **Task 043 erledigt:** „Anbieter-Katalog“ — Typisierter Katalog für erlaubte Anbieter (`ProviderCatalogRegistry`, `ProviderCatalogEntry`), Dokumentationsbelege, Authentifizierungsarten (x-api-key, Bearer, No-Auth Local), Protokollformate und Fähigkeiten ohne hartcodierte Schlüssel mit Unit-Tests (`ProviderCatalogTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 031 erledigt:** „Chatliste“ — Datenmodell (`ChatSummaryItem`), chronologische Sortierung, Projektfilterung, Leerzustandserkennung (`ChatListUiState`) und Schutz vor Geheimnis-Lecks in Vorschautexten (`ChatPreviewSanitizer`) mit Unit-Tests (`ChatListTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 032 erledigt:** „Chat-Suche und Filter“ — Lokale Volltextsuche nach Titel, Nachricht und Projektname (`ChatSearchEngine`), Snippet-Extraktion (`SearchResultMatch`), Datums- und Projektfilterung und garantierter Ausschluss gelöschter Chats mit Unit-Tests (`ChatSearchTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 033 erledigt:** „Chats erstellen und umbenennen“ — Lokaler Chat-Lebenszyklus (`ConversationManager`, `ManagedConversation`), automatische Titelerzeugung mit Geheimnisbereinigung, Umbenennung und reversible Archivierung mit Unit-Tests (`ConversationManagerTest.kt`) verifiziert (`done_since_last_edit: true`).
@@ -76,17 +78,20 @@
 - **Welle 9 (W9) vollständig abgeschlossen:**
   - **Task 038 erledigt:** „Stoppen und Wiederholen“ — Abbruch- und Wiederholungssteuerung (`ExecutionControlEngine`), Unterdrückung unaufgeforderter Auto-Retries, Propagierung des Abbruchsignals an Werkzeuge und ehrliche Protokollierung irreversibler Nebenwirkungen mit Unit-Tests (`ExecutionControllerTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 039 erledigt:** „Sitzungen fortsetzen“ — Saubere Sitzungswiederherstellung (`SessionResumptionManager`, `ResumedSessionState`), Bindung von Projekt, Modell und Provider, manuelle Überprüfungspflicht für unterbrochene Werkzeuge und Sendesperre vor Kontextprüfung mit Unit-Tests (`SessionResumptionTest.kt`) verifiziert (`done_since_last_edit: true`).
+- **Welle 10 (W10) in Arbeit:**
+  - **Task 043 erledigt:** „Anbieter-Katalog“ — Typisierter Katalog für erlaubte Anbieter (`ProviderCatalogRegistry`, `ProviderCatalogEntry`), Dokumentationsbelege, Authentifizierungsarten (x-api-key, Bearer, No-Auth Local), Protokollformate und Fähigkeiten ohne hartcodierte Schlüssel mit Unit-Tests (`ProviderCatalogTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Welle 9 (W9) vollständig abgeschlossen:** Tasks 038, 039 verifiziert.
-- **Nächste Aufgabe: Task 043:** „Anbieter-Katalog“ (W10, Abhängigkeiten: 005, 016, 017 erledigt).
-  - Ziel: Strukturierter Katalog für erlaubte Modellanbieter (Claude API, OpenRouter, Antigravity agy, Lokaler Server, Custom Endpoint) mit Kennzeichnung offizieller Schnittstellen.
+- **Task 043 abgeschlossen:** „Anbieter-Katalog“ (W10) — `ProviderCatalog.kt`, `ProviderCatalogTest.kt` verifiziert.
+- **Nächste Aufgabe: Task 044:** „Anbieter hinzufügen“ (W10, Abhängigkeiten: 005, 016, 017 erledigt).
+  - Ziel: Formular zum Hinzufügen und Konfigurieren von API-Endpunkten mit Formatprüfung, sicherer URL-Validierung und Schlüssel-Verschleierung.
   - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/RetryAndAbortController.kt`, `tasks/038-retry-and-abort.md`, `progress/BUILD-STATE.md`.
-  - Geladene Skills: `/swarm-planner`, `/claude-api`.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (39 erledigt, 96 offen).
+  - Geladene Skills: `adaptive`, `android-permissions-security`.
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (40 erledigt, 95 offen).
 
 ## Nächster Schritt
-1. Start von Welle 10 mit Task 043 („Anbieter-Katalog“) umsetzen und verifizieren.
-2. Nach Task 043 committen, stagen und an `origin main` pushen.
-3. Anschließende W10-Aufgaben (044 Hinzufügen, 045 Schlüsselspeicher, 060 Bedingungen) autonom abarbeiten.
+1. Task 044 („Anbieter hinzufügen“) umsetzen und verifizieren.
+2. Nach Task 044 committen, stagen und an `origin main` pushen.
+3. Anschließende W10-Aufgaben (045 Schlüsselspeicher, 060 Bedingungen) autonom abarbeiten.
 
 ## Offen
 - PNG-/WebP-Logo über die Media Bridge des Nutzers rendern und prüfen.
