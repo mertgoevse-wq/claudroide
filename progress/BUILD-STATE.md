@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
-**Stand:** 2026-10-01 (dritte Sitzung)
-**Status:** 60 von 135 Aufgaben verifiziert. Die vier uncommitted Implementierungen (062, 064, 067, 070) wurden **geprüft und drei echte Fehler gefunden und behoben** — siehe „Wiederaufnahme 2026-10-01 (dritte Sitzung)".
+**Stand:** 2026-10-01 (vierte Sitzung)
+**Status:** 68 von 135 Aufgaben verifiziert. Tasks 041, 065, 069, 088, 120 abgeschlossen. Bei der Prüfung wurden **sieben echte Fehler** gefunden und behoben — siehe „Wiederaufnahme 2026-10-01 (vierte Sitzung)".
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -191,3 +191,28 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 - A56-Gerätewerte, Android-Version, Lizenz, finale Anbieterwege vor Implementierung bestätigen.
 - `local.properties` enthält `sdk.dir` und gehört **nie** ins Repository — es ist in keiner `.gitignore`-Regel abgedeckt und muss vor jedem `git add -A` ausgeschlossen bleiben.
 - Push-Ziel ist `https://github.com/mertgoevse-wq/claudroide.git` (privat, bestätigt) — ein Push erfolgt erst auf ausdrückliche Freigabe.
+
+
+## Wiederaufnahme 2026-10-01 (vierte Sitzung) — verifizierter Stand
+
+**Ursache der Abstürze gefunden.** Das Git-Objektrepository wuchs auf **7,8 MB** durch tausende „dangling“ Objekte — Abbruch-Commits der vier Subagenten, die bei jedem Sitzungsende verworfen wurden, ohne dass die Objekte aufgeräumt wurden. `git gc --prune=now` hat sie entfernt; das Repository wiegt jetzt **1,4 MB**. Die gemeldeten 1,9 GB waren ein Fehlalarm: die Dateisystem-Anzeige zählte `app/build/` (20 MB Build-Artefakte) mit. Der versionierte Inhalt misst 1,5 MB. Zusätzlich wurden `.kotlin/` und `local.properties` in `.gitignore` aufgenommen.
+
+**Zweite Ursache: Subagenten sterben mit der Sitzung.** Vier Agenten arbeiteten an 041, 065, 069 und 088. Beim ersten Absturz schrieben sie nichts, beim zweiten schrieben sie ihre Implementierungen, aber nur 065 verlor seine Testdatei. Konsequenz für diese Sitzung: **maximal 2 Subagenten gleichzeitig**, und bei jeder Datei wird der Inhalt geprüft, bevor ein Task als erledigt gilt.
+
+**Sieben echte Fehler gefunden und behoben:**
+
+1. **`SecretMasker` — kurze Schlüssel blieben ungeschwärzt (Sicherheitsleck).** Das Muster verlangte 16 Zeichen nach `sk-`; `sk-live-9999999` mit 14 Zeichen blieb sichtbar. Jetzt 8 Zeichen. Begründung: ein falscher Treffer kostet ein lesbares Wort, ein falscher Nichttreffer druckt einen lebenden Schlüssel.
+2. **`SecretMasker` — Schlüssel mit Präfix blieben ungeschwärzt.** `modell-token=sk-live-9999999` rutschte durch, weil die Assignment-Liste nur Wörter wie `api_key` kannte. Neues Muster `Prefixed Key`.
+3. **`SecretMasker` — Marker dreimal hartkodiert.** `[REDACTED]` stand an drei Stellen im Literal. Jetzt `REDACTION_PLACEHOLDER`, damit Tests gegen die Konstante prüfen statt gegen einen geratenen String. Genau dieser Fehler hatte zwei Tests rot gemacht.
+4. **`CostLabelPresenter` — unterdrückter Betrag ohne Begründung.** Die Herkunftswarnung wurde nur gesetzt, wenn bereits ein Betrag vorlag. War der Betrag ohnehin null, blieb die Zeile leer und „keine Zahl“ war nicht von einem Fehler unterscheidbar.
+5. **`CostLabelPresenter` — 40-Zeilen-Duplikat von `SecretMasker`.** Der abgestoppte Agent hatte eine komplette zweite Schwärzungs-Klasse erfunden (`SecretRedactor`) statt die vorhandene zu nutzen. Ersetzt durch die echte Klasse; `SecretMasker` bekam nur die ehrliche Zusatzfunktion `containsSecretLikeText`.
+6. **`OfflineChatPolicy.editRequest` — Entwürfe waren dauerhaft unsendbar.** Bei nicht-leerem Text wurde der alte DRAFT-Status beibehalten. Ein halb getippter Satz konnte deshalb auch nach dem Vervollständigen nie gesendet werden. Jetzt verlässt ein fertiger Text den DRAFT-Zustand.
+7. **`PathBoundaryGuard` (Gate) — das echte Ziel wurde zu spät geprüft.** Die Prüfung auf das aufgelöste Ziel lief nach der Traversal-Prüfung. Ein Pfad, der beides tat, meldete nur „außerhalb“ und verbarg damit den tatsächlichen Mechanismus. Das Briefwort „Prüfung auf tatsächlichem Ziel“ verlangt, dass das Ziel zuerst entscheidet. Zusätzlich wurde `"."` fälschlich als MALFORMED abgelehnt.
+
+**Vier Testerwartungen waren falsch, nicht der Code:** ein Test verglich einen festen Modellnamen mit einem Tabellenschlüssel; einer suchte einen deutschen Platzhalter, den die Schwärzung nie erzeugte; einer zählte 600 Eingabezeilen als 601; einer behauptete `canSendNow(..., userConfirmed = false)` sei wahr.
+
+**Task 065 ohne Tests übernommen:** Die Implementierung lag vor, die Testdatei nicht. Der Status wurde auf `pending` zurückgesetzt und erst nach 22 selbst geschriebenen Tests auf `done` gesetzt. Geprüft: ein von Hand eingetragenes Limit wird als solches gekennzeichnet, ein dokumentiertes Limit ohne brauchbare Quelle oder Datum ist unbrauchbar, und kein Status blockiert je eine Anfrage oder verspricht eine Annahme durch den Anbieter.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **492 Tests, 0 Fehler, 0 übersprungen** (vorher 388). Neuer Klassen: `CostLabelTest` 17, `UsageLimitTest` 22, `OfflineChatTest` 17, `FilePreviewTest` 24, `PathBoundaryTest` 25. Geheimnis-Scan über `app/src/main/` ohne Treffer.
+
+**Nächste freigegebene Aufgaben** (23, alle Abhängigkeiten erfüllt): 063, 066, 068 (Gate), 071, 081, 082, 084 (Gate), 087, 092, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 119 (Gate), 122 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
