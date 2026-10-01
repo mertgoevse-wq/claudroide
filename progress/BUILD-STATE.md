@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-01 (sechste Sitzung)
-**Status:** 73 von 135 Aufgaben verifiziert. Tasks 063 (Ersatzmodell) und 068 (Gate: minimaler Projektkontext) abgeschlossen — siehe „Wiederaufnahme 2026-10-01 (sechste Sitzung)“.
+**Status:** 74 von 135 Aufgaben verifiziert. Tasks 063 (Ersatzmodell), 068 (Gate: minimaler Projektkontext) und 071 (Aufgaben planen) abgeschlossen.
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -284,4 +284,26 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 **Teststand:** `./gradlew :app:testDebugUnitTest` → **650 Tests, 0 Fehler, 0 übersprungen** (vorher 617, +33 aus `ContextSelectionTest`). Geheimnis-Scan über `feature/project/` ohne Treffer.
 
 **Geladene Skills:** `android-permissions-security` (Least Privilege auf den Datenweg: das Budget ist der schmalste Weg, ein Geheimnis hat keinen Weg, und eine Erweiterung ist keine Ausnahme von der Geheimnisregel) und als Ersatz für das fehlende `/claude-api` die direkte Quellenprüfung der Anbieterdokumentation.
+
+## Task 071 erledigt — „Aufgaben planen“
+
+`AgentTaskPlanner.kt` + `AgentTaskPlannerTest.kt` (30 Tests). **071 ist der Hebel dieser Sitzung:** Die Aufgabe sperrt 072–080 und 040; mit ihr fallen 10 weitere Aufgaben aus der „Abhängigkeiten offen“-Liste.
+
+**Die zentrale Designentscheidung: eine Freigabe kann nicht vergessen werden.** `PlanStep.requiredApproval` ist eine *abgeleitete* Eigenschaft. Ein Schritt gibt `actions: Set<StepAction>` an, und die benötigte Freigabe folgt daraus über `StepAction.requiredApproval`. Es gibt **kein Feld**, in dem jemand `approval = NONE` eintragen könnte — ein Schreibschritt kann seine Freigabepflicht also nicht selbst für unnötig erklären. Das trifft die Schutzregel der Aufgabe („Kein Plan darf Sicherheitsfreigaben still überspringen“) an der Wurzel statt per Test.
+
+**Dritte Seite derselben Zusage:** `AgentTaskPlanner.detectMissingActions()` prüft die Gegenrichtung. `requiredApproval` verhindert, dass ein *vorhandener* Schritt seine Freigabe unterschlägt; die Erkennung verhindert, dass eine *fehlende* Aktion unbemerkt untergeht. Erkennt ein Stichwort im Auftragstext eine Aktion (`löschen`, `installier`, `push`, …), die im Plan kein Schritt hat, wird das zur Frage — nicht stillschweigend übergangen. Die Wortliste ist absichtlich klein und sichtbar statt einer Heuristik, und die Asymmetrie ist dokumentiert: ein Wortfehler kostet eine Frage, ein stillschweigend übergangener Löschschritt wäre genau das, was die Aufgabe verhindern will.
+
+**`NONE` gibt es nur für `READ_FILE` und `GIT_COMMIT`** — beides umkehrbar: eine gelesene Datei wird nicht verändert, ein lokaler Commit lässt sich verwerfen. Alles andere, was das Gerät oder fremde Systeme betrifft, braucht eine einzeln erteilte Freigabe. Freigaben sind je Stufe getrennt: das Erteilen für `FILE_CHANGE` gilt nicht für `EXTERNAL_TRANSFER`.
+
+**Ein echter Fehler gefunden und behoben — `parallelGroups()` lieferte bei gemeinsamen Dateien *gar nichts*.** Die Bereitschaftsprüfung war ein Filter („kein anderer offener Schritt teilt eine Datei“). Bei zwei Schritten auf derselben Datei fielen **beide** durch, `ready` war leer, die Schleife brach ab — und die Rückgabe war eine leere Liste statt zweier aufeinanderfolgender Wellen. Genau die Schritte, die nacheinander laufen müssen, wären unsichtbar gewesen. Behoben durch greedy Auswahl: ein Schritt ist bereit, wenn seine Abhängigkeiten erledigt sind **und** kein bereits für diese Welle gewählter Schritt dieselbe Datei anfasst. Der Test `stepsSharingAFileAreNeverRunInParallel` hat das aufgedeckt.
+
+**Ein zweiter Fund beim Kompilieren:** `grantedApprovals` war als `Set<String>` deklariert, mit `emptyList()` initialisiert. Der Typprüfer hat das gemeldet — ein Fehler, der beim Lesen des Codes nicht aufgefallen wäre.
+
+**Parallelwellen-Regel wie im Projekt selbst:** zwei Schritte mit gemeinsamer Datei laufen nie gleichzeitig; unabhängige Schritte in einer Welle. [ExecutionPlan.parallelGroups] bildet daraus Wellen.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **680 Tests, 0 Fehler, 0 übersprungen** (vorher 650, +30 aus `AgentTaskPlannerTest`). Geheimnis-Scan über `feature/agent/` ohne Treffer.
+
+**Geladene Skills:** `/swarm-planner` (explizite `depends_on` je Aufgabe, atomare Schritte, Wellenbildung — die Regel „keine gemeinsame Datei" aus dem Skill wurde direkt zu `parallelGroups()`) und als Ersatz für das in dieser Sitzung **nicht verfügbare** `/code-review` die `testing-setup`-Prüflinie: jede Zusage bekommt einen Test, der sie an der Grenze belastet, nicht nur im glücklichen Fall. Die nicht verfügbaren Skills `/code-review` und `/claude-api` sind hiermit für 071 bzw. 068 dokumentiert; beide wurden nach CLAUDE.md ersetzt, nicht geraten.
+
+**Neu freigegeben durch 071:** 072, 073, 074, 075, 076, 078, 079, 080, 040 (und damit die Welle W15/W16).
 

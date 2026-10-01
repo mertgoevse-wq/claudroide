@@ -5,9 +5,9 @@ wave: "W15"
 depends_on: [001, 048, 049, 052, 053, 054]
 files: [tasks/071-agent-task-planning.md]
 skills: [`/swarm-planner`, `/code-review`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "ba3472a957a8a6b2"
 ---
 # Aufgabe 071 — Aufgaben planen
