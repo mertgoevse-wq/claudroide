@@ -46,6 +46,7 @@
   - **Task 030 erledigt:** „Lade- und Fehlerzustände“ — Transparente Statusanzeige (`DataTransmissionStatus`), strukturierte UI-Fehler mit separaten Wiederholen/Abbrechen-Aktionen (`AppUiError`) und automatische Geheimnismaskierung (`ErrorSanitizer`) mit Unit-Tests (`ErrorStateTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Welle 8 (W8) in Arbeit:**
   - **Task 031 erledigt:** „Chatliste“ — Datenmodell (`ChatSummaryItem`), chronologische Sortierung, Projektfilterung, Leerzustandserkennung (`ChatListUiState`) und Schutz vor Geheimnis-Lecks in Vorschautexten (`ChatPreviewSanitizer`) mit Unit-Tests (`ChatListTest.kt`) verifiziert (`done_since_last_edit: true`).
+  - **Task 032 erledigt:** „Chat-Suche und Filter“ — Lokale Volltextsuche nach Titel, Nachricht und Projektname (`ChatSearchEngine`), Snippet-Extraktion (`SearchResultMatch`), Datums- und Projektfilterung und garantierter Ausschluss gelöschter Chats mit Unit-Tests (`ChatSearchTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Assets & Dokumentation:**
   - 16:9 Header-Banner (`assets/claudroide-banner.jpg`) mit Android-Bot und Terrakotta-KI-Funken via Claude Media Bridge generiert.
   - Zweisprachige GitHub-Dokumentation: Englisches Haupt-README (`README.md`) mit interaktivem Sprachwechsler zu deutschem `README.de.md`.
@@ -63,17 +64,17 @@
 - `adaptive`, `android-profiler`, `android-permissions-security`, `testing-setup` — `android/skills`.
 
 ## Aktuelle Arbeit
-- **Task 031 abgeschlossen:** „Chatliste“ (W8) — `ChatListModels.kt`, `ChatListTest.kt` verifiziert.
-- **Nächste Aufgabe: Task 032:** „Chat-Suche und Filter“ (W8, Abhängigkeiten: 016, 025 erledigt).
-  - Ziel: Lokale Sofortsuche in Unterhaltungen nach Titel, Inhalt und Projektfilter ohne Datenabfluss an externe Server.
-  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/ChatSearchManager.kt`, `tasks/032-chat-search-and-filter.md`, `progress/BUILD-STATE.md`.
-  - Geladene Skills: `testing-setup`, `/code-review`.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (31 erledigt, 104 offen).
+- **Task 032 abgeschlossen:** „Chat-Suche und Filter“ (W8) — `ChatSearchManager.kt`, `ChatSearchTest.kt` verifiziert.
+- **Nächste Aufgabe: Task 033:** „Chats erstellen und umbenennen“ (W8, Abhängigkeiten: 016, 025 erledigt).
+  - Ziel: Schnelles Erstellen neuer Unterhaltungen mit optionalem Projektbezug und Umbenennung mit Vorbelegung aus der ersten Nachricht ohne Namenskollisionen.
+  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/ConversationManager.kt`, `tasks/033-chat-creation-and-rename.md`, `progress/BUILD-STATE.md`.
+  - Geladene Skills: `adaptive`, `testing-setup`.
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (32 erledigt, 103 offen).
 
 ## Nächster Schritt
-1. Task 032 („Chat-Suche und Filter“) umsetzen und verifizieren.
-2. Nach Task 032 committen, stagen und an `origin main` pushen.
-3. Anschließende W8-Aufgaben (033 Aktionen, 034 Export/Löschen, 035 Eingabefluss, 037 Codeanzeige, 042 Datenschutz) autonom abarbeiten.
+1. Task 033 („Chats erstellen und umbenennen“) umsetzen und verifizieren.
+2. Nach Task 033 committen, stagen und an `origin main` pushen.
+3. Anschließende W8-Aufgaben (034 Export/Löschen, 035 Eingabefluss, 037 Codeanzeige, 042 Datenschutz) autonom abarbeiten.
 
 ## Offen
 - PNG-/WebP-Logo über die Media Bridge des Nutzers rendern und prüfen.
