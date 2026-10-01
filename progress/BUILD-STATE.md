@@ -51,6 +51,7 @@
 - **Welle 10 (W10) in Arbeit:**
   - **Task 043 erledigt:** „Anbieter-Katalog“ — Typisierter Katalog für erlaubte Anbieter (`ProviderCatalogRegistry`, `ProviderCatalogEntry`), Dokumentationsbelege, Authentifizierungsarten (x-api-key, Bearer, No-Auth Local), Protokollformate und Fähigkeiten ohne hartcodierte Schlüssel mit Unit-Tests (`ProviderCatalogTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 044 erledigt:** „Anbieter hinzufügen“ — Validierung eigener Anbieteranschlüsse (`ProviderConfigValidator`), HTTPS-Zwang für Remote-Server, Localhost-Freigabe, Modellvalidierung und Vorab-Prüfungsansicht mit maskiertem Schlüssel (`ProviderReviewSummary`) mit Unit-Tests (`ProviderConfigTest.kt`) verifiziert (`done_since_last_edit: true`).
+  - **Task 045 erledigt (Gate):** „Schlüssel sicher speichern“ — Hardware-gestützte Keystore-Architektur (`AndroidKeystoreSecurityPolicy`, AES-256-GCM), zwingender Ausschluss aus Cloud-/Auto-Backups, Verbot von Klartextspeicherung und sichere Schlüsseltresor-Schnittstelle (`KeyVaultStorage`, `InMemorySecureKeyVault`) mit Unit-Tests (`SecureKeyStorageTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 031 erledigt:** „Chatliste“ — Datenmodell (`ChatSummaryItem`), chronologische Sortierung, Projektfilterung, Leerzustandserkennung (`ChatListUiState`) und Schutz vor Geheimnis-Lecks in Vorschautexten (`ChatPreviewSanitizer`) mit Unit-Tests (`ChatListTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 032 erledigt:** „Chat-Suche und Filter“ — Lokale Volltextsuche nach Titel, Nachricht und Projektname (`ChatSearchEngine`), Snippet-Extraktion (`SearchResultMatch`), Datums- und Projektfilterung und garantierter Ausschluss gelöschter Chats mit Unit-Tests (`ChatSearchTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 033 erledigt:** „Chats erstellen und umbenennen“ — Lokaler Chat-Lebenszyklus (`ConversationManager`, `ManagedConversation`), automatische Titelerzeugung mit Geheimnisbereinigung, Umbenennung und reversible Archivierung mit Unit-Tests (`ConversationManagerTest.kt`) verifiziert (`done_since_last_edit: true`).
@@ -82,18 +83,19 @@
 - **Welle 10 (W10) in Arbeit:**
   - **Task 043 erledigt:** „Anbieter-Katalog“ — Typisierter Katalog für erlaubte Anbieter (`ProviderCatalogRegistry`, `ProviderCatalogEntry`), Dokumentationsbelege, Authentifizierungsarten (x-api-key, Bearer, No-Auth Local), Protokollformate und Fähigkeiten ohne hartcodierte Schlüssel mit Unit-Tests (`ProviderCatalogTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 044 erledigt:** „Anbieter hinzufügen“ — Validierung eigener Anbieteranschlüsse (`ProviderConfigValidator`), HTTPS-Zwang für Remote-Server, Localhost-Freigabe, Modellvalidierung und Vorab-Prüfungsansicht mit maskiertem Schlüssel (`ProviderReviewSummary`) mit Unit-Tests (`ProviderConfigTest.kt`) verifiziert (`done_since_last_edit: true`).
+  - **Task 045 erledigt (Gate):** „Schlüssel sicher speichern“ — Hardware-gestützte Keystore-Architektur (`AndroidKeystoreSecurityPolicy`, AES-256-GCM), zwingender Ausschluss aus Cloud-/Auto-Backups, Verbot von Klartextspeicherung und sichere Schlüsseltresor-Schnittstelle (`KeyVaultStorage`, `InMemorySecureKeyVault`) mit Unit-Tests (`SecureKeyStorageTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Welle 9 (W9) vollständig abgeschlossen:** Tasks 038, 039 verifiziert.
-- **Task 044 abgeschlossen:** „Anbieter hinzufügen“ (W10) — `ProviderConfigManager.kt`, `ProviderConfigTest.kt` verifiziert.
-- **Nächste Aufgabe: Task 045:** „Schlüssel sicher speichern“ (W10, Abhängigkeiten: 005, 016, 017 erledigt).
-  - Ziel: Hardware-gestützte Schlüsselablage mit Android Keystore / EncryptedSharedPreferences, Isolation und vollständigem Löschpfad.
+- **Task 045 abgeschlossen (Gate):** „Schlüssel sicher speichern“ (W10) — `SecureKeyStore.kt`, `SecureKeyStorageTest.kt` verifiziert.
+- **Nächste Aufgabe: Task 060:** „Bedingungen und Prüfdatum“ (W10, Abhängigkeiten: 005, 016, 017 erledigt).
+  - Ziel: Strukturierte Erfassung von Nutzungsbedingungen, Datenschutzrichtlinien und Verifikationsdaten je Modellanbieter mit Warnanzeige bei veraltetem Prüfstand.
   - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/RetryAndAbortController.kt`, `tasks/038-retry-and-abort.md`, `progress/BUILD-STATE.md`.
-  - Geladene Skills: `android-permissions-security`, `testing-setup`.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (41 erledigt, 94 offen).
+  - Geladene Skills: `/swarm-planner`, `/code-review`.
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (42 erledigt, 93 offen).
 
 ## Nächster Schritt
-1. Task 045 („Schlüssel sicher speichern“) umsetzen und verifizieren.
-2. Nach Task 045 committen, stagen und an `origin main` pushen.
-3. Anschließende W10-Aufgabe 060 (Bedingungen und Prüfdatum) autonom abarbeiten.
+1. Task 060 („Bedingungen und Prüfdatum“) umsetzen und verifizieren (schließt Welle 10 ab!).
+2. Nach Task 060 committen, stagen und an `origin main` pushen.
+3. Anschließend mit Welle 11 (Anbieterhärtung) und Welle 12 (Konkrete Anbieter) fortfahren.
 
 ## Offen
 - PNG-/WebP-Logo über die Media Bridge des Nutzers rendern und prüfen.
