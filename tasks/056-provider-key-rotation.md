@@ -5,9 +5,9 @@ wave: "W11"
 depends_on: [044, 045]
 files: [tasks/056-provider-key-rotation.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "a9725e3291c3cc89"
 ---
 # Aufgabe 056 — Schlüssel wechseln
