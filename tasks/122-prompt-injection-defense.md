@@ -5,9 +5,9 @@ wave: "W24"
 depends_on: [017, 045]
 files: [tasks/122-prompt-injection-defense.md]
 skills: [`android-permissions-security`, `/code-review`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "5d43c34fb068fa86"
 ---
 # Aufgabe 122 — Manipulierte Anweisungen
