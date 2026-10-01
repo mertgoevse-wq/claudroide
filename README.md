@@ -15,8 +15,8 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Phase-Design%20%26%20Engineering-informational" alt="Phase" />
   <img src="https://img.shields.io/badge/Tasks-135%20Total-blue" alt="Tasks" />
-  <img src="https://img.shields.io/badge/App--Code-29%20%2F%20135%20done-yellow" alt="Status" />
-  <img src="https://img.shields.io/badge/Waves%200--6-completed-success" alt="W0-W6" />
+  <img src="https://img.shields.io/badge/App--Code-30%20%2F%20135%20done-yellow" alt="Status" />
+  <img src="https://img.shields.io/badge/Waves%200--7-completed-success" alt="W0-W7" />
   <img src="https://img.shields.io/badge/Target-Galaxy%20A56%205G-orange" alt="Device" />
   <img src="https://img.shields.io/badge/Repo-private-success" alt="Repo" />
 </p>
@@ -101,7 +101,7 @@ Verified counts synced directly from YAML frontmatter:
 |---|---|---|
 | W0–W2 · Foundations, Feasibility, Hardware Profile | 001–008 | 🟢 8 / 8 Completed (W0–W2 Closed) |
 | W3–W6 · Core Architecture, Build Pipelines, Design Tokens | 009–024 | 🟢 16 / 16 Completed (W3–W6 Closed) |
-| W7–W9b · Compose UI & Interactive Chat | 025–042 | 🟡 In Progress (Task 025) |
+| W7–W9b · Compose UI & Interactive Chat | 025–042 | 🟡 In Progress (6 / 18, W7 closed) |
 | W10–W14 · Model Providers, Routing & Privacy | 043–069 | ⬜ Pending |
 | W15–W19b · Agent Execution & Project Context (SAF) | 070–094 | ⬜ Pending |
 | W20–W23 · Git Integration & Sandbox Execution | 095–105 | ⬜ Pending |
