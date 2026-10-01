@@ -48,6 +48,7 @@
   - **Task 031 erledigt:** „Chatliste“ — Datenmodell (`ChatSummaryItem`), chronologische Sortierung, Projektfilterung, Leerzustandserkennung (`ChatListUiState`) und Schutz vor Geheimnis-Lecks in Vorschautexten (`ChatPreviewSanitizer`) mit Unit-Tests (`ChatListTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 032 erledigt:** „Chat-Suche und Filter“ — Lokale Volltextsuche nach Titel, Nachricht und Projektname (`ChatSearchEngine`), Snippet-Extraktion (`SearchResultMatch`), Datums- und Projektfilterung und garantierter Ausschluss gelöschter Chats mit Unit-Tests (`ChatSearchTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 033 erledigt:** „Chats erstellen und umbenennen“ — Lokaler Chat-Lebenszyklus (`ConversationManager`, `ManagedConversation`), automatische Titelerzeugung mit Geheimnisbereinigung, Umbenennung und reversible Archivierung mit Unit-Tests (`ConversationManagerTest.kt`) verifiziert (`done_since_last_edit: true`).
+  - **Task 034 erledigt:** „Chats löschen und exportieren“ — Export in Markdown und JSON (`ChatExportManager`), automatische Geheimnisbereinigung in Exportdateien, transparente Umfangsübersicht (`ExportScopeSummary`) und bestätigungspflichtiges permanentes Löschen mit Unit-Tests (`ChatExportTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Assets & Dokumentation:**
   - 16:9 Header-Banner (`assets/claudroide-banner.jpg`) mit Android-Bot und Terrakotta-KI-Funken via Claude Media Bridge generiert.
   - Zweisprachige GitHub-Dokumentation: Englisches Haupt-README (`README.md`) mit interaktivem Sprachwechsler zu deutschem `README.de.md`.
@@ -65,17 +66,17 @@
 - `adaptive`, `android-profiler`, `android-permissions-security`, `testing-setup` — `android/skills`.
 
 ## Aktuelle Arbeit
-- **Task 033 abgeschlossen:** „Chats erstellen und umbenennen“ (W8) — `ConversationManager.kt`, `ConversationManagerTest.kt` verifiziert.
-- **Nächste Aufgabe: Task 034:** „Chats löschen und exportieren“ (W8, Abhängigkeiten: 016, 025 erledigt).
-  - Ziel: Unwiderrufliches Löschen mit Zwei-Stufen-Bestätigung und datensparsamer Export (Markdown/JSON) mit expliziter Geheimnismaskierung.
-  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/ChatExportManager.kt`, `tasks/034-chat-delete-and-export.md`, `progress/BUILD-STATE.md`.
-  - Geladene Skills: `android-permissions-security`, `testing-setup`.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (33 erledigt, 102 offen).
+- **Task 034 abgeschlossen:** „Chats löschen und exportieren“ (W8) — `ChatExportManager.kt`, `ChatExportTest.kt` verifiziert.
+- **Nächste Aufgabe: Task 035:** „Nachrichtenfeld“ (W8, Abhängigkeiten: 016, 025 erledigt).
+  - Ziel: Nachrichtenanzeige mit klaren Rollen (Nutzer, Assistent, System), Zeitstempeln, Kopierfunktionen und Statusindikatoren implementieren.
+  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/MessageDisplayModels.kt`, `tasks/035-message-field.md`, `progress/BUILD-STATE.md`.
+  - Geladene Skills: `adaptive`, `testing-setup`.
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (34 erledigt, 101 offen).
 
 ## Nächster Schritt
-1. Task 034 („Chats löschen und exportieren“) umsetzen und verifizieren.
-2. Nach Task 034 committen, stagen und an `origin main` pushen.
-3. Anschließende W8-Aufgaben (035 Eingabefluss, 037 Codeanzeige, 042 Datenschutz) autonom abarbeiten.
+1. Task 035 („Nachrichtenfeld“) umsetzen und verifizieren.
+2. Nach Task 035 committen, stagen und an `origin main` pushen.
+3. Anschließende W8-Aufgaben (037 Codeanzeige, 042 Datenschutz) autonom abarbeiten.
 
 ## Offen
 - PNG-/WebP-Logo über die Media Bridge des Nutzers rendern und prüfen.
