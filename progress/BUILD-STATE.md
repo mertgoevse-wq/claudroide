@@ -48,10 +48,11 @@
 - **Welle 9 (W9) vollständig abgeschlossen:**
   - **Task 038 erledigt:** „Stoppen und Wiederholen“ — Abbruch- und Wiederholungssteuerung (`ExecutionControlEngine`), Unterdrückung unaufgeforderter Auto-Retries, Propagierung des Abbruchsignals an Werkzeuge und ehrliche Protokollierung irreversibler Nebenwirkungen mit Unit-Tests (`ExecutionControllerTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 039 erledigt:** „Sitzungen fortsetzen“ — Saubere Sitzungswiederherstellung (`SessionResumptionManager`, `ResumedSessionState`), Bindung von Projekt, Modell und Provider, manuelle Überprüfungspflicht für unterbrochene Werkzeuge und Sendesperre vor Kontextprüfung mit Unit-Tests (`SessionResumptionTest.kt`) verifiziert (`done_since_last_edit: true`).
-- **Welle 10 (W10) in Arbeit:**
+- **Welle 10 (W10) vollständig abgeschlossen:**
   - **Task 043 erledigt:** „Anbieter-Katalog“ — Typisierter Katalog für erlaubte Anbieter (`ProviderCatalogRegistry`, `ProviderCatalogEntry`), Dokumentationsbelege, Authentifizierungsarten (x-api-key, Bearer, No-Auth Local), Protokollformate und Fähigkeiten ohne hartcodierte Schlüssel mit Unit-Tests (`ProviderCatalogTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 044 erledigt:** „Anbieter hinzufügen“ — Validierung eigener Anbieteranschlüsse (`ProviderConfigValidator`), HTTPS-Zwang für Remote-Server, Localhost-Freigabe, Modellvalidierung und Vorab-Prüfungsansicht mit maskiertem Schlüssel (`ProviderReviewSummary`) mit Unit-Tests (`ProviderConfigTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 045 erledigt (Gate):** „Schlüssel sicher speichern“ — Hardware-gestützte Keystore-Architektur (`AndroidKeystoreSecurityPolicy`, AES-256-GCM), zwingender Ausschluss aus Cloud-/Auto-Backups, Verbot von Klartextspeicherung und sichere Schlüsseltresor-Schnittstelle (`KeyVaultStorage`, `InMemorySecureKeyVault`) mit Unit-Tests (`SecureKeyStorageTest.kt`) verifiziert (`done_since_last_edit: true`).
+  - **Task 060 erledigt:** „Bedingungen und Prüfdatum“ — Re-Audit-Mechanismus (`ProviderTermsEngine`), 90-Tage-Ablauffrist (`VerificationStatus`), Kennzeichnung offizieller ToS und strikte Deprecation von Scraping-/Abo-Umgehungsmustern mit Unit-Tests (`ProviderTermsTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 031 erledigt:** „Chatliste“ — Datenmodell (`ChatSummaryItem`), chronologische Sortierung, Projektfilterung, Leerzustandserkennung (`ChatListUiState`) und Schutz vor Geheimnis-Lecks in Vorschautexten (`ChatPreviewSanitizer`) mit Unit-Tests (`ChatListTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 032 erledigt:** „Chat-Suche und Filter“ — Lokale Volltextsuche nach Titel, Nachricht und Projektname (`ChatSearchEngine`), Snippet-Extraktion (`SearchResultMatch`), Datums- und Projektfilterung und garantierter Ausschluss gelöschter Chats mit Unit-Tests (`ChatSearchTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 033 erledigt:** „Chats erstellen und umbenennen“ — Lokaler Chat-Lebenszyklus (`ConversationManager`, `ManagedConversation`), automatische Titelerzeugung mit Geheimnisbereinigung, Umbenennung und reversible Archivierung mit Unit-Tests (`ConversationManagerTest.kt`) verifiziert (`done_since_last_edit: true`).
@@ -80,21 +81,22 @@
 - **Welle 9 (W9) vollständig abgeschlossen:**
   - **Task 038 erledigt:** „Stoppen und Wiederholen“ — Abbruch- und Wiederholungssteuerung (`ExecutionControlEngine`), Unterdrückung unaufgeforderter Auto-Retries, Propagierung des Abbruchsignals an Werkzeuge und ehrliche Protokollierung irreversibler Nebenwirkungen mit Unit-Tests (`ExecutionControllerTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 039 erledigt:** „Sitzungen fortsetzen“ — Saubere Sitzungswiederherstellung (`SessionResumptionManager`, `ResumedSessionState`), Bindung von Projekt, Modell und Provider, manuelle Überprüfungspflicht für unterbrochene Werkzeuge und Sendesperre vor Kontextprüfung mit Unit-Tests (`SessionResumptionTest.kt`) verifiziert (`done_since_last_edit: true`).
-- **Welle 10 (W10) in Arbeit:**
+- **Welle 10 (W10) vollständig abgeschlossen:**
   - **Task 043 erledigt:** „Anbieter-Katalog“ — Typisierter Katalog für erlaubte Anbieter (`ProviderCatalogRegistry`, `ProviderCatalogEntry`), Dokumentationsbelege, Authentifizierungsarten (x-api-key, Bearer, No-Auth Local), Protokollformate und Fähigkeiten ohne hartcodierte Schlüssel mit Unit-Tests (`ProviderCatalogTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 044 erledigt:** „Anbieter hinzufügen“ — Validierung eigener Anbieteranschlüsse (`ProviderConfigValidator`), HTTPS-Zwang für Remote-Server, Localhost-Freigabe, Modellvalidierung und Vorab-Prüfungsansicht mit maskiertem Schlüssel (`ProviderReviewSummary`) mit Unit-Tests (`ProviderConfigTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 045 erledigt (Gate):** „Schlüssel sicher speichern“ — Hardware-gestützte Keystore-Architektur (`AndroidKeystoreSecurityPolicy`, AES-256-GCM), zwingender Ausschluss aus Cloud-/Auto-Backups, Verbot von Klartextspeicherung und sichere Schlüsseltresor-Schnittstelle (`KeyVaultStorage`, `InMemorySecureKeyVault`) mit Unit-Tests (`SecureKeyStorageTest.kt`) verifiziert (`done_since_last_edit: true`).
+  - **Task 060 erledigt:** „Bedingungen und Prüfdatum“ — Re-Audit-Mechanismus (`ProviderTermsEngine`), 90-Tage-Ablauffrist (`VerificationStatus`), Kennzeichnung offizieller ToS und strikte Deprecation von Scraping-/Abo-Umgehungsmustern mit Unit-Tests (`ProviderTermsTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Welle 9 (W9) vollständig abgeschlossen:** Tasks 038, 039 verifiziert.
-- **Task 045 abgeschlossen (Gate):** „Schlüssel sicher speichern“ (W10) — `SecureKeyStore.kt`, `SecureKeyStorageTest.kt` verifiziert.
-- **Nächste Aufgabe: Task 060:** „Bedingungen und Prüfdatum“ (W10, Abhängigkeiten: 005, 016, 017 erledigt).
-  - Ziel: Strukturierte Erfassung von Nutzungsbedingungen, Datenschutzrichtlinien und Verifikationsdaten je Modellanbieter mit Warnanzeige bei veraltetem Prüfstand.
+- **Welle 10 (W10) vollständig abgeschlossen:** Tasks 043, 044, 045, 060 verifiziert.
+- **Nächste Aufgabe: Task 046:** „Geheimnisse verbergen“ (W11, Abhängigkeiten: 044, 045 erledigt).
+  - Ziel: Umfassender Filter gegen unbeabsichtigte Preisgabe von Schlüsseln und vertraulichen Tokens in Logausgaben, Fehlerberichten und UI-Exports.
   - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/RetryAndAbortController.kt`, `tasks/038-retry-and-abort.md`, `progress/BUILD-STATE.md`.
-  - Geladene Skills: `/swarm-planner`, `/code-review`.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (42 erledigt, 93 offen).
+  - Geladene Skills: `android-permissions-security`, `testing-setup`.
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (43 erledigt, 92 offen).
 
 ## Nächster Schritt
-1. Task 060 („Bedingungen und Prüfdatum“) umsetzen und verifizieren (schließt Welle 10 ab!).
-2. Nach Task 060 committen, stagen und an `origin main` pushen.
+1. Start von Welle 11 mit Task 046 („Geheimnisse verbergen“) umsetzen und verifizieren.
+2. Nach Task 046 committen, stagen und an `origin main` pushen.
 3. Anschließend mit Welle 11 (Anbieterhärtung) und Welle 12 (Konkrete Anbieter) fortfahren.
 
 ## Offen
