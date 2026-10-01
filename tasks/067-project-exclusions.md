@@ -5,9 +5,9 @@ wave: "W13"
 depends_on: [043, 045, 055]
 files: [tasks/067-project-exclusions.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "8de80cab42854c8b"
 ---
 # Aufgabe 067 — Projekt-Ausschlüsse

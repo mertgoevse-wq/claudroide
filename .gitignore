@@ -29,3 +29,6 @@ Thumbs.db
 build/
 *.apk
 *.aab
+
+# Machine-specific Android SDK path — never commit
+local.properties

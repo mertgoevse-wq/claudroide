@@ -5,9 +5,9 @@ wave: "W13c"
 depends_on: [002, 043, 055]
 files: [tasks/064-cost-estimate.md]
 skills: [`/claude-api`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "2c84cb70f94d978f"
 ---
 # Aufgabe 064 — Kostenschätzung

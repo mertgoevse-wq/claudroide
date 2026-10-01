@@ -5,9 +5,9 @@ wave: "W13"
 depends_on: [043, 055]
 files: [tasks/062-model-selection.md]
 skills: [`adaptive`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "a722900221cc2d49"
 ---
 # Aufgabe 062 — Modell auswählen

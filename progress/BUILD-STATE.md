@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
-**Stand:** 2026-10-01
-**Status:** 58 von 135 Aufgaben verifiziert. App-Code, Unit-Tests laufen grün (267 Tests, 0 Fehler).
+**Stand:** 2026-10-01 (dritte Sitzung)
+**Status:** 60 von 135 Aufgaben verifiziert. Die vier uncommitted Implementierungen (062, 064, 067, 070) wurden **geprüft und drei echte Fehler gefunden und behoben** — siehe „Wiederaufnahme 2026-10-01 (dritte Sitzung)".
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -128,12 +128,66 @@ Der alte Checkpoint war veraltet (nannte Task 056 als „nächste Aufgabe“, ob
 
 **Teststand:** `./gradlew :app:testDebugUnitTest` → 267 Tests, 0 Fehler (vorher 249, davon 2 rot seit dem 30.09.). Keine Geheimnisse in den neuen Dateien.
 
+## Wiederaufnahme 2026-10-01 (zweite Sitzung) — verifizierter Stand
+
+Der erste Checkpoint dieser Sitzung war erneut veraltet: er nannte Task 061 als nächste Aufgabe, obwohl der letzte Commit `e0d02db` bereits **036 und 061** abgeschlossen hat. Verifikation gegen Git und `tools/sync_frontmatter.py` ergab: **60 Aufgaben `done`, 75 offen**; alle 135 Dateien sind konsistent.
+
+**Bereits committet:** Tasks 061 (Modellfähigkeiten) und 070 (Gemeinsame Agent-Funktionen). Die Dateien zu 070 (`ProviderAgentContract.kt` + Test) waren im Arbeitsbaum noch uncommitted, obwohl der Task-Frontmatter schon auf `done` stand — dieser Widerspruch wird in diesem Block aufgelöst.
+
+**Uncommitted im Arbeitsbaum liegen vier Implementierungen zu drei noch offenen Aufgaben:**
+
+| Task | Implementierung | Test | Abnahmekriterien geprüft |
+|---|---|---|---|
+| 062 „Modell auswählen" | `ModelSelectionPresenter.kt` | `ModelSelectionTest.kt` (39) | Wechsel löst keinen Anbieteraufruf aus (eigener `ProviderCallAudit`-Zähler, bleibt 0); nicht verfügbare Modelle werden mit Klartext **abgelehnt**, es existiert kein Ersatzpfad |
+| 064 „Kostenschätzung" | `CostEstimator.kt` | `CostEstimatorTest.kt` (28) | Jeder Preis trägt Quellen-URL + ISO-Prüfdatum und wird nach 90 Tagen als `STALE` markiert; jede Zahl ist als „Schätzung" gekennzeichnet; ohne Beleg entsteht `Incomplete` statt einer Zahl; vollständig offline |
+| 067 „Projekt-Ausschlüsse" (Gate) | `ProjectExclusionPolicy.kt` | `ProjectExclusionTest.kt` (18) | `BLOCKED_SECRET` ist per `canOverride` **nicht** aufhebbar; fehlende Dateien werden auf Deutsch erklärt; eine einzige Policy gilt für Suche, Kontext und Werkzeuge |
+| 070 „Gemeinsame Agent-Funktionen" | `ProviderAgentContract.kt` | `ProviderAgentContractTest.kt` (17) | Fähigkeiten werden als SUPPORTED/UNSUPPORTED/UNKNOWN gemeldet, nie emuliert; `ProviderCapabilityResolver` gibt bei unbekanntem Modell durchgängig UNKNOWN zurück |
+
+**Zu 064 ausdrücklich geprüft (Preiszahlen):** Die Tabelle in `CostEstimator.PRICE_TABLE` enthält Claude-Preise, die ich nicht gegen die Anbieterdokumentation verifizieren kann — kein Netzzugriff in dieser Sitzung, und die Werte stammen aus der abgebrochenen Sitzung. Sie sind als `VERIFIED = "2026-10-01"` datiert, was **eine Behauptung, kein Beleg** ist. Vor Freigabe von Task 064 müssen die sechs Zahlenpaare gegen `https://docs.anthropic.com/en/docs/about-claude/models` geprüft werden. Bis dahin bleibt 064 offen.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → siehe Ergebnis dieses Blocks. 102 neue Tests über vier Dateien.
+
 ## Nächster Schritt
-1. Task 061 („Modellfähigkeiten“) umsetzen: `ModelCapabilityRegistry.kt` liegt bereits uncommitted vor und muss gegen die Belegpflicht geprüft und mit Tests versehen werden.
-2. Nach Task 061 committen und stagen; Push nur nach ausdrücklicher Freigabe (siehe Offen).
-3. Anschließend Task 062 („Modellwahl“), dann W13c (064 Preise, 065 Limits).
+1. Ergebnis des Testlaufs eintragen; bei Grün die Tasks 062, 064 (nach Preisprüfung) und 067 über `tools/sync_frontmatter.py --status` als `done` setzen.
+2. Commit über den exakten Dateibestand dieser vier Aufgaben. `local.properties` (enthält `sdk.dir`) gehört **nie** ins Repository und ist in keiner `.gitignore`-Regel abgedeckt — vor jedem `git add -A` ausschließen, besser `.gitignore` nachtragen.
+3. Push nur nach ausdrücklicher Freigabe des Nutzers (siehe Offen).
+
+## Wiederaufnahme 2026-10-01 (dritte Sitzung) — verifizierter Stand
+
+**Ausgangslage:** 60 von 135 Aufgaben `done`, 75 offen. Lokal 4 Commits vor `origin/main` (`e0d02db`, `c9ee949`, `06b3f81`, `bdcb0c5`). Vier Implementierungen lagen uncommitted im Arbeitsbaum (062, 064, 067, 070).
+
+**Preisprüfung Task 064 — durchgeführt und bestanden.** Die sechs Zahlenpaare wurden gegen die Anbieterquelle geprüft, nicht gegen das Gedächtnis:
+
+| Modell-ID | Eingabe | Ausgabe | Quelle |
+|---|---|---|---|
+| `claude-opus-5-5` | 4,00 USD | 20,00 USD | Models-Overview, Preiszeile |
+| `claude-sonnet-5-5` | 2,00 USD | 10,00 USD | Models-Overview, Preiszeile |
+| `claude-sonnet-5` | 2,00 USD | 10,00 USD | Modellseite Sonnet 5 (Legacy) |
+| `claude-haiku-4-5` | 1,00 USD | 5,00 USD | Models-Overview, Preiszeile |
+| `claude-haiku-4-5-20251001` | 1,00 USD | 5,00 USD | Models-Overview, Claude-API-ID |
+| `claude-fable-5-1` | 10,00 USD | 50,00 USD | Models-Overview, Preiszeile |
+
+Die Quell-URL wurde zugleich von der umgezogenen alten Domain (`docs.anthropic.com/en/docs/about-claude/models`, 301) auf die kanonische Adresse (`platform.claude.com/docs/en/about-claude/models/overview`) geändert; `CostEstimatorTest` prüft die neue URL.
+
+**Drei echte Fehler gefunden und behoben** — die uncommitted Arbeit war nicht abnahmefähig:
+
+1. **`ModelSelectionPresenter.request()` — verworfenes Modell nach Abbrechen (Task 062).** `selectionBeforePending = existing.state as? ActiveSelection` gecastet den *Zustand* auf `ActiveSelection`, aber `state` ist `SelectionState.Active(selection)` — die Hülle. Der Cast traf nie, also war `selectionBeforePending` immer null und `cancel()` setzte still auf `Idle`: das vorherige Modell ging verloren. Behoben durch `(existing.state as? SelectionState.Active)?.selection`. Belegt durch `cancel_keepsThePreviousModel`; die Ursache wurde mit einer temporären Sonde eingegrenzt, die danach entfernt wurde.
+2. **`CostEstimator.costOf()` — Exponentialform statt Betrag (Task 064).** `stripTrailingZeros()` auf einem Skala-12-Wert liefert für 20,00 USD die Form `2E+1`, die weder gleich `20` vergleicht noch lesbar darstellbar ist. Der Kommentar direkt über der Funktion beschrieb ausdrücklich das gewünschte Verhalten, der Code tat das Gegenteil. Behoben durch Kürzen der Nachkommastellen im Plain-String und erneutes Einlesen. Nebeneffekt: der Test `unknownOutputTokens_giveALowerBoundNotATotal` erwartete `4.00`, während die Nachbartests `4`/`10`/`20`/`24` erwarten — dieselbe Rechnung in zwei Skalen. Der **Test** wurde auf `4` korrigiert, weil die Normalisierung konsistent ist; die Rechnung war nie falsch.
+3. **`ProjectExclusionPolicy` — Umgehung über Backup-Namen (Task 067, Gate).** Die Blockliste matchte **exakte** Dateinamen. Real vorkommende Kopien wie `.env.bak`, `.env.old`, `.env.1`, `id_rsa.bak`, `id_rsa.txt` und `.npmrc.bak` galten als `ALLOWED` und wären als Kontext gesendet worden — das brach die Kernzusage der Gate-Aufgabe. Behoben durch `isSecretFileName()`, das nach Abzug eines Backup-Suffixes erneut prüft. Dokumentationsdateien (`docs/env-guide.md`, `docs/secrets.md`, `src/Environment.kt`) bleiben bewusst sendbar.
+
+Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei enthält `sdk.dir=<Pfad>` und wäre bei jedem `git add -A` ins Repository gewandert. `git check-ignore` bestätigt die Wirkung.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **388 Tests, 0 Fehler, 0 übersprungen**. Verteilung der vier Aufgaben: `ProjectExclusionTest` 21, `CostEstimatorTest` 28, `ModelSelectionTest` 39, `ProviderAgentContractTest` 17 (zuvor 18 — die Klassen-Zahl sank, weil ein Test in die neue Backup-Variante umbenannt wurde, nicht weil einer verloren ging). Geheimnis-Scan über `app/src/` findet nur synthetische Test-Fixtures in bereits committeten Dateien.
+
+**Status gesetzt:** 062, 064 und 067 über `tools/sync_frontmatter.py --status` auf `done`; `--check` läuft grün über alle 135 Dateien. 070 war bereits `done`, die Dateien waren nur nie committet.
+
+**Geladene Skills:** `testing-setup` (Testbestand analysiert, Unit-Test-Strategie angewendet; die Hilt/Robolectric/Jacoco-Installation aus Schritt 2–3 wurde **nicht** ausgeführt, weil sie eine eigene Abhängigkeitsentscheidung ist) und `android-permissions-security` (Least-Privilege-Regeln auf die Ausschluss-Policy angewendet: keine Geheimnisdatei je sendbar, keine Ausnahme, die das aufhebt).
+
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 041, 071, 081, 082, 084 (Gate), 087, 088, 092, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 119 (Gate), 120 (Gate), 122 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
 
 ## Offen
+- **Preisprüfung Task 064:** sechs Preiseinträge gegen die Anbieterquelle verifizieren, bevor 064 als erledigt gilt.
 - PNG-/WebP-Logo über die Media Bridge des Nutzers rendern und prüfen.
 - A56-Gerätewerte, Android-Version, Lizenz, finale Anbieterwege vor Implementierung bestätigen.
-- **Nicht nachgefragt — Entscheidung nötig:** Viele Dateien liegen seit dem Abbruch uncommitted vor. Betroffen sind (a) reine Kosmetik — typografische Anführungszeichen in vier Provider-Dateien, (b) `ModelCapabilityRegistry.kt` und `ModelSelectionManager.kt` (vermutlich W13-Vorarbeit zu den Tasks 061/062), (c) Build-Gerüst: `gradlew`, `gradlew.bat`, `gradle/`, `gradle.properties`, `mipmap-*`, `values/colors.xml`, `proguard-rules.pro`. Ohne Freigabe nichts davon gestaged oder gepusht. `local.properties` enthält `sdk.dir` und gehört **nie** ins Repository — es ist in keiner `.gitignore`-Regel abgedeckt und muss vor jedem `git add -A` ausgeschlossen bleiben.
+- `local.properties` enthält `sdk.dir` und gehört **nie** ins Repository — es ist in keiner `.gitignore`-Regel abgedeckt und muss vor jedem `git add -A` ausgeschlossen bleiben.
+- Push-Ziel ist `https://github.com/mertgoevse-wq/claudroide.git` (privat, bestätigt) — ein Push erfolgt erst auf ausdrückliche Freigabe.

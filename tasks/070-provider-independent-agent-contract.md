@@ -5,9 +5,9 @@ wave: "W15"
 depends_on: [048, 049, 052, 053, 054]
 files: [tasks/070-provider-independent-agent-contract.md]
 skills: [`/claude-api`, `/code-review`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "23c1bcafbbaa451a"
 ---
 # Aufgabe 070 — Gemeinsame Agent-Funktionen
