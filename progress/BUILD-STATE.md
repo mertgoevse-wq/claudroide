@@ -37,6 +37,11 @@
   - **Task 022 erledigt:** „Kopf- und Bannerbilder“ — 16:9-Banner (`assets/claudroide-banner.jpg`), Safe-Content-Zonen, Kompression und Alternativtexte implementiert (`done_since_last_edit: true`).
   - **Task 023 erledigt:** „Farben und Kontrast“ — Semantische Farb-Tokens (`ColorTokens.kt`), WCAG 2.2 AAA/AA Kontrastprüfung und Nicht-Allein-Farbe-Statusgarantie implementiert (`done_since_last_edit: true`).
   - **Task 024 erledigt:** „Schrift und Abstände“ — Typografie (`TypeTokens.kt`), Material 3 Mindest-Touch-Targets (48 dp), Spacings und Code-Horizontalskroll-Regeln implementiert (`done_since_last_edit: true`).
+- **Welle 7 (W7) in Arbeit:**
+  - **Task 025 erledigt:** „Navigation“ — Type-Safe `Screen` Navigation (`NavRoutes.kt`), TopLevel-Hierarchie, Backstack-Management, Projekt-Badge-Bindung (`projectBadgeText`), destruktive Sicherheitsisolation (`NavigationSafetyPolicy`) und Unit-Tests (`NavigationStructureTest.kt`) implementiert (`done_since_last_edit: true`).
+- **Assets & Dokumentation:**
+  - 16:9 Header-Banner (`assets/claudroide-banner.jpg`) mit Android-Bot und Terrakotta-KI-Funken via Claude Media Bridge generiert.
+  - Zweisprachige GitHub-Dokumentation: Englisches Haupt-README (`README.md`) mit interaktivem Sprachwechsler zu deutschem `README.de.md`.
 - **Neu:** Jede Aufgabendatei trägt YAML-Frontmatter (`id`, `title`, `wave`, `depends_on`, `files`, `skills`, `status`, `gate`, `done_since_last_edit`, `content-hash`). Quelle der Wahrheit ist `tools/sync_frontmatter.py`; `--check` prüft, `--status ID=...` setzt Status. Ein `done` gilt nur bei unverändertem Inhalt als verifiziert.
 - **Neu:** `tasks/DEPENDENCIES.md` Lücken geschlossen: 091 in W19, 125 in W24, 131 in W27; neue Sperrkanten 088+089→091, 124→131, 070→125, W24→W25 als Extra-Abhängigkeit von 106.
 - **Neu:** `CLAUDE.md` mit autonomer Bau-Schleife (5 Schritte, klare Stopp-Punkte), Medienregeln (Media Bridge des Nutzers, PNG/WebP, kein SVG, kein Platzhalter) und Repo-Pflege-Regeln.
@@ -51,15 +56,17 @@
 - `adaptive`, `android-profiler`, `android-permissions-security`, `testing-setup` — `android/skills`.
 
 ## Aktuelle Arbeit
-- **Welle 6 (W6) abgeschlossen:** Alle 5 Aufgaben (020–024) sind verifiziert und auf `status: done`. `TypeTokens.kt` und `TypeAndSpacingTest.kt` implementiert.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (24 erledigt, 111 offen).
-- Bereit für Commit und Push von Task 024. Nächste freigeschaltete Wellen: W7 (025–030), W10 (043–045, 060), W18 (081, 082, 084, 087, 088, 092).
+- **Task 025 abgeschlossen:** „Navigation“ (W7) — `NavRoutes.kt`, `NavigationStructureTest.kt` verifiziert.
+- **Nächste Aufgabe: Task 026:** „Smartphone-Ansichten“ (W7, Abhängigkeiten: 010, 023, 024 erledigt).
+  - Ziel: Hochformat auf dem Samsung Galaxy A56 5G (FHD+, 1080x2340, 19.5:9, One UI 7) optimieren; Navigation Bar, Einhandbedienung, Kamera-Aussparung und Statusleiste sauber integrieren.
+  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/core/design/WindowSizeClass.kt`, `tasks/026-mobile-viewports.md`, `progress/BUILD-STATE.md`.
+  - Geladene Skills: `adaptive`, `testing-setup`.
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (25 erledigt, 110 offen).
 
 ## Nächster Schritt
-1. Claude Code im Projektordner starten und entweder `Baue weiter bis zum finalen Produkt` sagen oder `/claudroide-resume` nutzen.
-2. Start der Bau-Schleife mit W0: Tasks 001, 002, 003, 006 (alle ohne Vorgänger).
-3. Logo über die Media Bridge des Nutzers rendern (Auftrag in `assets/logo-brief.md`), danach Aufgabe 020–022 damit füttern.
-4. Vor app-nahen Tasks: offene Geräte-, Lizenz-, Anbieter- und Architekturfragen aus der Spezifikation klären.
+1. Task 026 („Smartphone-Ansichten“) umsetzen und verifizieren.
+2. Nach Task 026 committen, stagen und an `origin main` pushen.
+3. Anschließende W7-Aufgaben (027 Eingabe und Tastatur, 028 Themes, 029 Barrierefreiheit, 030 Ladezustände) autonom abarbeiten.
 
 ## Offen
 - PNG-/WebP-Logo über die Media Bridge des Nutzers rendern und prüfen.
