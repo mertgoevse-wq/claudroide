@@ -49,6 +49,8 @@
   - **Task 038 erledigt:** „Stoppen und Wiederholen“ — Abbruch- und Wiederholungssteuerung (`ExecutionControlEngine`), Unterdrückung unaufgeforderter Auto-Retries, Propagierung des Abbruchsignals an Werkzeuge und ehrliche Protokollierung irreversibler Nebenwirkungen mit Unit-Tests (`ExecutionControllerTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 039 erledigt:** „Sitzungen fortsetzen“ — Saubere Sitzungswiederherstellung (`SessionResumptionManager`, `ResumedSessionState`), Bindung von Projekt, Modell und Provider, manuelle Überprüfungspflicht für unterbrochene Werkzeuge und Sendesperre vor Kontextprüfung mit Unit-Tests (`SessionResumptionTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Welle 10 (W10) vollständig abgeschlossen:**
+- **Welle 11 (W11) in Arbeit:**
+  - **Task 046 erledigt (Gate):** „Geheimnisse verbergen“ — Zentrale Secret-Redaction (`SecretMasker`, `RedactionAuditReport`), Filterung von Anthropic Keys, OpenAI Keys, Bearer Tokens, Passwörtern und PEM-Blöcken, Defense-in-Depth Invariante mit Unit-Tests (`SecretMaskerTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 043 erledigt:** „Anbieter-Katalog“ — Typisierter Katalog für erlaubte Anbieter (`ProviderCatalogRegistry`, `ProviderCatalogEntry`), Dokumentationsbelege, Authentifizierungsarten (x-api-key, Bearer, No-Auth Local), Protokollformate und Fähigkeiten ohne hartcodierte Schlüssel mit Unit-Tests (`ProviderCatalogTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 044 erledigt:** „Anbieter hinzufügen“ — Validierung eigener Anbieteranschlüsse (`ProviderConfigValidator`), HTTPS-Zwang für Remote-Server, Localhost-Freigabe, Modellvalidierung und Vorab-Prüfungsansicht mit maskiertem Schlüssel (`ProviderReviewSummary`) mit Unit-Tests (`ProviderConfigTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 045 erledigt (Gate):** „Schlüssel sicher speichern“ — Hardware-gestützte Keystore-Architektur (`AndroidKeystoreSecurityPolicy`, AES-256-GCM), zwingender Ausschluss aus Cloud-/Auto-Backups, Verbot von Klartextspeicherung und sichere Schlüsseltresor-Schnittstelle (`KeyVaultStorage`, `InMemorySecureKeyVault`) mit Unit-Tests (`SecureKeyStorageTest.kt`) verifiziert (`done_since_last_edit: true`).
@@ -82,21 +84,25 @@
   - **Task 038 erledigt:** „Stoppen und Wiederholen“ — Abbruch- und Wiederholungssteuerung (`ExecutionControlEngine`), Unterdrückung unaufgeforderter Auto-Retries, Propagierung des Abbruchsignals an Werkzeuge und ehrliche Protokollierung irreversibler Nebenwirkungen mit Unit-Tests (`ExecutionControllerTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 039 erledigt:** „Sitzungen fortsetzen“ — Saubere Sitzungswiederherstellung (`SessionResumptionManager`, `ResumedSessionState`), Bindung von Projekt, Modell und Provider, manuelle Überprüfungspflicht für unterbrochene Werkzeuge und Sendesperre vor Kontextprüfung mit Unit-Tests (`SessionResumptionTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Welle 10 (W10) vollständig abgeschlossen:**
+- **Welle 11 (W11) in Arbeit:**
+  - **Task 046 erledigt (Gate):** „Geheimnisse verbergen“ — Zentrale Secret-Redaction (`SecretMasker`, `RedactionAuditReport`), Filterung von Anthropic Keys, OpenAI Keys, Bearer Tokens, Passwörtern und PEM-Blöcken, Defense-in-Depth Invariante mit Unit-Tests (`SecretMaskerTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 043 erledigt:** „Anbieter-Katalog“ — Typisierter Katalog für erlaubte Anbieter (`ProviderCatalogRegistry`, `ProviderCatalogEntry`), Dokumentationsbelege, Authentifizierungsarten (x-api-key, Bearer, No-Auth Local), Protokollformate und Fähigkeiten ohne hartcodierte Schlüssel mit Unit-Tests (`ProviderCatalogTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 044 erledigt:** „Anbieter hinzufügen“ — Validierung eigener Anbieteranschlüsse (`ProviderConfigValidator`), HTTPS-Zwang für Remote-Server, Localhost-Freigabe, Modellvalidierung und Vorab-Prüfungsansicht mit maskiertem Schlüssel (`ProviderReviewSummary`) mit Unit-Tests (`ProviderConfigTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 045 erledigt (Gate):** „Schlüssel sicher speichern“ — Hardware-gestützte Keystore-Architektur (`AndroidKeystoreSecurityPolicy`, AES-256-GCM), zwingender Ausschluss aus Cloud-/Auto-Backups, Verbot von Klartextspeicherung und sichere Schlüsseltresor-Schnittstelle (`KeyVaultStorage`, `InMemorySecureKeyVault`) mit Unit-Tests (`SecureKeyStorageTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 060 erledigt:** „Bedingungen und Prüfdatum“ — Re-Audit-Mechanismus (`ProviderTermsEngine`), 90-Tage-Ablauffrist (`VerificationStatus`), Kennzeichnung offizieller ToS und strikte Deprecation von Scraping-/Abo-Umgehungsmustern mit Unit-Tests (`ProviderTermsTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Welle 9 (W9) vollständig abgeschlossen:** Tasks 038, 039 verifiziert.
 - **Welle 10 (W10) vollständig abgeschlossen:** Tasks 043, 044, 045, 060 verifiziert.
-- **Nächste Aufgabe: Task 046:** „Geheimnisse verbergen“ (W11, Abhängigkeiten: 044, 045 erledigt).
-  - Ziel: Umfassender Filter gegen unbeabsichtigte Preisgabe von Schlüsseln und vertraulichen Tokens in Logausgaben, Fehlerberichten und UI-Exports.
+- **Welle 11 (W11) in Arbeit:**
+  - **Task 046 erledigt (Gate):** „Geheimnisse verbergen“ — Zentrale Secret-Redaction (`SecretMasker`, `RedactionAuditReport`), Filterung von Anthropic Keys, OpenAI Keys, Bearer Tokens, Passwörtern und PEM-Blöcken, Defense-in-Depth Invariante mit Unit-Tests (`SecretMaskerTest.kt`) verifiziert (`done_since_last_edit: true`).
+- **Nächste Aufgabe: Task 047:** „Verbindung testen“ (W11, Abhängigkeiten: 044, 045 erledigt).
+  - Ziel: Sparsame Testanfrage zur Verifikation von Serveradresse, Authentifizierung und Modellverfügbarkeit mit Fehleraufschlüsselung.
   - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/RetryAndAbortController.kt`, `tasks/038-retry-and-abort.md`, `progress/BUILD-STATE.md`.
-  - Geladene Skills: `android-permissions-security`, `testing-setup`.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (43 erledigt, 92 offen).
+  - Geladene Skills: `/claude-api`, `testing-setup`.
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (44 erledigt, 91 offen).
 
 ## Nächster Schritt
-1. Start von Welle 11 mit Task 046 („Geheimnisse verbergen“) umsetzen und verifizieren.
-2. Nach Task 046 committen, stagen und an `origin main` pushen.
+1. Task 047 („Verbindung testen“) umsetzen und verifizieren.
+2. Nach Task 047 committen, stagen und an `origin main` pushen.
 3. Anschließend mit Welle 11 (Anbieterhärtung) und Welle 12 (Konkrete Anbieter) fortfahren.
 
 ## Offen
