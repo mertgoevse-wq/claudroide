@@ -15,7 +15,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Phase-Entwurfsplanung-informational" alt="Phase" />
   <img src="https://img.shields.io/badge/Bauaufgaben-135-blue" alt="Aufgaben" />
-  <img src="https://img.shields.io/badge/App--Code-25%20%2F%20135%20erledigt-yellow" alt="Status" />
+  <img src="https://img.shields.io/badge/App--Code-26%20%2F%20135%20erledigt-yellow" alt="Status" />
   <img src="https://img.shields.io/badge/Welle%200--6-abgeschlossen-success" alt="W0-W6" />
   <img src="https://img.shields.io/badge/Zielger%C3%A4t-Galaxy%20A56%205G-orange" alt="Gerät" />
   <img src="https://img.shields.io/badge/Repo-privat-success" alt="Repo" />

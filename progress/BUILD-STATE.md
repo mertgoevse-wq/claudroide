@@ -39,6 +39,7 @@
   - **Task 024 erledigt:** „Schrift und Abstände“ — Typografie (`TypeTokens.kt`), Material 3 Mindest-Touch-Targets (48 dp), Spacings und Code-Horizontalskroll-Regeln implementiert (`done_since_last_edit: true`).
 - **Welle 7 (W7) in Arbeit:**
   - **Task 025 erledigt:** „Navigation“ — Type-Safe `Screen` Navigation (`NavRoutes.kt`), TopLevel-Hierarchie, Backstack-Management, Projekt-Badge-Bindung (`projectBadgeText`), destruktive Sicherheitsisolation (`NavigationSafetyPolicy`) und Unit-Tests (`NavigationStructureTest.kt`) implementiert (`done_since_last_edit: true`).
+  - **Task 026 erledigt:** „Smartphone-Ansichten“ — Viewport-Tokens für Galaxy A56 (`MobileViewportTokens.kt`), Einspalten-Umschaltung (< 600 dp), IME-Höhenberechnung, Einhand-Ergonomie und Knopftrennungsregeln (48 dp, 16 dp Sicherheitsabstand) mit Unit-Tests (`MobileLayoutTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Assets & Dokumentation:**
   - 16:9 Header-Banner (`assets/claudroide-banner.jpg`) mit Android-Bot und Terrakotta-KI-Funken via Claude Media Bridge generiert.
   - Zweisprachige GitHub-Dokumentation: Englisches Haupt-README (`README.md`) mit interaktivem Sprachwechsler zu deutschem `README.de.md`.
@@ -56,17 +57,17 @@
 - `adaptive`, `android-profiler`, `android-permissions-security`, `testing-setup` — `android/skills`.
 
 ## Aktuelle Arbeit
-- **Task 025 abgeschlossen:** „Navigation“ (W7) — `NavRoutes.kt`, `NavigationStructureTest.kt` verifiziert.
-- **Nächste Aufgabe: Task 026:** „Smartphone-Ansichten“ (W7, Abhängigkeiten: 010, 023, 024 erledigt).
-  - Ziel: Hochformat auf dem Samsung Galaxy A56 5G (FHD+, 1080x2340, 19.5:9, One UI 7) optimieren; Navigation Bar, Einhandbedienung, Kamera-Aussparung und Statusleiste sauber integrieren.
-  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/core/design/WindowSizeClass.kt`, `tasks/026-mobile-viewports.md`, `progress/BUILD-STATE.md`.
+- **Task 026 abgeschlossen:** „Smartphone-Ansichten“ (W7) — `MobileViewportTokens.kt`, `MobileLayoutTest.kt` verifiziert.
+- **Nächste Aufgabe: Task 027:** „Eingabe und Tastatur“ (W7, Abhängigkeiten: 010, 023, 024 erledigt).
+  - Ziel: Mehrzeiliges Eingabefeld, Soft-Keyboard-Verhalten (IME), Einhandbedienung, Senden/Abbrechen und Vermeidung von Texteinklemmung absichern.
+  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/ChatInputTokens.kt`, `tasks/027-input-field-and-ime.md`, `progress/BUILD-STATE.md`.
   - Geladene Skills: `adaptive`, `testing-setup`.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (25 erledigt, 110 offen).
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (26 erledigt, 109 offen).
 
 ## Nächster Schritt
-1. Task 026 („Smartphone-Ansichten“) umsetzen und verifizieren.
-2. Nach Task 026 committen, stagen und an `origin main` pushen.
-3. Anschließende W7-Aufgaben (027 Eingabe und Tastatur, 028 Themes, 029 Barrierefreiheit, 030 Ladezustände) autonom abarbeiten.
+1. Task 027 („Eingabe und Tastatur“) umsetzen und verifizieren.
+2. Nach Task 027 committen, stagen und an `origin main` pushen.
+3. Anschließende W7-Aufgaben (028 Themes, 029 Barrierefreiheit, 030 Ladezustände) autonom abarbeiten.
 
 ## Offen
 - PNG-/WebP-Logo über die Media Bridge des Nutzers rendern und prüfen.
