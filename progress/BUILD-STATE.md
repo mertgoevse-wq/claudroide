@@ -44,13 +44,14 @@
   - **Task 028 erledigt:** „Hell und dunkel“ — Theme-Modi (`ThemeMode.kt`), AMOLED-Dunkelmodus als energiesparender A56-Standard, Hell-Theme und WCAG AA (>= 4.5:1) Kontrastgarantie für Code- und Gefahrenbereiche mit Unit-Tests (`ThemeModeTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 029 erledigt:** „Zugänglichkeit“ — TalkBack-Ansagen für Freigaben und Diffs (`AccessibilityPolicy`), Nicht-Allein-Farbe-Invariante (Farbe + Icon + Textbeschreibung), Skalierung bis 200% Systemschrift und Fokus-Hierarchie mit Unit-Tests (`AccessibilityTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 030 erledigt:** „Lade- und Fehlerzustände“ — Transparente Statusanzeige (`DataTransmissionStatus`), strukturierte UI-Fehler mit separaten Wiederholen/Abbrechen-Aktionen (`AppUiError`) und automatische Geheimnismaskierung (`ErrorSanitizer`) mit Unit-Tests (`ErrorStateTest.kt`) verifiziert (`done_since_last_edit: true`).
-- **Welle 8 (W8) in Arbeit:**
+- **Welle 8 (W8) vollständig abgeschlossen:**
   - **Task 031 erledigt:** „Chatliste“ — Datenmodell (`ChatSummaryItem`), chronologische Sortierung, Projektfilterung, Leerzustandserkennung (`ChatListUiState`) und Schutz vor Geheimnis-Lecks in Vorschautexten (`ChatPreviewSanitizer`) mit Unit-Tests (`ChatListTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 032 erledigt:** „Chat-Suche und Filter“ — Lokale Volltextsuche nach Titel, Nachricht und Projektname (`ChatSearchEngine`), Snippet-Extraktion (`SearchResultMatch`), Datums- und Projektfilterung und garantierter Ausschluss gelöschter Chats mit Unit-Tests (`ChatSearchTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 033 erledigt:** „Chats erstellen und umbenennen“ — Lokaler Chat-Lebenszyklus (`ConversationManager`, `ManagedConversation`), automatische Titelerzeugung mit Geheimnisbereinigung, Umbenennung und reversible Archivierung mit Unit-Tests (`ConversationManagerTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 034 erledigt:** „Chats löschen und exportieren“ — Export in Markdown und JSON (`ChatExportManager`), automatische Geheimnisbereinigung in Exportdateien, transparente Umfangsübersicht (`ExportScopeSummary`) und bestätigungspflichtiges permanentes Löschen mit Unit-Tests (`ChatExportTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 035 erledigt:** „Nachrichtenfeld“ — Transparente Modell- und Kostenvorschau (`ProviderSendDisclosures`), Entwurfssicherung (`DraftState`) und Schutz vor Doppel-Submissions (`MessageComposerEngine`) mit Unit-Tests (`MessageComposerTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 037 erledigt:** „Code und Antworten anzeigen“ — Parser für Fenced Code-Blocks (`MarkdownMessageParser`), Schwellenwert für Einklappen (`CodeBlockPolicy`), striktes Verbot automatischer Codeausführung und verlustfreies Kopieren mit Unit-Tests (`CodeBlockRendererTest.kt`) verifiziert (`done_since_last_edit: true`).
+  - **Task 042 erledigt:** „Gesprächsdatenschutz“ — Garantie null Telemetrie (`ZERO_TELEMETRY_INVARIANT`), Bestätigungszwang für externe Übertragungen (`PrivacyEnforcer.canDispatchExternalPrompt`), Blockade sensibler Dateimuster (.env, id_rsa, .pem) und Offline-Lesbarkeit mit Unit-Tests (`ChatPrivacyTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Assets & Dokumentation:**
   - 16:9 Header-Banner (`assets/claudroide-banner.jpg`) mit Android-Bot und Terrakotta-KI-Funken via Claude Media Bridge generiert.
   - Zweisprachige GitHub-Dokumentation: Englisches Haupt-README (`README.md`) mit interaktivem Sprachwechsler zu deutschem `README.de.md`.
@@ -68,17 +69,17 @@
 - `adaptive`, `android-profiler`, `android-permissions-security`, `testing-setup` — `android/skills`.
 
 ## Aktuelle Arbeit
-- **Task 037 abgeschlossen:** „Code und Antworten anzeigen“ (W8) — `CodeBlockRenderer.kt`, `CodeBlockRendererTest.kt` verifiziert.
-- **Nächste Aufgabe: Task 042:** „Gesprächsdatenschutz“ (W8, Abhängigkeiten: 016, 025 erledigt).
-  - Ziel: Transparente Steuerung des Gesprächsdatenschutzes, getrennte Berechtigung für externe Anbieterübertragung und lokale Speicherung.
-  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/ChatPrivacyPolicy.kt`, `tasks/042-chat-privacy-controls.md`, `progress/BUILD-STATE.md`.
-  - Geladene Skills: `android-permissions-security`, `testing-setup`.
-- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (36 erledigt, 99 offen).
+- **Welle 8 (W8) vollständig abgeschlossen:** Tasks 031, 032, 033, 034, 035, 037, 042 verifiziert.
+- **Nächste Aufgabe: Task 038:** „Wiederholen und abbrechen“ (W9, Abhängigkeiten: 031, 035 erledigt).
+  - Ziel: Sicheres Wiederholen fehlgeschlagener Anfragen ohne doppelte Kosten oder Nebenwirkungen und sauberer Abbruch laufender Streams.
+  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/chat/RetryAndAbortController.kt`, `tasks/038-retry-and-abort.md`, `progress/BUILD-STATE.md`.
+  - Geladene Skills: `testing-setup`, `android-permissions-security`.
+- `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (37 erledigt, 98 offen).
 
 ## Nächster Schritt
-1. Task 042 („Gesprächsdatenschutz“) umsetzen und verifizieren (schließt Welle 8 ab!).
-2. Nach Task 042 committen, stagen und an `origin main` pushen.
-3. Anschließend mit Welle 9 (038, 039) und Welle 9b (036) bzw. Welle 10 (043–045, 060) fortfahren.
+1. Start von Welle 9 mit Task 038 („Wiederholen und abbrechen“) umsetzen und verifizieren.
+2. Nach Task 038 committen, stagen und an `origin main` pushen.
+3. Anschließende W9-Aufgabe 039 (Sitzungen fortsetzen) autonom abarbeiten.
 
 ## Offen
 - PNG-/WebP-Logo über die Media Bridge des Nutzers rendern und prüfen.

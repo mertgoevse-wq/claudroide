@@ -15,8 +15,8 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Phase-Entwurfsplanung-informational" alt="Phase" />
   <img src="https://img.shields.io/badge/Bauaufgaben-135-blue" alt="Aufgaben" />
-  <img src="https://img.shields.io/badge/App--Code-36%20%2F%20135%20erledigt-yellow" alt="Status" />
-  <img src="https://img.shields.io/badge/Welle%200--7-abgeschlossen-success" alt="W0-W7" />
+  <img src="https://img.shields.io/badge/App--Code-37%20%2F%20135%20erledigt-yellow" alt="Status" />
+  <img src="https://img.shields.io/badge/Welle%200--8-abgeschlossen-success" alt="W0-W8" />
   <img src="https://img.shields.io/badge/Zielger%C3%A4t-Galaxy%20A56%205G-orange" alt="Gerät" />
   <img src="https://img.shields.io/badge/Repo-privat-success" alt="Repo" />
 </p>
@@ -101,7 +101,7 @@ Die Zählung unten kommt aus den Frontmatter-Köpfen und wird vom Sync-Skript ge
 |---|---|---|
 | W0–W2 · Grundlagen, Machbarkeit, Geräteprüfung | 001–008 | 🟢 8 / 8 erledigt (W0–W2 abgeschlossen) |
 | W3–W6 · App-Grundlage, Baupfade, Gestaltung | 009–024 | 🟢 16 / 16 erledigt (W3–W6 abgeschlossen) |
-| W7–W9b · Oberfläche und Chat | 025–042 | 🟡 In Arbeit (12 / 18, Task 037 erledigt) |
+| W7–W9b · Oberfläche und Chat | 025–042 | 🟡 In Arbeit (13 / 18, W7+W8 abgeschlossen) |
 | W10–W14 · Anbieter, Modelle, Datenschutz | 043–069 | ⬜ offen |
 | W15–W19b · Agent und Projektzugriff | 070–094 | ⬜ offen |
 | W20–W23 · Git und Befehle | 095–105 | ⬜ offen |
