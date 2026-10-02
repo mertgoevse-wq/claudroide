@@ -1,9 +1,9 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-02 (siebzehnte Sitzung — **läuft**, Welle 130/132/134 verifiziert und abgeschlossen)
-**Status:** **118 von 135 Aufgaben `done`**, 17 offen, davon **9 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-02 (siebzehnte Sitzung — **läuft**, Welle 130/132/134 abgeschlossen, Task 124 fertig)
+**Status:** **119 von 135 Aufgaben `done`**, 16 offen, davon **8 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand (selbst gemessen, nicht aus dem Checkpoint übernommen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **1982 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (1876 bei Sitzungsbeginn + 106 aus der Welle: 49 `McpToolConnectionPolicyTest`, 47 `SubagentRosterTest`, 31 `SkillCompatibilityTest` — nach dem Split unten 39 + 10 `McpToolConnectionCatalogTest`). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml`, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war.
+**Teststand (selbst gemessen, nicht aus dem Checkpoint übernommen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **2023 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (1982 nach der Welle 130/132/134 + 41 aus Aufgabe 124). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml`, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20 247 827 Bytes.
 
 **Git-Stand:** `main`, Repository `mertgoevse-wq/claudroide`, per `gh` geprüft: **`isPrivate: true`**, Standardbranch `main`. Der Nutzer hat in Sitzung 16 Commits und Push ausdrücklich freigegeben.
 
@@ -86,6 +86,47 @@ Der Wert ist jetzt quotiert, **und** PyYAML prüft alle drei Workflows:
 | `repo-health.yml` | OK |
 
 **Die Lehre ist die aus Sitzung 14 in neuer Form:** Derselbe Fehler wie bei den Übersetzungsfehlern — *grün gesehen statt geprüft*. Nur diesmal brauchte ein **Werkzeug**, um überhaupt eine Fehlermeldung zu bekommen. Wer `pip` nicht nutzen kann, braucht eine andere Prüfung als „sieht die Datei richtig aus"; das Fehlen des Werkzeugs ist kein Grund, die Prüfung zu überspringen, sondern ein Grund, sie zu suchen.
+
+### Gegenprobe in CI bestanden
+
+`verification.yml` nach der Korrektur: **`success` in 4m50s.** Beide Jobs grün — der Testlauf mit `--rerun-tasks`, die XML-Prüfung, der Debug-Build und beide Schluesselstufen einschließlich der **Gegenprobe**, die abbricht, falls der Filter die gepflanzten Schlüssel nicht mehr findet.
+
+## Sitzung 17, zweiter Teil — Task 124: Skill-Installation freigeben
+
+`feature/skills/SkillInstallApproval.kt` (562 Zeilen) + `SkillInstallApprovalTest.kt` (654 Zeilen), **41 Tests**.
+
+### Was 129 und 130 offengelassen haben
+
+129 lieferte Suche und Zustimmung, 130 die Kompatibilitätsprüfung — **was dem Nutzer beim Installieren gezeigt wird, war nirgends festgehalten**. Genau das ist der Auftrag: Quelle, Lizenz, Umfang, Installationsort und Entfernen, und zwar **einzeln** bestätigt.
+
+### Die zwei Zusagen als Eigenschaft des Typs
+
+- **Der Dialog entscheidet, er installiert nicht.** `SkillConfirmationDialog` hat **keine** Methode, die etwas installiert, ausführt, herunterlädt oder schreibt — per Reflexion geprüft. Dieselbe Grenze wie `McpToolConnectionRegistry` in 134: der Wächter prüft, die Ausführung passiert woanders.
+- **Es gibt keine Sammelfreigabe.** `confirmAll` existiert und **gibt `null` zurück**. Die Methode ist nicht entfernt, sondern genau da eingefügt, wo jemand danach suchen würde: die Zusage „jede globale Installation einzeln bestätigt" ist damit strukturell statt nur dokumentarisch.
+- **Ablehnen ist ein Ergebnis, kein Abbruch.** `installationOutcome` lässt genau **einen** bestätigten Namen zu: kein Name → nichts; ein Name, der nicht im Verzeichnis stand → nichts.
+
+### Ein echter Entwurfsfehler, den der Test aufgedeckt hat
+
+Der Dialog nannte **auch dann einen Zielpfad, wenn die Quelle nie belegt war.** Der Test `der Dialog nennt auch dann keinen Ort, wenn die Quelle offen ist` fiel um — **das war ein Codefehler.** Ohne belegten Fundort wurde nichts geprüft, und ein Zielpfad aus einem ungeprüften Fund wäre die *erste erfundene Angabe* dieses Dialogs gewesen. `siteLine` gibt jetzt `offen` zurück, wenn `!audit.isGrounded`. Die Reihenfolge der Anzeigezeile schützt sich selbst: Die Quelle steht **vor** dem Ort.
+
+**Beides am Code behoben, nicht am Test** — die anderen drei Fehlschläge waren Testfehler und wurden am Test behoben:
+
+1. Der Test rief die **zwei**-Parameter-Form von `defaultSite` auf und prüfte dann, dass sie *nicht* projektbezogen sei — sie ist per Name gerade der Projektfall. Der Test benennt jetzt den Umfang ausdrücklich.
+2. Der Grundtext lautet „führt Befehle aus"; der Test suchte nach `ausführ`. Richtig war der Code.
+3. Die Zeile lautet `Installationsort: offen`; der Test verglich gegen `offen` **ohne** Präfix.
+
+### Drei Mutationen, jede wird rot
+
+| Mutation | Rote Tests |
+|---|---|
+| `confirmAll` erzeugt eine Sammelfreigabe | 1 |
+| Eine Ablehnung nimmt **alle** übrigen mit | 2 |
+| Der Dialog nennt einen Zielpfad ohne belegte Quelle | 1 |
+
+### Skills
+
+- **`android-permissions-security`** — die Grundregel jeder Grenze: ein Zustand wird **nicht zwischengespeichert**. `mayConfirm()` rechnet bei jedem Aufruf neu gegen [EnvironmentAudit]; ein Dialog, der seine Prüfung einmalig gespeichert hätte, würde eine widerrufene oder geänderte Lage weiter als gültig zeigen. Und: nichts Vertrauliches ohne bekannten Umfang — `SkillConfirmation` hat **kein** Feld für Inhalt, Schlüssel oder Adresse (Reflexionstest).
+- **`testing-setup`** — Schritt 5 (Logikklassen testen, keine Compose-Layouts): reine JVM-Tests. Die Angriffsvarianten einzeln: Quelle offen, Lizenz offen, Lizenzdatei fehlend, ausführender Inhalt, nachladender Inhalt, Netzzugriff, globaler Umfang, Projektumfang, gleiche Kennung mit anderem Ort, Antrag ohne Anfragenden, Antrag für einen anderen Skill, Ablehnung mit/ohne Nachbar, unbekannter Name im Ergebnis.
 
 ### Der Graphen wurde neu ausgewertet — und er zeigt eine Kette, die der Checkpoint nicht nennt
 

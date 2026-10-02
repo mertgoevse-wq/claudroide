@@ -5,9 +5,9 @@ wave: "W27"
 depends_on: [001, 002, 017, 123, 130]
 files: [tasks/124-skill-install-approval.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "8eabb85966784975"
 ---
 # Aufgabe 124 — Skill-Installation freigeben
