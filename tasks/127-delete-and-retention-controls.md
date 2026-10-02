@@ -5,9 +5,9 @@ wave: "W24"
 depends_on: [017, 045]
 files: [tasks/127-delete-and-retention-controls.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "4ce80b8fd5e62f2d"
 ---
 # Aufgabe 127 — Daten aufbewahren und löschen
