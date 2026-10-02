@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (siebte Sitzung)
-**Status:** 75 von 135 Aufgaben verifiziert. Task 040 (Chat und Projekt verbinden) abgeschlossen.
+**Status:** 76 von 135 Aufgaben verifiziert. Tasks 040 (Chat und Projekt verbinden) und 072 (Agentenwerkzeuge verbinden) abgeschlossen.
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -332,4 +332,30 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 **Geladene Skills:** `android-permissions-security` (Least Privilege auf dem Datenweg: die Verknüpfung darf die Berechtigungsstufe nicht anheben — deshalb der Test `bindingDoesNotMoveTheRegistryGeneration`; und ein gespeichertes Leserecht kann jederzeit überstimmt werden) und `testing-setup` (Ablenkung über die Grenzen: nicht freigegebener Ordner, abgelehnte Umsicht, blockierter Versand und **ein Aufrufer, der eine alte Dateiauswahl noch hält** — der Fall, der beim bloßen Lesen des Codes unsichtbar bleibt).
 
 **Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 072, 073, 074, 075, 076, 078, 079, 080 (alle W16, `depends_on: 070, 071`), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+
+## Task 072 erledigt — „Agentenwerkzeuge verbinden“
+
+`AgentToolLoop.kt` (neu, `feature/agent/`) + `AgentToolLoopTest.kt` (35 Tests).
+
+**Reihenfolge je Aufruf:** Abbruchprüfung → Katalog → Argumente → Freigabe → Projektgrenze → Ausführung. Eine Stufe kann nur nach links abbrechen; ausgeführt wird erst, wenn alle fünf bestanden sind.
+
+**Vier Zusagen strukturell abgesichert:**
+- **Zugelassene Aktionen:** `AgentToolCatalog` mit sechs Werkzeugen (`read_file`, `list_directory`, `search_text`, `write_file`, `delete_file`, `run_test`). Ein unbekannter Name wird abgelehnt, **bevor** Argumente gelesen werden. Der Katalog enthält bewusst kein Netz-, Schlüssel-, Push-, Installations- oder Fremdfähigkeits-Werkzeug — diese Aktionen gehören eigenen Aufgaben. Name-Vergleich ist exakt: `run_tests` ist kein `run_test`.
+- **Jede Aktion wird zweimal geprüft:** Freigabe aus dem Plan (`ExecutionPlan.grantedApprovals`, je Schritt *und* Stufe) und dann die Projektgrenze über `ProjectAccessRegistry`. Keine der beiden Prüfungen ersetzt die andere; getestet ist der Fall „Freigabe erteilt, Pfad führt trotzdem aus dem Projekt heraus“.
+- **Fehler/Abbruch sind keine Erfolge:** `ToolExecutionResult` trennt Erfolg und Misserfolg im Typ, `ToolResult` verbietet im `init` einen Zustand „Fehler mit Ausgabe“ und „Erfolg ohne Ausgabe“, und `ToolLoopRun.isSuccess` verlangt zusätzlich, dass nichts übrig blieb und kein Stoppgrund vorliegt. Eine Exception aus dem Werkzeug wird abgefangen und zu `FAILED` — nie zu Erfolg.
+- **Nebenwirkungen ehrlich verbucht:** Was ausgeführt wurde, steht in `sideEffects`, auch wenn der Lauf danach abbricht. Ein gelöschtes Datum verschwindet nicht, weil danach etwas schiefging.
+
+**Ein Fund an der Schnittstelle zu Task 071, der echte Sicherheitsrelevanz hat.** `ExecutionPlan.isGranted(step)` prüft nur die **höchste** Freigabestufe eines Schritts. Ein Schritt, der `WRITE_FILE` **und** `RUN_COMMAND` enthält, braucht danach nur `COMMAND_RUN` — eine Freigabe für den Befehl hätte also implizit auch die Dateiänderung gedeckt. Für den Werkzeuglauf reicht das nicht, dort wird jedes Werkzeug einzeln geprüft. Ergänzt wurde `ExecutionPlan.isGranted(step, approval)`, das die Stufe ausdrücklich nennt; der Werkzeuglauf prüft damit die Stufe des Werkzeugs, nicht die des Schritts. Test: `theHighestStepApprovalDoesNotCoverTheToolOfACombinedStep`.
+
+**Zwei weitere echte Befunde in meiner ersten Fassung:**
+1. **Ein Befehl konnte durch den Aufgabenwert umgangen werden, weil die Groß-/Kleinschreibung nicht zusammenpasste.** Die Map war `unitTest` → Befehl, gesucht wurde mit `lowercase()`. `run_test` mit `task=unitTest` fand also nichts — harmlos in der Richtung, aber es hätte bedeutet, dass die erste Stufe des erlaubten Testlaufs immer abgelehnt wird. Jetzt löst `AgentToolCatalog.commandFor()` die Aufgabe kleinschreibungsgleich auf; der Befehl entsteht trotzdem nur aus der Liste, nie aus Modelltext.
+2. **Die Zusammenfassung zählte falsch, wenn die Aufrufgrenze griff.** Bei `index >= maxCallsPerStep` wurde nur der *nächste* Aufruf in `notExecuted` aufgenommen und dann abgebrochen: der Bericht sagte „nicht ausgeführt (1)“, obwohl drei Aufrufe nie liefen. Jetzt werden `calls.drop(index)` aufgeführt — alle, die nicht gelaufen sind.
+
+**Weiterhin bewusst nicht gebaut:** ein allgemeines `run_command`. Im Katalog gibt es nur `run_test` mit einem Aufgabenwert aus einer festen Liste. Die offene Frage „Befehle auf Android ausführen“ ist Aufgabe 105 und hängt an realen Gerätemessungen; ein freier Befehlsweg im Werkzeugkatalog würde diese Entscheidung vorwegnehmen.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **747 Tests, 0 Fehler, 0 übersprungen** (vorher 712, +35 aus `AgentToolLoopTest`). Drei der vier roten Tests waren falsche Erwartungen (ein `List<String>` gegen ein `String?` verglichen, eine falsche Ergebnisanzahl, ein umgestellter Vergleich); der vierte deckte den Zählfehler bei der Aufrufgrenze auf. Geheimnis-Scan über beide Dateien ohne Treffer.
+
+**Geladene Skills:** `android-permissions-security` (jede Werkzeugaktion gegen Grenze **und** Freigabe, kein Pfad und kein Befehl aus Modelltext, `ProjectAccessRegistry` wird nur gelesen — `theRegistryIsNeverWidenedByTheLoop`) und `testing-setup` (Ablenkung über Grenzen: unbekanntes Werkzeug, unerwarteter Parameter, nicht erlaubte Aufgabe, Pfad außerhalb, Geheimnisdatei, Fehler in der Mitte, Abbruch, Aufrufgrenze — und ein Test, der die Ehrlichkeit *im Typ* festnagelt).
+
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 073, 074, 075, 076, 078, 079, 080 (alle W16), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
 

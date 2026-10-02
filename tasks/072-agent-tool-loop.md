@@ -5,9 +5,9 @@ wave: "W16"
 depends_on: [070, 071]
 files: [tasks/072-agent-tool-loop.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "5fb9794d22c15878"
 ---
 # Aufgabe 072 — Agentenwerkzeuge verbinden

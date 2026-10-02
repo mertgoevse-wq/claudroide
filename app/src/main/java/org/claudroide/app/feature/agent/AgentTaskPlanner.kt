@@ -232,6 +232,19 @@ data class ExecutionPlan(
     fun isGranted(step: PlanStep): Boolean =
         "${step.id}#${step.requiredApproval.name}" in grantedApprovals
 
+    /**
+     * Ob genau diese Freigabestufe für diesen Schritt erteilt wurde.
+     *
+     * Nötig, weil [isGranted] nur die *höchste* Stufe des Schritts prüft: Ein
+     * Schritt, der eine Datei schreibt **und** einen Befehl ausführt, braucht
+     * laut [PlanStep.requiredApproval] nur die höhere von beiden. Für den
+     * Werkzeuglauf reicht das nicht — dort wird jedes Werkzeug einzeln geprüft,
+     * und ein Schritt, für den nur `COMMAND_RUN` erteilt wurde, darf nicht
+     * schreiben. Deshalb wird die Stufe hier ausdrücklich genannt.
+     */
+    fun isGranted(step: PlanStep, approval: RequiredApproval): Boolean =
+        "${step.id}#${approval.name}" in grantedApprovals
+
     /** Die Reihenfolge, in der die Schritte ausgeführt werden. */
     fun orderedSteps(): List<PlanStep> = topologicalOrder(steps)
 
