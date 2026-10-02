@@ -5,9 +5,9 @@ wave: "W18"
 depends_on: [010, 017]
 files: [tasks/092-project-size-and-exclusions.md]
 skills: [`android-profiler`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "3dec446a2beb908a"
 ---
 # Aufgabe 092 — Große Projekte

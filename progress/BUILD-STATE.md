@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (siebte Sitzung)
-**Status:** 87 von 135 Aufgaben verifiziert. Tasks 040, 072–082, 087 und 089 abgeschlossen (W16 vollständig).
+**Status:** 88 von 135 Aufgaben verifiziert. Tasks 040, 072–082, 087, 089 und 092 abgeschlossen (W16 vollständig).
 
 **Sprache (Nutzerwunsch vom 2026-10-02):** Englisch zuerst, Deutsch als Zweitwahl. `values/strings.xml` ist jetzt Englisch, `values-de/strings.xml` Deutsch. `CLAUDE.md` entsprechend geändert. Historische deutsche Bezeichner aus den ersten Aufgaben bleiben **unverändert** — sie rückwirkend umzubenennen würde hunderte Zusicherungen in 1108 Tests brechen. Neue Typen führen `label` (englisch).
 
@@ -433,7 +433,7 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Push erfolgt:** Am 2026-10-02 mit Nutzerfreigabe `cb88e3b..2aafa36` nach `origin/main` (privat) gepusht. Danach Aufgaben 080 und 081 committet.
 
-**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt, ohne Gate): 092, 093, 098, 103, 105.
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt, ohne Gate): 093, 098, 103, 105.
 **Durch 082 neu freigegeben** (es hing an dieser Aufgabe): 083, 085, 086, 089, 090, 091, 094, 121.
 
 ## Task 082 erledigt — „Android-Ordner auswählen“
@@ -455,6 +455,26 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 **Teststand:** `./gradlew :app:testDebugUnitTest` → **1071 Tests, 0 Fehler, 0 übersprungen** (vorher 1042, +29).
 
 **Geladene Skills:** `android-permissions-security` (daraus die beiden Prüfungen über Reflexion: kein Berechtigungsfeld, keine anfordernde Methode — der Task verlangt „keine umfassende Speicherberechtigung“, und das wird am Typ geprüft, nicht in einem Kommentar behauptet) und `testing-setup` (der Abbruch-Fall steht mit Abspruch an erster Stelle, weil er der häufigste ist).
+
+## Task 092 erledigt — „Große Projekte“
+
+`ProjectScalePolicy.kt` (neu, `feature/project/`) + `ProjectScalePolicyTest.kt` (28 Tests).
+
+**Abschätzen zuerst, indizieren danach.** `assess()` liefert nur einen Bericht und startet nichts; die Entscheidung ist ein **eigener Aufruf** mit einem eigenen Typ (`ScaleApproval`). „Wir haben schon angefangen“ und „wir dürfen anfangen“ sind damit zwei verschiedene Aussagen. Zwei Tests prüfen per Reflexion, dass weder `ProjectScalePolicy` eine startende Methode noch `ScaleAssessment` ein startendes Feld hat.
+
+**Speicherbedarf und Scanaufwand stehen vorab da** — inklusive des Satzes *„This is an estimate, not a measurement of your device“*. Ein großes Projekt indiziert **nicht von selbst alles**: `approve()` lässt bei `needsDecision` die Auswahl leer, der Aufrufer muss die Ordner benennen.
+
+**Geheimnis-Ausschlüsse unabhängig von Größenregeln:** `secretPaths` wird **vor und getrennt von** der Größenschätzung gesammelt, und `ScaleApproval.indexablePaths` filtert beim Herausgeben **noch einmal**. Ein Test nimmt eine Zugangsdatei ausdrücklich in die Auswahl auf und belegt, dass sie trotzdem nicht zurückkommt.
+
+**Auswahl später änderbar:** `withExcludedFolders` gibt eine **neue** Freigabe zurück; die alte bleibt unverändert. Ein Test prüft, dass die alte Freigabe nach dem Ändern noch zwei Ordner enthält — sonst würde eine laufende Indizierung unter den Füßen ihre Auswahl verlieren.
+
+**Ein ehrlicher Entwurfsfehler, den der Test aufgedeckt hat:** Ich hatte den **Dateizahl** aus dem Durchlaufen mit einem Hochrechnungsfaktor multipliziert. Das war falsch: Die Zahl der Dateien ist beim Durchlaufen eine **Tatsache**, sie zu vervielfachen macht eine gezählte Zahl zu einer erfundenen, die dann als „Schätzung“ gemeldet wird. Hochgerechnet wird jetzt **nur der Bytebetrag**, ausdrücklich mit Namen; der Dateizahl ist der gezählte Wert. `BYTE_PROJECTION_SAFETY_FACTOR` ersetzt den alten, irreführend benannten `SAMPLE_EXTRAPOLATION_FACTOR`.
+
+**Zwei Testbeispiele waren falsch gewählt** (vom Code korrekt abgewiesen): `.secrets/creds.json` ist keine gesperrte Datei (gesperrt ist u. a. `credentials.json`), und `.git` fällt unter die Regel für große Ordner, nicht unter die für versteckte. Beide Tests prüfen jetzt regelkonfliktfreie Fälle; zusätzlich gibt es je einen Test, der die Vorrangordnung festhält.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1164 Tests, 0 Fehler, 0 übersprungen** (vorher 1136, +28).
+
+**Skills:** `android-profiler` (Speicher- und Zeitbedarf als **Schätzung mit sichtbarem_samplecount**, klar getrennt von einer Messung auf dem A56) und `testing-setup` (zwei Reflexionstests statt zwei Beispielen, damit ein späteres Hinzufügen einer startenden Methode auffällt).
 
 ## Task 089 erledigt — „Dateiänderungen vergleichen“
 
@@ -495,6 +515,26 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 ## Task 081 erledigt — „Projektübersicht“
 **Gates mit offener Entscheidung** (Nutzerentscheidung nötig): 084, 095, 117, 118, 123, 125, 126, 127, 129, 130.
+
+## Task 092 erledigt — „Große Projekte“
+
+`ProjectScalePolicy.kt` (neu, `feature/project/`) + `ProjectScalePolicyTest.kt` (28 Tests).
+
+**Abschätzen zuerst, indizieren danach.** `assess()` liefert nur einen Bericht und startet nichts; die Entscheidung ist ein **eigener Aufruf** mit einem eigenen Typ (`ScaleApproval`). „Wir haben schon angefangen“ und „wir dürfen anfangen“ sind damit zwei verschiedene Aussagen. Zwei Tests prüfen per Reflexion, dass weder `ProjectScalePolicy` eine startende Methode noch `ScaleAssessment` ein startendes Feld hat.
+
+**Speicherbedarf und Scanaufwand stehen vorab da** — inklusive des Satzes *„This is an estimate, not a measurement of your device“*. Ein großes Projekt indiziert **nicht von selbst alles**: `approve()` lässt bei `needsDecision` die Auswahl leer, der Aufrufer muss die Ordner benennen.
+
+**Geheimnis-Ausschlüsse unabhängig von Größenregeln:** `secretPaths` wird **vor und getrennt von** der Größenschätzung gesammelt, und `ScaleApproval.indexablePaths` filtert beim Herausgeben **noch einmal**. Ein Test nimmt eine Zugangsdatei ausdrücklich in die Auswahl auf und belegt, dass sie trotzdem nicht zurückkommt.
+
+**Auswahl später änderbar:** `withExcludedFolders` gibt eine **neue** Freigabe zurück; die alte bleibt unverändert. Ein Test prüft, dass die alte Freigabe nach dem Ändern noch zwei Ordner enthält — sonst würde eine laufende Indizierung unter den Füßen ihre Auswahl verlieren.
+
+**Ein ehrlicher Entwurfsfehler, den der Test aufgedeckt hat:** Ich hatte den **Dateizahl** aus dem Durchlaufen mit einem Hochrechnungsfaktor multipliziert. Das war falsch: Die Zahl der Dateien ist beim Durchlaufen eine **Tatsache**, sie zu vervielfachen macht eine gezählte Zahl zu einer erfundenen, die dann als „Schätzung“ gemeldet wird. Hochgerechnet wird jetzt **nur der Bytebetrag**, ausdrücklich mit Namen; der Dateizahl ist der gezählte Wert. `BYTE_PROJECTION_SAFETY_FACTOR` ersetzt den alten, irreführend benannten `SAMPLE_EXTRAPOLATION_FACTOR`.
+
+**Zwei Testbeispiele waren falsch gewählt** (vom Code korrekt abgewiesen): `.secrets/creds.json` ist keine gesperrte Datei (gesperrt ist u. a. `credentials.json`), und `.git` fällt unter die Regel für große Ordner, nicht unter die für versteckte. Beide Tests prüfen jetzt regelkonfliktfreie Fälle; zusätzlich gibt es je einen Test, der die Vorrangordnung festhält.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1164 Tests, 0 Fehler, 0 übersprungen** (vorher 1136, +28).
+
+**Skills:** `android-profiler` (Speicher- und Zeitbedarf als **Schätzung mit sichtbarem_samplecount**, klar getrennt von einer Messung auf dem A56) und `testing-setup` (zwei Reflexionstests statt zwei Beispielen, damit ein späteres Hinzufügen einer startenden Methode auffällt).
 
 ## Task 089 erledigt — „Dateiänderungen vergleichen“
 
