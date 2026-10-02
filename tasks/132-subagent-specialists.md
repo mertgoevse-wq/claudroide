@@ -5,9 +5,9 @@ wave: "W28"
 depends_on: [070, 117, 119, 122]
 files: [tasks/132-subagent-specialists.md]
 skills: [`/swarm-planner`, `parallel-task`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "123ede4e2f44497f"
 ---
 # Aufgabe 132 — Spezialhelfer

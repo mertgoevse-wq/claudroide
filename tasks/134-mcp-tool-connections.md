@@ -5,9 +5,9 @@ wave: "W28"
 depends_on: [070, 117, 119, 122]
 files: [tasks/134-mcp-tool-connections.md]
 skills: [`android-permissions-security`, `/claude-api`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "768750e36bbfe97a"
 ---
 # Aufgabe 134 — Externe Werkzeuge verbinden

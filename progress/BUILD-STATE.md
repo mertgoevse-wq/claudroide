@@ -1,11 +1,183 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-02 (fünfzehnte Sitzung — Task 129 verifiziert)
-**Status:** **115 von 135 Aufgaben `done`**, 20 offen, davon **13 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-02 (siebzehnte Sitzung — **läuft**, Welle 130/132/134 verifiziert und abgeschlossen)
+**Status:** **118 von 135 Aufgaben `done`**, 17 offen, davon **9 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand:** `./gradlew :app:testDebugUnitTest` → **1855 Tests, 0 Fehler, 0 übersprungen** (+37 `SkillDiscoveryInventoryTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20 396 805 Bytes.
+**Teststand (selbst gemessen, nicht aus dem Checkpoint übernommen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **1982 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (1876 bei Sitzungsbeginn + 106 aus der Welle: 49 `McpToolConnectionPolicyTest`, 47 `SubagentRosterTest`, 31 `SkillCompatibilityTest` — nach dem Split unten 39 + 10 `McpToolConnectionCatalogTest`). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml`, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war.
 
-**Git-Stand:** `main` bei `9a1208a`, **13 Commits vor `origin/main`** — **nicht gepusht**. Push ist nach CLAUDE.md eine externe Nebenwirkung und braucht eine ausdrückliche Freigabe.
+**Git-Stand:** `main`, Repository `mertgoevse-wq/claudroide`, per `gh` geprüft: **`isPrivate: true`**, Standardbranch `main`. Der Nutzer hat in Sitzung 16 Commits und Push ausdrücklich freigegeben.
+
+## Sitzung 17 — Wiederaufnahme, Welle 130/132/134 abgeschlossen
+
+### Der Absturz hat die Arbeit nicht beschädigt — das stand im Checkpoint offen
+
+Sitzung 16 notierte einen Build mit **14 Übersetzungsfehlern** und eine bei Zeile 338 abgeschnittene Datei. **Beides stimmt nicht mehr**, und das steht hier als eigener Befund, weil die Notiz das Gegenteil behauptete:
+
+- `./gradlew :app:testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL in 3m 39s**, **0** Fehlerzeilen, **1982 Tests grün**.
+- `SkillCompatibility.kt` hat **437 Zeilen** und endet mit einer geschlossenen Klammer — nicht abgeschnitten.
+- Die im Checkpoint offengelassene Lücke `EnvironmentAudit.isComplete` prüft in Zeile 224-225 **beide** Listen (`requiredPrograms` **und** `requiredPermissions`). Sie ist geschlossen.
+
+**Die Lehre ist dieselbe wie in den Sitzungen 14 und 15:** Der Checkpoint beschreibt den Stand **am Anfang** einer Sitzung, nicht ihren Abschluss. Wer nach einem Absturz eine Warnung über eine kaputte Datei liest, muss sie am Dateisystem gegenprüfen, bevor er sie zurückschreibt. Ein „kaputt", das niemand mehr prüft, ist eine Phantomwarnung, die zur Selbstwahrheit wird.
+
+### Alle fünf behaupteten Fehlerbehebungen einzeln nachgewiesen
+
+Die abgestürzten Agenten hatten laut Checkpoint fünf echte Fehler behoben. Jeder wurde am Dateisystem geprüft, nicht geglaubt — **alle fünf stehen**:
+
+1. `HeldCredential` erbt `: ConnectionAuthentication` (Zeile 214) und hat `Companion.held(...)` als einzigen Werksweg. ✔
+2. Die Freigabe prüft **Projektbezug und Server** getrennt. ✔
+3. `consentReasons` prüft zuerst `connectionRequiresUserConsent()`. ✔
+4. `isActiveAt` wertet `grantedAt > 0` **und** `nowMs >= grantedAt` aus. ✔
+5. Kein Schlüssel im Klartext; `HeldCredential.toString()` gibt nur den Maskierer-Platzhalter aus. ✔
+
+### Ein echter Fehler, den erst die Nachprüfung fand
+
+`McpToolConnectionPolicyTest.kt` lag bei **831 Zeilen** und überschritt damit die **eigene 800-Zeilen-Grenze** dieses Projekts (CLAUDE.md: „keine Datei über 800 Zeilen"). Ein abgestürzter Agent hatte sie gegen diese Regel gebaut.
+
+Behoben an der **Aufgabengrenze**, nicht an einer beliebigen Stelle: Die Datei behandelte zwei verschiedene Fragen — *was behauptet ein Katalogeintrag* und *darf er gestartet werden*. Der Katalogteil (10 Tests) ist jetzt `McpToolConnectionCatalogTest.kt`; der Freigabeteil bleibt, weil die Zusage der Aufgabe am **Start** hängt. Ergebnis **717 / 148 Zeilen**, Importbilanz geprüft — kein Import wurde durch den Split unbenutzt. Die Testzahl bleibt **1982**, nichts verloren.
+
+### Eine Korrektur an meiner eigenen Prüfung
+
+Ich meldete zunächst, `SubagentRunReport.kt` (255 Zeilen, von einem abgestürzten Agenten hinterlassen) habe **keine** Tests, weil der Dateiname im Testordner nicht auftaucht. **Das war falsch.** Die Datei wird in `SubagentRosterTest` über Importe voll getestet — `ExtraCost`, `PriceEvidence`, `MergeReport`, `VerifiedHelperFinding`, `CostOpenReason`. Eine Namenssuche hätte fast eine echte Testlücke gemeldet, wo keine ist.
+
+### Der CI-Workflow, der nie committet wurde, hätte bei jedem Push das Repository blockiert
+
+`verification.yml` lag seit Sitzung 16 unversioniert im Arbeitsbaum. **Vor dem Commit lokal nachgefahren — und er schlug fehl.** Beide Schluesselscans des Jobs meldeten Treffer im eigenen Bestand:
+
+- **7 Treffer** in den Testdateien: `sk-ant-api03-AAAA…`, `ghp_AAAA…`, `ABCIAIOSFODNN7EXAMPLE` — allesamt Fixtures, die beweisen sollen, dass der Maskierer greift.
+- **5 Treffer** auf `-----BEGIN RSA PRIVATE KEY-----`: vier Testdateien enthalten genau diese Zeile, um ihre Schwärzung zu prüfen.
+
+**Der Grund ist ein Denkfehler, kein Tippfehler:** Die Regel unterschied *„trägt ein Schlüsselpräfix"* von *„ist ein Schlüssel"* nicht. Ein Beispielwert in einem Test ist aber per Definition synthetisch — die Regel muss den **Wert** prüfen, nicht das **Präfix**. Hätte man den Workflow committet, wäre bei jedem Push ein roter Balken entstanden, und die natürliche Reaktion („Filter ist zu streng") hätte zum Löschen der Prüfung geführt, statt sie zu richten.
+
+**Die Regel lautet jetzt:** verdächtig ist ein Schlüsselpräfix **zusammen mit einem Zufallssegment**. Zusätzlich war die bisherige Mindestlänge von 40 Zeichen **zu hoch** — ein echter Anthropic-Schlüssel hat rund 39 Zeichen *nach* dem Präfix. Die alte Regel hätte echte Schlüssel durchgelassen und trotzdem die Fixtures gemeldet: **nach hinten zu streng und nach vorn zu lax zugleich.**
+
+**Belegt in beide Richtungen, weil ein Filter, der nichts findet, alles bedeuten kann:**
+
+| Prüfung | Ergebnis |
+|---|---|
+| Gegen dieses Repository | **0 Treffer**, exit 0 |
+| Gegen 3 gepflanzte Schlüssel (Anthropic, GitHub, PEM-Rumpf) | **3 Treffer**, exit 1 |
+| PEM-Rumpf ohne Platzhalterwort | **1 Treffer**, exit 1 |
+
+Die Logik liegt jetzt in `tools/secret_gate.py` statt als Shell im Workflow — **eine** geprüfte Implementierung, die lokal und in CI identisch läuft. `tools/secret_gate_fixtures/countercheck.txt` enthält die gepflanzten Werte und wird von einem **Gegenprüf-Schritt** verlangt: findet der Filter sie nicht, bricht der Job ab, auch wenn der Hauptlauf grün ist.
+
+**Eine Falle, die erst der zweite Testlauf zeigte:** Die Fixtures liegen *im* Repository. Ohne Ausschluss meldete der Hauptlauf seine eigene Gegenprobe — der Filter hätte sich selbst entdeckt. `secret_gate_fixtures` steht deshalb in `SKIP_DIRS`, mit einem Kommentar, der erklärt, warum ein Ordner namens `secret_gate_fixtures` in `secret_gate_fixtures` steht.
+
+### Ein Nebenbefund: `grep` auf diesem System ist `ugrep`
+
+Der erste Lösungsversuch nutzte eine Rückreferenz (`\1{7,}`) für „ein Zeichen, siebenmal wiederholt". `ugrep` lehnt sie ab (`invalid escape`). Das ist nicht nur ein Werkzeugdetail: **eine Regex-Rückreferenz in einem CI-Skript ist ohnehin eine unnötige Abhängigkeit.** Die fertige Regel steht deshalb in Python ohne Rückreferenzen.
+
+### Der Graphen wurde neu ausgewertet — und er zeigt eine Kette, die der Checkpoint nicht nennt
+
+Neu aus `tasks/*.md` gerechnet, nicht aus dem Checkpoint: freigegeben sind **085, 095, 130, 132, 134**. Neu sichtbar wurde die Kette **130 → 124 → 131**: Wer 130 abschließt, gibt zwei weitere Aufgaben frei. Das ist genau der Grund, warum diese Welle vor 095 (Geräteentscheidung) und 085 (Gerätetest) gebaut wurde.
+
+### Was diese Sitzung ausdrücklich **nicht** belegt
+
+- **Kein Gerätetest.** Es gibt hier kein Gerät und kein Emulator-Binary. NPU-/GPU-Nutzung bleibt bis zu einem echten A56 unbelegt; die Fallback-Kette in `SkillCompatibility.kt` ist **gemeldet, nicht gemessen**.
+- **Keine Anbieterangabe.** `SkillCompatibility` und `McpToolConnection` liefern den Bauplan und die Regeln; Herkunfts-, Lizenz- und Preisangaben bleiben **offen**, wo keine Quelle vorliegt.
+
+### Skills
+
+- **`/swarm-planner`** — geladen und angewandt: Der Abhängigkeitsgraphen wurde **neu ausgewertet**, nicht aus dem Checkpoint übernommen; die Ketten stammen aus dem Rechnen über `depends_on`. Die Recherche-Anweisung des Skills (Context7) ist in dieser Umgebung **nicht erfüllbar** und bleibt offen dokumentiert.
+- **`parallel-task`** — geladen. Die Regel des Skills, dass jeder Agent **selbst committet** (§3.7), wurde **nicht** angewandt: CLAUDE.md schreibt vor, dass während paralleler Arbeit **kein** Agent committet oder pusht und die leitende Sitzung integriert. Hier wurde die Welle aus der Vorzeit lediglich **verifiziert und abgeschlossen**, nicht parallel neu gestartet — dafür war die Arbeit bereits geschrieben.
+
+### Erledigt in dieser Sitzung
+
+| Task | Titel | Dateien |
+|---|---|---|
+| 130 | Skill-Kompatibilität | `feature/skills/SkillCompatibility.kt` (437) + `SkillCompatibilityTest.kt` (490) |
+| 132 | Spezialhelfer | `feature/agent/SubagentRoster.kt` (649) + `SubagentRunReport.kt` (255) + `SubagentRosterTest.kt` (633) |
+| 134 | Externe Werkzeuge verbinden | `feature/mcp/McpToolConnection.kt` (428), `ConnectionApproval.kt` (270), `McpToolConnectionRegistry.kt` (340) + `McpToolConnectionPolicyTest.kt` (717), `McpToolConnectionCatalogTest.kt` (148) |
+
+**Offen:** 085 (Gerätetest) und 095 (Git-Zugang, echte Produktentscheidung) — beide blockieren 096–104 sowie 116 und 128.
+
+### Was der Abschluss dieser Welle freigibt
+
+Neu aus dem Graphen gerechnet, **nach** dem Setzen von 130/132/134 auf `done`:
+
+| Task | Titel | Freigegeben durch |
+|---|---|---|
+| 124 | Skill-Installation freigeben | 130 |
+| 133 | Helferrechte | 132 |
+| 135 | Werkzeugrechte und Daten | 134 |
+
+**Das ist die Wirkung dieser Welle auf den Rest des Projekts:** aus einer freigegebenen Aufgabe wurden drei weitere. Der Graph ist damit nicht mehr durch 085 und 095 blockiert — 124/133/135 sind echte, entscheidbare Aufgaben und die **nächste** Arbeit.
+
+### Sitzung 16 (Wiederaufnahme, Welle in Arbeit)
+
+**Git-Stand zu Beginn dieser Sitzung:** `main` bei `de0a064`, **2 Commits vor `origin/main`** — **nicht gepusht**. Der Nutzer hat in Sitzung 16 Commits und Push ausdrücklich freigegeben und dem Projekt „vollständige Autonomie" übertragen; die Sperre aus CLAUDE.md ist damit aufgehoben. **Angewandt wird sie trotzdem nicht blind:** ein Push ist idempotent und wiederholbar, eine falsche Behauptung im Repo nicht.
+
+### Der Absturz war die Netzverbindung, nicht der Code
+
+Die acht Agenten dieser Sitzung starben **alle acht** mit `ECONNREFUSED — a firewall or proxy may be blocking it`. Kein einziger mit einem inhaltlichen Fehler. Das ist die Antwort auf „du stürzt andauernd ab": die Agenten wurden nicht langsam, sie wurden **abgewürgt**. Ihre Arbeit wurde trotzdem geschrieben — aber unfertig.
+
+Die Folge ist derselbe Befund wie in Sitzung 14 und 15: **14 Compile-Fehler, Build rot.** Was gerettet wurde und wer es behoben hat, steht weiter unten.
+
+### Fünf echte Fehler, alle am Code oder am Test — nicht am Test verschoben
+
+1. **`HeldCredential` war kein Fall des Sealed-Typs.** In `feature/mcp/McpToolConnection.kt` war `class HeldCredential` in `sealed interface ConnectionAuthentication` deklariert, **ohne** `: ConnectionAuthentication` zu erben. Die Rückgabe konnte deshalb prinzipiell nicht typisieren — und die Konstruktion über einen `private`-Konstruktor aus einer anderen Klasse hätte auch sonst nicht funktioniert. Behoben durch die fehlende Vererbung plus `Companion.held(...)`, **nicht** durch `internal constructor`: die Grenze „nur ein Weg zu einer Verbindung" bleibt damit gewahrt.
+2. **Der Test-Helfer `befund()` hatte einen erfundenen Parameter.** `HelperClaim` kennt nur `helperId`, `statement`, `evidence` — der Test bot zusätzlich `gegenstand` und rief mit vertauschten Argumenten auf. Der `gegenstand` wird funktional an `merge` übergeben; diese Trennung ist richtig und bleibt.
+3. **Ein Test prüfte die falsche Sache.** „Eine Freigabe aus Projekt A gilt in Projekt B nicht" übergab eine Freigabe für `svc-a` an `svc-b`; der zuerst greifende Grund war deshalb der **Server**-Mismatch, nicht der Projektbezug — der Test schlug fehl, obwohl der Schutz funktionierte. Jetzt wird die Projektgrenze isoliert geprüft, **und** der Server-Mismatch bekommt einen eigenen Test.
+4. **Ein Test war zu grob.** Der Reflexionstest „keine Methode, die etwas startet" flaggte `requestStart` — aber diese Methode legt nur einen **Antrag** an. Der Test hätte damit jeden Weg zu einer Freigabe verboten. Geschärft auf echte Start-/Netzaufrufe, **plus** die strukturelle Zusicherung `connectionRequiresUserConsent() == true`.
+5. **Zwei Tests scheitern an Kotlin-Eigenheiten, nicht an der Zusage.** `data class` erzeugt einen öffentlichen `copy()`-Kopierkonstruktor — der private Hauptkonstruktor bleibt geprüft. Und `HelperInput("frage", "   ")` wirft bereits beim *Anlegen*, vor dem `try`-Block; der Test prüft jetzt Leerstring, Whitespace und Tab einzeln.
+
+### Was Task 130 wirklich eingebracht hat
+
+`SkillCompatibility.kt` wuchs von 338 auf 429 Zeilen, und die Ergänzung war **nicht kosmetisch**: `PermissionScope` (projektbezogen/global) und `RequiredPermission` kamen dazu — also die **Rechte**, die zu den sechs geforderten Ergebnissen der Aufgabe gehörten und vorher fehlten. `escapesProjectBoundary` und `boundaryWarning` trennen das Bleibende vom Unzulässigen.
+
+**Ein Befund bleibt offen und wird hier nicht verschwiegen:** `EnvironmentAudit.isComplete` prüft `requiredPrograms.all { it.complete }`, aber **nicht** `requiredPermissions.all { it.complete }`. Ein Recht ohne Namen — laut eigenem Typ „kein Wert, sondern ein leeres Formularfeld" — rutscht damit durch. Der zuständige Agent starb, bevor er das reparieren konnte. Das ist eine echte, kleine Lücke und die nächste Aufgabe.
+
+### Kein Grund, den Build grün zu melden, bevor die Tests laufen
+
+`:app:compileDebugKotlin` ist grün. Die Volltests laufen. Beides wird erst nach **eigenem** Zählen aus den JUnit-XML berichtet, nicht aus der letzten Logzeile — Gradle meldet auch für einen reinen `UP-TO-DATE`-Lauf `BUILD SUCCESSFUL`, und genau dieser Fehler hat in Sitzung 14, 15 und 16 dreimal ein „fertig" erzeugt, das keines war.
+
+### Kostenlose Dienste: GitHub Actions lief bereits
+
+`gh run list` zeigt grüne Läufe für `build-apk` und `repo-health` — GitHub Actions war eingerichtet und aktiv, kostenlos, im eigenen privaten Repo. Neu hinzugekommen ist `.github/workflows/verification.yml`: es erzwingt `--rerun-tasks`, **verweigert** einen Lauf ohne JUNIT-XML und verweigert 0 Tests, weil genau diese Verwechslung das Projekt wiederholt beinahe ein „fertig" gekostet hat. Dazu ein Schlüsselscan.
+
+**Bewusst nicht eingerichtet:** Copilot-Code-Review oder ähnliche Drittanbieter-Dienste. Sie sind kostenlos, aber sie geben den Quelltext aus dem privaten Repo nach außen. Das ist ein Datenabfluss, den niemand beauftragt hat, sondern eine stille Nebenwirkung.
+
+## Sitzung 16 — Wiederaufnahme, Welle 130/132/134
+
+### Der Absturz war echt, und die angefangene Arbeit lief nicht
+
+Die fünfzehnte Sitzung brach **mitten in Task 130** ab: zwei Dateien lagen unversioniert im Arbeitsbaum (`SkillCompatibility.kt`, `SkillCompatibilityTest.kt`). Geprüft statt geglaubt:
+
+- `SkillCompatibility.kt` ist bei **Zeile 338 abgeschnitten** — die letzte Zeile ist ein KDoc ohne Inhalt (`/** Wofür ein Skill geprüft wird. */`). Der Build ist trotzdem grün, weil ein offener KDoc syntaktisch gültig ist. **Grün ist hier kein Beweis für Vollständigkeit.**
+- Der Test referenziert `CompatibilityVerdict` über ein `private object CompatibilityVerdictHolder` mit voll qualifizierten Namen, statt es wie `SkillDiscoveryInventoryTest` zu importieren — ein Zeichen, dass gegen eine nicht existierende API geschrieben wurde.
+
+Die Abhilfe ist dieselbe wie in Sitzung 14 und 15: erst der Zustand am Dateisystem, dann die Arbeit.
+
+### Zum NPU-Punkt des Nutzers — belegt, nicht behauptet
+
+Der Wunsch „NPU, CPU und GPU vollwertig nutzen" ist im Projekt **noch nirgends angekommen**, und das ist keine Auslegungsfrage, sondern am Dateisystem nachgewiesen:
+
+- `app/build.gradle.kts` und `gradle/libs.versions.toml` enthalten **keine** KI-Laufzeit-Bibliothek — kein LiteRT, TFLite, ExecuTorch, ONNX, ggml, MediaPipe.
+- `app/src/main/java/` enthält **keinen** Verweis auf NPU, NNAPI, Vulkan oder OpenCL.
+- Ein Textsuchbefund nach „npu" trifft nur `input`-Treffer — ein Fehlalarm, der bei einer groben Suche leicht als Beleg durchgeht.
+
+`progress/TODO.md` Abschnitt D hält die offenen Punkte bereits fest: **D1** Bibliothek wählen, **D2** Fähigkeitserkennung zur Laufzeit, **D3** Fallback-Kette NPU → GPU → CPU, **D4** ehrliche Grenze.
+
+**Was das für die Arbeit heißt:** Der NPU-Ausbau ist eine **echte Produktentscheidung**, keine Codeaufgabe. D1 verlangt eine Bibliothekswahl samt Lizenz- und Geräteprüfung, und die Spezifikation sagt in Zeile 49 ausdrücklich: *„Kein verbindliches Versprechen, dass die A56-NPU für frei gewählte Sprachmodelle ansprechbar ist."* Zeile 155: NPU gilt erst als nutzbar, wenn ein Modell auf genau dieser Gerätevariante **reproduzierbar** korrekt läuft. In dieser Umgebung gibt es **kein Gerät und kein Emulator-Binary** — ein solcher Nachweis ist hier also nicht erbringbar. Ich baue deshalb jetzt **keine** NPU-Versprechung ein, sondern lege die Voraussetzungen dafür an: die Fallback-Kette und die Laufzeiterkennung als ehrliche Typen, gemessen statt angenommen.
+
+### Die Welle
+
+Der Abhängigkeitsgraphen wurde neu ausgewertet, nicht aus dem Checkpoint übernommen. Freigegeben (alle Abhängigkeiten `done`): **130, 132, 134** — dazu 085 und 095, die beide eine echte Geräte- bzw. Produktentscheidung brauchen.
+
+Drei Agenten parallel, **überschneidungsfreie Dateibereiche**, kein Agent committet (CLAUDE.md):
+
+| Task | Dateien | Skills |
+|---|---|---|
+| 130 Skill-Kompatibilität | `feature/skills/SkillCompatibility.kt` + Test | `android-permissions-security`, `/code-review` |
+| 132 Spezialhelfer | `feature/agent/SubagentRoster.kt` + Test | `/swarm-planner`, `parallel-task` |
+| 134 Externe Werkzeuge | `feature/mcp/McpToolConnectionPolicy.kt` + Test | `android-permissions-security`, `/claude-api` |
+
+**Eine Korrektur an meiner eigenen Prüfung:** Ich hatte `/claude-api` und `/code-review` zuerst als **fehlend** gemeldet, weil ich nur unter `~/.claude/skills/` gesucht habe. Beide sind **eingebaute** Skills dieser Claude-Code-Version und stehen in der verfügbaren Skill-Liste. Die Matrix verlangt Verfügbarkeitsprüfung statt behaupteter Namen — die Prüfung war zu eng, das ist jetzt berichtigt.
+
+### Offen
+
+- **Kein Gerätetest.** Es gibt hier kein Gerät und kein Emulator-Binary. NPU-/GPU-Nutzung bleibt bis zu einem echten A56 unbelegt.
+- **Push nicht freigegeben.** 2 Commits vor `origin/main`, Privates Repository `mertgoevse-wq/claudroide`.
+- **085** (Gerätetest) und **095** (Git-Zugang, echte Produktentscheidung) bleiben offen und blockieren 096–104 sowie 128.
 
 ## Sitzung 15 — Task 129: Skills finden (SkillDiscoveryInventory)
 

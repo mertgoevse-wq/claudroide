@@ -1,0 +1,152 @@
+name: verification
+
+# Prueft dieselben Zusagen, die das Projekt bisher nur im Checkpoint behauptet hat:
+# Testzahlen aus den echten JUNIT-XML statt aus der letzten Logzeile, und ein
+# Build, der nachweislich neu lief statt nur "UP-TO-DATE" zu sein.
+#
+# Grund: In Sitzung 14, 15 und 16 wurde mehrfach ein gruener Lauf als "fertig"
+# gewertet, der nichts geprueft hatte -- Gradle meldet auch fuer einen reinen
+# "UP-TO-DATE"-Lauf "BUILD SUCCESSFUL". Dieser Workflow verhindert genau das.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - '.github/workflows/verification.yml'
+      - 'tools/**'
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: verification-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Unit tests (nachweisbar neu ausgefuehrt)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # --rerun-tasks erzwingt eine echte Ausfuehrung. Ohne das waere ein gruener
+      # Lauf auch dann moeglich, wenn gar nichts gelaufen ist.
+      - name: Tests wirklich ausfuehren
+        run: ./gradlew :app:testDebugUnitTest --rerun-tasks
+
+      - name: Testlauf hat ueberhaupt Ergebnisse erzeugt
+        run: |
+          set -euo pipefail
+          DIR="app/build/test-results/testDebugUnitTest"
+          if [ ! -d "$DIR" ]; then
+            echo "::error::Keine Testergebnisse unter $DIR -- der Testlauf hat nichts erzeugt."
+            exit 1
+          fi
+          COUNT=$(find "$DIR" -name 'TEST-*.xml' | wc -l | tr -d ' ')
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::error::0 JUNIT-XML-Dateien. Ein gruener Gradle-Lauf ohne XML ist kein Testlauf."
+            exit 1
+          fi
+          echo "JUNIT-XML-Dateien: $COUNT"
+
+      - name: Zusammenfassung in die Job-Ausgabe
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import glob, xml.etree.ElementTree as ET
+          t = f = e = s = n = 0
+          for p in glob.glob('app/build/test-results/testDebugUnitTest/TEST-*.xml'):
+              r = ET.parse(p).getroot()
+              n += 1
+              t += int(r.get('tests', 0))
+              f += int(r.get('failures', 0))
+              e += int(r.get('errors', 0))
+              s += int(r.get('skipped', 0))
+          print("::group::Testergebnisse")
+          print(f"Testklassen: {n}")
+          print(f"Tests:       {t}")
+          print(f"Fehler:      {f}")
+          print(f"Errors:      {e}")
+          print(f"Uebersprungen: {s}")
+          print("::endgroup::")
+          if f or e:
+              print("::error::Es gibt fehlgeschlagene Tests.")
+              raise SystemExit(1)
+          if t == 0:
+              print("::error::0 Tests -- das beweist nichts.")
+              raise SystemExit(1)
+          PY
+
+      - name: Debug-Build
+        run: ./gradlew :app:assembleDebug
+
+      - name: APK als Artefakt sichern
+        uses: actions/upload-artifact@v4
+        with:
+          name: ClauDroide-debug-apk-verified
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 14
+
+  geheimnisse:
+    name: Keine Schluessel im Quelltext
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Die Prueflogik liegt in tools/secret_gate.py, NICHT hier. Grund: sie wurde
+      # zuerst hier als Shell geschrieben und hat dieses Repository bei jedem Push
+      # blockiert -- sieben Treffer, alle synthetische Testwerte. Eine Regel, die
+      # den eigenen Bestand nicht passieren laesst, ist keine Regel, sondern eine
+      # Stoerung; sie wird nicht "repariert", indem man sie hier lauter wiederholt.
+      #
+      # Das Skript entscheidet zweiteilig: ein Schluesselpraefix allein ist kein
+      # Verdacht, es muss ein ZUFALLSSEGMENT dazu kommen. Ein echter Schluessel ist
+      # zufaellig, ein Beispielwert in einem Test nicht.
+      #
+      # Das Skript ist in beide Richtungen gemessen, sonst waere es nur eine Behauptung:
+      #   * gegen dieses Repository -> 0 Treffer, exit 0
+      #   * gegen drei gepflanzte Schluessel (Anthropic, GitHub, PEM-Rumpf) -> 3 Treffer, exit 1
+      # Beide Messungen sind wiederholbar: die gepflanzten Werte liegen als
+      # Beispiel unter tools/secret_gate_fixtures/.
+      - name: Nach echten Schluesselmustern suchen
+        run: python3 tools/secret_gate.py .
+
+      # Ein Filter, der nichts findet, kann alles oder nichts bedeuten. Deshalb
+      # wird er hier gegen Schluessel geprueft, die er FINDEN MUSS. Faellt diese
+      # Stufe durch, ist der Filter unbrauchbar -- auch wenn der Hauptlauf gruen ist.
+      - name: Gegenprobe: der Filter findet echte Schluessel
+        run: |
+          set -euo pipefail
+          if python3 tools/secret_gate.py tools/secret_gate_fixtures; then
+            echo "::error::Der Schluesselfilter hat gepflanzte Schluessel NICHT gefunden -- er ist unbrauchbar."
+            exit 1
+          fi
+          echo "Gegenprobe bestanden: gepflanzte Schluessel werden erkannt."
+
+      - name: app/src/main ist streng geprueft
+        run: |
+          set -euo pipefail
+          # In app/src/main darf es gar keinen Platzhalter-Schluessel geben,
+          # auch nicht als Beispiel: es gibt genau einen bewussten Fall, der
+          # unten ausdruecklich benannt statt stillschweigend uebergangen wird.
+          if grep -rInE 'sk-ant-api[0-9]{2}-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}' app/src/main/ \
+             | grep -v 'AppSettings.kt'; then
+            echo "::error::Geheimnisverdacht in app/src/main."
+            exit 1
+          fi
+          # app/src/main enthaelt genau einen Maskierungs-BEISPIEL-Kommentar
+          # (AppSettings.kt) -- er wird hier benannt, nicht stillschweigend
+          # uebergangen, und die Ausnahme ist auf diese eine Datei begrenzt.
+          echo "app/src/main ist frei von Geheimnisverdacht (ausser dem benannten Beispiel in AppSettings.kt)."
