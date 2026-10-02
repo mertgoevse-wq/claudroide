@@ -41,11 +41,13 @@ Vor jeder Aufgabe lade **beide** in `tasks/skill-matrix.md` dafür zugeordneten 
 ## Repo-Pflege
 
 - Vor jedem Commit: `python3 tools/sync_frontmatter.py --check` muss ohne Fehler durchlaufen.
-- Nach jedem abgeschlossenen Aufgabenblock: Checkpoint aktualisieren und an `main` des verifizierten privaten Repositorys pushen. README, Aufgabenzählung und Wellenlisten nicht manuell pflegen; das Sync-Skript ist die Quelle.
-
-## Qualitätsregeln
-
-- Nutzertexte in einfachem Deutsch; technische Begriffe kurz erklären.
+- Nach jedem abgeschlossenen Aufgabenblock: Checkpoint aktualisieren und an `main` des verifizierten privaten Repositorys pushen. README, Aufgabenzählung und Wellenlisten nicht manuell pflegen; das Sync-Skript ist die Quelle.## Qualitätsregeln
+- **Sprache: Englisch zuerst, Deutsch als Zweitwahl.** App-Texte und neue Logik
+  liefern zuerst englischen Klartext; Deutsch gibt es, wo die App es anbietet
+  (`values-de/`). Technische Begriffe werden beim ersten Vorkommen kurz erklärt.
+  Historische deutsche Bezeichner aus den ersten Aufgaben werden nicht
+  rückwirkend umbenannt — das würde Hunderte von Zusicherungen in Tests brechen.
+  Neue Typen führen daher `label` (englisch) und nur bei Bedarf `germanLabel`.
 - Keine AI-Slop-Texte: konkret, knapp, belegt; keine leeren Werbeversprechen, künstlichen Superlative, generischen Füllabschnitte oder erfundenen Kennzahlen.
 - Keine Claude-/Anthropic-Marken oder -Logos nachahmen. Keine Claude-Abo-Anmeldung vermitteln; Claude API nur gemäß aktuellen offiziellen Regeln und mit eigenem Schlüssel.
 - Keine App-Code-Änderung außerhalb des freigegebenen Auftrags. Vor riskanten Datei-, Netzwerk-, Installations- oder Anbieteraktionen prüfen und passende Zustimmung einholen.

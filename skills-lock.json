@@ -1,6 +1,36 @@
 {
   "version": 1,
   "skills": {
+    "android-source-search": {
+      "source": "rcosteira79/android-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/android-skills/skills/android-source-search/SKILL.md",
+      "computedHash": "5c1d266521ea05e3ccadc343b8a11d75d6170abbaa4accc4e0406ed58fc5c152"
+    },
+    "android-testing": {
+      "source": "rcosteira79/android-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/android-skills/skills/android-testing/SKILL.md",
+      "computedHash": "c2fcec41665730d6a181b120d321423b6878bf5871300306b1d87b940544d7d0"
+    },
+    "compose": {
+      "source": "rcosteira79/android-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/android-skills/skills/compose/SKILL.md",
+      "computedHash": "a271ed264e37bd8a219cf5b1bb1c9bfaca3f2cf9675daa7c3d2bdb9e7e7ebdc8"
+    },
+    "gradle-build-performance": {
+      "source": "rcosteira79/android-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/android-skills/skills/gradle-build-performance/SKILL.md",
+      "computedHash": "e97a4a16641d845b2eca9199831b1cf40b89d1053d1bce3ebc771874eb58aa1f"
+    },
+    "modularization": {
+      "source": "rcosteira79/android-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/android-skills/skills/modularization/SKILL.md",
+      "computedHash": "cc35a394d1e4e3dcff4f3ebea2e871adc9e8448e8f75a4693dc69c614f7b9021"
+    },
     "requesting-code-review": {
       "source": "obra/superpowers",
       "sourceType": "github",

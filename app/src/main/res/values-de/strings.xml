@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Claudroide</string>
+    <string name="app_tagline">Mobiler KI-Coding-Assistent</string>
+
+    <!-- Navigation -->
+    <string name="nav_chat">Chats</string>
+    <string name="nav_projects">Projekte</string>
+    <string name="nav_settings">Einstellungen</string>
+
+    <!-- Disclaimer & Info -->
+    <string name="disclaimer_title">Unabhängiges Open-Source-Projekt</string>
+    <string name="disclaimer_text">Claudroide ist ein unabhängiges Open-Source-Projekt und steht in keiner geschäftlichen oder offiziellen Verbindung zu Anthropic, PBC. Claude ist eine eingetragene Marke von Anthropic. Claudroide ermöglicht die Nutzung offizieller Schnittstellen auf Basis eigener API-Schlüssel (BYOK).</string>
+
+    <!-- Empty States -->
+    <string name="empty_chat_title">Keine aktiven Unterhaltungen</string>
+    <string name="empty_chat_desc">Starte einen neuen Chat oder öffne ein lokales Projekt zur Bearbeitung.</string>
+    <string name="empty_project_title">Kein Projekt geöffnet</string>
+    <string name="empty_project_desc">Wähle einen Projektordner auf deinem Galaxy A56 aus, um Quellcode zu analysieren und zu bearbeiten.</string>
+</resources>
