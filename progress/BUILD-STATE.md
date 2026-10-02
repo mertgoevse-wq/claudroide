@@ -1,11 +1,79 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-02 (siebzehnte Sitzung — **läuft**, Welle 130/132/134 abgeschlossen, Task 124 fertig)
-**Status:** **119 von 135 Aufgaben `done`**, 16 offen, davon **8 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-02 (achtzehnte Sitzung — **läuft**, Task 131 fertig)
+**Status:** **120 von 135 Aufgaben `done`**, 15 offen, davon **7 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand (selbst gemessen, nicht aus dem Checkpoint übernommen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **2023 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (1982 nach der Welle 130/132/134 + 41 aus Aufgabe 124). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml`, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20 247 827 Bytes.
+**Teststand (selbst gemessen, nicht aus dem Checkpoint übernommen):** `./gradlew :app:testDebugUnitTest :app:assembleDebug --rerun-tasks` → **BUILD SUCCESSFUL**, **2062 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2023 nach Aufgabe 124 + 39 aus Aufgabe 131). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml`, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. APK 20 010 115 Bytes. `python3 tools/secret_gate.py` → 0 Treffer, exit 0.
 
-**Git-Stand:** `main`, Repository `mertgoevse-wq/claudroide`, per `gh` geprüft: **`isPrivate: true`**, Standardbranch `main`. Der Nutzer hat in Sitzung 16 Commits und Push ausdrücklich freigegeben.
+**Git-Stand:** `main` bei `0b57a34` (**1 Commit vor `origin/main`** — Task 131 ist noch nicht gepusht). Repository `mertgoevse-wq/claudroide`, per `gh` geprüft: **`isPrivate: true`**, Standardbranch `main`.
+
+## Sitzung 18 — Task 131: Globalen Skill installieren
+
+`feature/skills/SkillGlobalInstall.kt` (469) + `SkillGlobalInstallTest.kt` (701), **39 Tests**.
+
+### Der Absturz hat die Arbeit vollständig hinterlassen — diesmal ohne Warnung
+
+Sitzung 17 endete mit zwei **unversionierten** Dateien im Arbeitsbaum, die der Checkpoint nicht nennt. Der Prüfweg war derselbe wie in den Sitzungen 14–17: erst am Dateisystem nachsehen. Beide Dateien sind **geschlossen** (Klammern zu Ende, 457 + 641 Zeilen) — kein abgeschnittener Code, wie in Sitzung 16.
+
+**Und sie waren nicht grün.** Der erste Volltestlauf endete mit **`BUILD FAILED` bei genau einem Test** — die letzte Zeile des Laufs meldete trotzdem `exit code 0`. Das ist dieselbe Verwechslung, die in diesem Projekt schon dreimal ein erfundenes „fertig" erzeugt hat, nur eine Stufe schlimmer: **der Hintergrundprozess meldet den Exitcode der Pipe, nicht den von Gradle.** Ein Blick auf die letzte Zeile ist hier nicht nur unzuverlässig, sondern aktiv falsch.
+
+### Zwei echte Fehler — einer vom Test gefunden, einer nicht
+
+**1. Der Konfliktgrund stand auch nach der Bestätigung noch in der Ablehnungsliste.** `refusalReasons()` fügte den Pfadgrund **unbedingt** ein, `overwriteConfirmed` steuerte nur die Zusatzzeile. Folge: `mayWrite()` blieb für einen bestätigten Konflikt **dauerhaft `false`** — der Nutzer konnte ein Überschreiben gar nicht erlauben. Damit war der gesamte Sicherungs- und Überschreibzweig **toter Code**: `backupPaths`, `requiresBackup()` und die ganze Anzeige zu ersetzten Dateien erreichten nie eine nutzbare Freigabe.
+
+Der Fehler fiel, weil der KDoc drei Zeilen darüber das Gegenteil behauptete: *„Es gibt keine Konflikte **oder** sie sind ausdrücklich bestätigt."* **Die Datei widersprach sich selbst** — und die Absicht stand im Kommentar, nicht im Code. Das ist die billigste Art, einen Fehler zu finden: Man muss nur prüfen, ob die Beschreibung das tut, was sie behauptet.
+
+**2. `result()` erfand die Sicherung.** `backupCreated` wurde aus `plan.requiresBackup()` gesetzt — also aus der **Absicht** des Plans, nicht aus einer **Beobachtung**. Die Anzeige rendert daraufhin im Perfektum: *„Die ersetzten Dateien wurden vorher gesichert."* Die Datei verspricht in Zusage 4 ausdrücklich, das Ergebnis werde **nachgemessen**; hier wurde es angenommen.
+
+**Den zweiten Fehler fand kein Test.** Er war nur sichtbar, weil `written` als *gemeldete* Tatsache übergeben wird und `backupCreated` daneben fehlte — dieselbe Form wie `written`, nur ohne zweite Quelle. Der Aufrufer meldet jetzt, **was er gesehen hat**; der Vorgabewert ist `false`, weil ein Plan, der eine Sicherung *vorsieht*, sie nicht *angelegt* hat. Lieber schweigt die Oberfläche, als eine Sicherung zu behaupten, die es vielleicht nicht gibt.
+
+**Beides am Code behoben, nicht am Test.** Der eine Test, der vorher fiel, prüft jetzt weiterhin dasselbe und ist grün; drei neue Tests halten beide Korrekturen fest.
+
+### Zwei Mutationen geprüft, jede wird rot
+
+| Mutation | Rote Tests |
+|---|---|
+| Konfliktgrund wieder unbedingt (der Zustand vor dieser Sitzung) | **2** |
+| `backupCreated` wieder aus dem Plan statt der Beobachtung | **1** |
+
+Beide sind **am Code** zurückgenommen und der Ausgangszustand ist durch `diff` gegen die Sicherung als identisch bestätigt. Ein grüner Lauf nach einer Mutation beweist nichts, wenn niemand gezählt hat, welche Tests rot wurden.
+
+### Die tragende Grenze
+
+- **Der Plan schreibt nicht, er sagt.** `SkillGlobalInstall` hat keine Methode `write`/`copyTo`/`delete`/`mkdir` (Reflexionstest). Der Schreibvorgang kommt von außen als **Wert** zurück — `[InstallWriteResult]`. Ein Plan kann sich nicht verschreiben, ein Ergebnis kann sich nicht zum Erfolg erklären.
+- **Die Vorschau erzeugt nie eine Freigabe.** `InstallationPreview.consent` ist **immer `null`**, und `preview(...)` ist bewusst von `plan(...)` getrennt, damit „ansehen" nicht versehentlich einen schreibbaren Plan erzeugt. Ein `null`, das man abfragen kann, ist belastbarer als das Vertrauen in eine fehlende Methode.
+- **Keine stillen Leerstellen.** Ein leerer Pfad, ein `..`-Ausbruch, ein absolut Pfad und eine negative Größe fallen als `IllegalArgumentException` — lieber keine Vorschau als eine, die nichts erklärt. Gesichert wird genau, was ersetzt wird: `backupPaths` == die Konflikte, sonst **nichts**.
+
+### Skills
+
+- **`android-permissions-security`** — Abschnitt 8 („Never cache permission states") trägt Bedingung 4: `mayWrite()` rechnet bei jedem Aufruf neu gegen `[SkillConsent]`. Eine einmalig gespeicherte Prüfung würde eine **entnommene** Freigabe weiter als gültig zeigen — der Test `eine entzogene Zustimmung nimmt die Schreibfreigabe wieder weg` schlägt bei einer gespeicherten Variante fehl. Und die Sicherheitsregel für einen Datenweg: nichts wird behauptet, was nicht beobachtet wurde (Fehler 2).
+- **`testing-setup`** — Schritt 5 (Logikklassen testen, keine Compose-Layouts): reine JVM-Tests, kein Robolectric, kein Nachinstallieren. Die Angriffsvarianten einzeln: Quelle offen, Lizenz offen, leerer Pfad, `..`-Ausbruch, ein Konflikt / zwei Konflikte / keiner, Bestätigung gesetzt oder nicht, Zustimmung für denselben / einen anderen / keine Skill, Zustimmung mit Zeit und mit `0`, entzogen, leeres Schreibergebnis, unerwartete Datei, Sicherung beobachtet oder nur beabsichtigt.
+
+### Was diese Sitzung ausdrücklich **nicht** belegt
+
+- **Kein Gerätetest.** Es gibt hier kein Gerät und kein Emulator-Binary. Die Dateisystem-Vorgänge dieser Aufgabe werden in dieser Umgebung **nicht** ausgeführt — sie sind als Grenze zwischen Plan und Ausführung modelliert, nicht als Beweis, dass eine Installation auf einem Gerät funktioniert.
+- **Keine Anbieter- oder Herkunftsangabe.** `EnvironmentFile` beschreibt Pfade und Größen; woher die Dateien wirklich stammen, ist Sache der Lieferkettenprüfung aus Aufgabe 123 und wird hier nicht behauptet.
+
+### Erledigt in dieser Sitzung
+
+| Task | Titel | Dateien | Tests |
+|---|---|---|---|
+| 131 | Globalen Skill installieren | `SkillGlobalInstall.kt` (469) + `SkillGlobalInstallTest.kt` (701) | 39 |
+
+### Was das Abschließen von 131 freigibt
+
+Neu aus `tasks/*.md` **gerechnet**, nicht aus dem Checkpoint übernommen:
+
+| Task | Titel | Freigegeben durch | Skills |
+|---|---|---|---|
+| 133 | Helferrechte | 132 | `android-permissions-security` + `testing-setup` |
+| 135 | Werkzeugrechte und Daten | 134 | `android-permissions-security` + `testing-setup` |
+
+**085** (USB-Projektzugriff) und **095** (Git-Zugang) bleiben die beiden Blocker: 085 braucht ein echtes Gerät, 095 eine echte Produktentscheidung des Nutzers (welcher Git-Weg, wie weit er reicht) und gibt **acht** Aufgaben frei (096–104, 100, 101). Solange 085 und 095 offen sind, ist 128 „Sicherheitstests" nicht erreichbar — es hängt an 100 und 101.
+
+**Nächste Arbeit: 133 oder 135.** Beide sind vollständig entscheidbar, beide haben überschneidungsfreie Dateibereiche (`feature/agent/` bzw. `feature/mcp/`) und sind als Welle parallelisierbar.
+
+**Git-Stand zu dieser Sitzung (historisch, von der Kopfzeile überholt):** `main`, Repository `mertgoevse-wq/claudroide`, per `gh` geprüft: **`isPrivate: true`**, Standardbranch `main`. Der Nutzer hat in Sitzung 16 Commits und Push ausdrücklich freigegeben und dem Projekt „vollständige Autonomie" übertragen.
 
 ## Sitzung 17 — Wiederaufnahme, Welle 130/132/134 abgeschlossen
 

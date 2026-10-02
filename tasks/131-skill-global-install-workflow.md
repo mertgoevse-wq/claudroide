@@ -5,9 +5,9 @@ wave: "W27"
 depends_on: [001, 002, 017, 124]
 files: [tasks/131-skill-global-install-workflow.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "41285de246ac5d76"
 ---
 # Aufgabe 131 — Globalen Skill installieren
