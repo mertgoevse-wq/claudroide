@@ -5,9 +5,9 @@ wave: "W18b"
 depends_on: [003, 122]
 files: [tasks/093-project-instructions.md]
 skills: [`/code-review`, `android-permissions-security`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "68eeaeb998161224"
 ---
 # Aufgabe 093 — Projektanweisungen lesen
