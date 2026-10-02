@@ -5,9 +5,9 @@ wave: "W18"
 depends_on: [010, 017]
 files: [tasks/081-project-home.md]
 skills: [`adaptive`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "8654698353aa4636"
 ---
 # Aufgabe 081 — Projektübersicht

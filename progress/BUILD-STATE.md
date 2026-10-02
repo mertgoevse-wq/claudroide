@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (siebte Sitzung)
-**Status:** 83 von 135 Aufgaben verifiziert. Tasks 040, 072, 073, 074, 075, 076, 078, 079 und 080 abgeschlossen.
+**Status:** 84 von 135 Aufgaben verifiziert. Tasks 040, 072–081 abgeschlossen (W16 vollständig).
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -427,7 +427,30 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Geladene Skills:** `adaptive` (Kurzfassung bei kompakter Breite, Stopp-Knopf in der Mindestgröße des Projekts, Fortschrittsanzeige ohne erfundene Prozentwerte, wenn die Gesamtzahl nicht bekannt ist) und `testing-setup` (der Test `onlyTheFinishedPhaseCountsAsDone` läuft über *alle* Phasen statt über zwei ausgewählte, damit eine neu hinzugefügte Phase nicht ungeprüft durchrutscht).
 
-**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+**Push erfolgt:** Am 2026-10-02 mit Nutzerfreigabe `cb88e3b..2aafa36` nach `origin/main` (privat) gepusht. Danach Aufgaben 080 und 081 committet.
+
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt, ohne Gate): 082, 087, 092, 093, 098, 103, 105.
+**Gates mit offener Entscheidung** (Nutzerentscheidung nötig): 084, 095, 117, 118, 123, 125, 126, 127, 129, 130.
+
+## Task 081 erledigt — „Projektübersicht“
+
+`ProjectOverviewPolicy.kt` (neu, `feature/project/`) + `ProjectOverviewPolicyTest.kt` (40 Tests).
+
+**Die beiden Fertig-Kriterien strukturell abgesichert:**
+- **Widerrufene Ordnerrechte sind deutlich markiert.** Der Zustand kommt aus `ProjectAccessState.of(...)` und wird **berechnet, nicht übergeben**. Die Zurücknahme schlägt die Registrierung — sonst bliebe ein zurückgezogener Ordner „freigegeben“, nur weil er noch eingetragen ist. Die Warnung steht in `headline()` an Position 1 (mit `!`), also vor der Dateiliste, wo sie nicht überlesen wird. `canWork` verweigert für `REVOKED` jede Zusage.
+- **Keine Dateien ohne Auswahl automatisch scannen.** `OverviewFileList` lässt sich mit `SelectionOrigin.AUTOMATIC_SCAN` **gar nicht** erzeugen — auch nicht leer. Der Wert existiert, damit die Ablehnung *benannt* werden kann. Ergänzend: Das Manifest kennt **nur** `INTERNET` und `ACCESS_NETWORK_STATE`, **keine** Speicherberechtigung — die Übersicht kann also nichts selbst suchen.
+
+**Schutz: keine Geheimnisse, keine Dateiinhalte.** `OverviewFile` hat **kein Inhaltsfeld** (nur Pfad, Name, Größe) und **kein** `isSecret`-Argument.
+
+**Ein echter Fehler, den der Test aufgedeckt hat:** `isSecret` war zunächst ein Konstruktorargument. Der Test „eine Zugangsdatei wird nicht mit Namen gezeigt“ schlug fehl, weil mein Testfall `.env` **ohne** `isSecret = true` übergab — die Übersicht zeigte den Namen. Das war kein Testfehler, sondern eine echte Lücke: ein Aufrufer, der das Flag vergisst, hätte den Namen einer `.env` angezeigt. `isSecret` ist jetzt eine **abgeleitete** Eigenschaft über `ProjectExclusionPolicy.classify` — es gibt kein Feld, das man auf `false` setzen könnte. Zwei Tests halten diesen Zustand fest (kein `isSecret`-Feld auf der Klasse) und belegen, dass auch `.pem`, `id_rsa` und die Kopie `.env.bak` erkannt werden, während `docs/secrets-guide.md` **nicht** aussortiert wird.
+
+**Zwei Testfehler, die ich behoben habe:** Der Widerruf-Test suchte nach „zurück freigegeben“, der Code sagt „wieder freigegeben werden soll“ — der Code war richtig. Und der Test „nichts zu tun“ baute eine Übersicht, in der es eben doch etwas zu tun gab (kein Ordner, kein Lauf) — der Code war richtig; der Test prüft jetzt den Fall, in dem tatsächlich nichts offen ist.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1042 Tests, 0 Fehler, 0 übersprungen** (vorher 1001, +41).
+
+**Geladene Skills:** `adaptive` (die Warnung muss ohne Scrollen sichtbar sein — deshalb steht sie in `headline()` an erster Stelle und nicht versteckt in der Dateiliste) und `testing-setup` (der Test prüft die Abwesenheit des `isSecret`-Feldes über Reflexion statt über ein Beispiel, das die Lücke nicht zeigen würde).
+
+## Task 080 erledigt — „Anbieterfunktionen abgleichen“
 
 ## Task 080 erledigt — „Anbieterfunktionen abgleichen“
 
