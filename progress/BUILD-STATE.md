@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (siebte Sitzung)
-**Status:** 82 von 135 Aufgaben verifiziert. Tasks 040, 072, 073, 074, 075, 076, 078 und 079 abgeschlossen.
+**Status:** 83 von 135 Aufgaben verifiziert. Tasks 040, 072, 073, 074, 075, 076, 078, 079 und 080 abgeschlossen.
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -427,7 +427,33 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Geladene Skills:** `adaptive` (Kurzfassung bei kompakter Breite, Stopp-Knopf in der Mindestgröße des Projekts, Fortschrittsanzeige ohne erfundene Prozentwerte, wenn die Gesamtzahl nicht bekannt ist) und `testing-setup` (der Test `onlyTheFinishedPhaseCountsAsDone` läuft über *alle* Phasen statt über zwei ausgewählte, damit eine neu hinzugefügte Phase nicht ungeprüft durchrutscht).
 
-**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 080 (W16), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+
+## Task 080 erledigt — „Anbieterfunktionen abgleichen“
+
+`ProviderCapabilityPolicy.kt` (neu, `feature/agent/`) + `ProviderCapabilityPolicyTest.kt` (32 Tests).
+
+**Belegte Grundlage** (direkt abgerufen am 2026-10-02, `https://platform.claude.com/docs/en/models/overview`, als Konstante `ProviderCapabilityEvidence.CAPABILITY_DOC_URL` + `CAPABILITY_DOC_VERIFIED` im Code statt als Zahl im Kommentar):
+- *„All current models support text and image input, text output, multilingual capabilities, vision, and tool use.“*
+- Dieselbe Seite listet in ihrer Fähigkeitstabelle eine Zelle **„Not supported“** — Fähigkeiten sind also nicht über alle Modelle gleich.
+- *„You can query model capabilities and token limits programmatically with the Models API. The response includes max_input_tokens, max_tokens, and a capabilities object for every available model.“*
+
+**Daraus folgt die Arbeitsregel der Aufgabe: Eine Fähigkeit gilt erst als vorhanden, wenn sie belegt ist.** `ProviderCapabilityProfile.isVerified` ist Voraussetzung für jede positive Aussage. Ohne Nachweis liefert `check` das eigene Ergebnis `Unverified` — **nicht** „geht schon“. Ohne Nachweis wird auch **kein** Ersatzweg vorgeschlagen: Solange unklar ist, *ob* die Fähigkeit fehlt, wäre jede Ersatzliste eine Behauptung.
+
+**Die drei Zusagen strukturell:**
+- **Kein stiller Anbieterwechsel.** Die Klasse enthält **keine** Methode, die Anbieter oder Modell wechselt, und **keine** `CapabilityDecision`-Variante trägt ein Ziellager. Fehlende Fähigkeit → Meldung. Ein Wechsel bleibt allein der Weg über `ModelFallbackPolicy` (Aufgabe 061) mit eigener Zustimmung; die Meldung sagt das dem Nutzer ausdrücklich.
+- **Der Ersatzweg berücksichtigt neue Freigaben und Kosten.** `Workaround` hat `requiresFreshApproval` und `costNoticeLines` als Pflichtfelder. Der `init`-Block **lehnt einen kostenpflichtigen Ersatzweg ohne Kostenhinweis ab** — damit kann es keinen Ersatzweg geben, der Geld kostet, ohne dass der Nutzer es vorher gesehen hat.
+- **Fehlende Rechte werden nicht durch eine andere Anmeldung umgangen.** Im ganzen Typ gibt es **kein Feld** für eine andere Anmeldung, ein anderes Konto oder einen anderen Zugang. `Unsupported` kann das nicht ausdrücken, also kann es nicht vorkommen. Getestet auch über den Kurzbericht, der „Es wird kein anderer Anbieter und keine andere Anmeldung verwendet“ ausdrücklich sagt.
+
+**Kein Präfixabgleich bei Werkzeugnamen** (bewusst getestet): `read_file_backup` gilt **nicht** als `read_file`. Groß-/Kleinschreibung und umgebende Leerzeichen sind dagegen egal.
+
+**Ein Fehler, den der Test aufgedeckt hat:** Der Test „Schreibweise spielt keine Rolle“ schlug zunächst fehl — mein Testfall hatte `search_text` vergessen, obwohl `FILE_READING` es braucht. Der Code war richtig, der Test falsch; behoben am Test, nicht an der Logik.
+
+**Ein Namenskonflikt, der beim Kompilieren auffiel:** Belegkonstanten und Prüfklasse hießen beide `ProviderCapabilityPolicy`. Die Konstante heisst jetzt `ProviderCapabilityEvidence` — das benennt genauer, was sie ist (Beleg, nicht Prüfung).
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1001 Tests, 0 Fehler, 0 übersprungen** (vorher 969, +32 aus `ProviderCapabilityPolicyTest`). Die 1000er-Marke ist erreicht.
+
+**Geladene Skills:** als Ersatz für das nicht verfügbare `/claude-api` die **direkte Quellenprüfung** der Anbieterdokumentation (nicht geraten: die zitierten Sätze wurden von der Quelle geholt und das Abrufdatum steht im Code), und `testing-setup` (jede der fünf `AgentFeature` wird einzeln mit vollem und leerem Profil geprüft, damit eine neue Funktion nicht ungeprüft mitläuft).
 
 ## Task 079 erledigt — „Wiederholungsregeln“
 

@@ -5,9 +5,9 @@ wave: "W16"
 depends_on: [061, 070, 071]
 files: [tasks/080-agent-provider-capability-fallback.md]
 skills: [`/claude-api`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "44cdb92256ac30fb"
 ---
 # Aufgabe 080 — Anbieterfunktionen abgleichen
