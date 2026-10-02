@@ -20,7 +20,7 @@
   <img src="https://img.shields.io/badge/Phase-Entwurfsplanung-informational" alt="Phase" />
   <img src="https://img.shields.io/badge/Bauaufgaben-135-blue" alt="Aufgaben" />
   <img src="https://img.shields.io/badge/Verifiziert-103%20%2F%20135-yellow" alt="Status" />
-  <img src="https://img.shields.io/badge/Tests-1570%20bestanden-success" alt="Tests" />
+  <img src="https://img.shields.io/badge/Tests-1574%20bestanden-success" alt="Tests" />
   <img src="https://img.shields.io/badge/Zielger%C3%A4t-Galaxy%20A56%205G-orange" alt="Gerät" />
   <img src="https://img.shields.io/badge/Repo-privat-success" alt="Repo" />
 </p>
@@ -169,9 +169,10 @@ flowchart LR
 
 - **Signet:** [`assets/brand/mark-1024.png`](assets/brand/mark-1024.png), dazu die Varianten `-256` und `-96`. Wird außerdem direkt als adaptives App-Symbol erzeugt (`app/src/main/res/mipmap-*/ic_launcher_foreground.png`, mit `monochrome`-Ebene für die thematisierten Symbole ab Android 13).
 - **Banner:** [`assets/brand/banner.png`](assets/brand/banner.png) — 1376x768, 16:9. Die Wortmarke ist echtes Inter, der Produktname ist deshalb konstruktionsbedingt richtig geschrieben.
+- **In der App:** Beides liegt als WebP daraus abgeleitet im Build — `res/drawable-nodpi/claudroide_mark.webp` (13 KB) und `claudroide_banner.webp` (15 KB, aus 112 KB). Die PNGs bleiben als verlustfreie Quelle im Repo; der Deckel von 50 KB gilt für das, was aufs Gerät geht, und `BrandAssetContractTest` prüft ihn je ausgelieferter Datei.
 - **Gestaltung:** eine Android-Kuppel in `#3DDC84` mit einem Claude-Funken als Krone. Die beiden Strahlen bei ±26° sind zugleich die Antennen des Droiden **und** zwei Strahlen des Funkens — dieselben Striche tragen beide Systeme, sodass sich keine Hälfte löschen lässt, ohne die andere zu zerstören. Das ist die Vorgabe „kein untergeordnetes Symbol" als Geometrie, nicht als Bildunterschrift.
 - Als exakte Vektorgeometrie von [`tools/brand.py`](tools/brand.py) gezeichnet, nicht von einem Bildmodell: die Wortmarke muss „Claudroide" schreiben, und Diffusionsmodelle schreiben Wortmarken falsch. Banner und App-Symbol importieren dieselbe Geometrie und können deshalb nicht auseinanderlaufen.
-- Kein SVG als fertiges Logo oder Illustration. Fertige Grafiken liegen ausschließlich als PNG, WebP oder JPG vor (geprüft durch CI `.github/workflows/repo-health.yml`). Die SVGs unter `assets/brand/.build/` sind Build-Eingang, keine ausgelieferten Dateien.
+- Kein SVG als fertiges Logo oder Illustration. Fertige Grafiken liegen ausschließlich als PNG, WebP oder JPG vor (geprüft durch CI `.github/workflows/repo-health.yml`). Die SVGs unter `assets/brand/.build/` sind Build-Eingang, keine ausgelieferten Dateien. Quelldateien unter `assets/brand/` sind unbeschränkt; der 50-KB-Deckel gilt für ausgelieferte App-Ressourcen und ist testgeprüft.
 
 ---
 
