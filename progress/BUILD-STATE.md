@@ -472,7 +472,7 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Zwei Testbeispiele waren falsch gewählt** (vom Code korrekt abgewiesen): `.secrets/creds.json` ist keine gesperrte Datei (gesperrt ist u. a. `credentials.json`), und `.git` fällt unter die Regel für große Ordner, nicht unter die für versteckte. Beide Tests prüfen jetzt regelkonfliktfreie Fälle; zusätzlich gibt es je einen Test, der die Vorrangordnung festhält.
 
-**Teststand:** `./gradlew :app:testDebugUnitTest` → **1164 Tests, 0 Fehler, 0 übersprungen** (vorher 1136, +28).
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1166 Tests, 0 Fehler, 0 übersprungen** (vorher 1136, +28).
 
 **Skills:** `android-profiler` (Speicher- und Zeitbedarf als **Schätzung mit sichtbarem_samplecount**, klar getrennt von einer Messung auf dem A56) und `testing-setup` (zwei Reflexionstests statt zwei Beispielen, damit ein späteres Hinzufügen einer startenden Methode auffällt).
 
@@ -532,7 +532,7 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Zwei Testbeispiele waren falsch gewählt** (vom Code korrekt abgewiesen): `.secrets/creds.json` ist keine gesperrte Datei (gesperrt ist u. a. `credentials.json`), und `.git` fällt unter die Regel für große Ordner, nicht unter die für versteckte. Beide Tests prüfen jetzt regelkonfliktfreie Fälle; zusätzlich gibt es je einen Test, der die Vorrangordnung festhält.
 
-**Teststand:** `./gradlew :app:testDebugUnitTest` → **1164 Tests, 0 Fehler, 0 übersprungen** (vorher 1136, +28).
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1166 Tests, 0 Fehler, 0 übersprungen** (vorher 1136, +28).
 
 **Skills:** `android-profiler` (Speicher- und Zeitbedarf als **Schätzung mit sichtbarem_samplecount**, klar getrennt von einer Messung auf dem A56) und `testing-setup` (zwei Reflexionstests statt zwei Beispielen, damit ein späteres Hinzufügen einer startenden Methode auffällt).
 
