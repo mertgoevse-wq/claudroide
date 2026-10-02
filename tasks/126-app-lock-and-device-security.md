@@ -5,9 +5,9 @@ wave: "W24"
 depends_on: [017, 045]
 files: [tasks/126-app-lock-and-device-security.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "1d55ffbf045deb73"
 ---
 # Aufgabe 126 — App- und Geräteschutz
