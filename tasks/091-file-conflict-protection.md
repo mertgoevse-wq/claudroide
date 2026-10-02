@@ -5,9 +5,9 @@ wave: "W19"
 depends_on: [082, 088, 089]
 files: [tasks/091-file-conflict-protection.md]
 skills: [`testing-setup`, `android-permissions-security`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "72a2db437aec48bf"
 ---
 # Aufgabe 091 — Datei-Konflikte

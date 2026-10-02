@@ -5,9 +5,9 @@ wave: "W19"
 depends_on: [082, 093]
 files: [tasks/094-project-instruction-trust.md]
 skills: [`android-permissions-security`, `/code-review`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "5aaa448acdb00d1f"
 ---
 # Aufgabe 094 — Herkunft von Projektregeln

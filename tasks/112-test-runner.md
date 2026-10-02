@@ -5,9 +5,9 @@ wave: "W25"
 depends_on: [105, 119, 120]
 files: [tasks/112-test-runner.md]
 skills: [`testing-setup`, `android-permissions-security`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "46239d4a2e3e0b0c"
 ---
 # Aufgabe 112 — Projekttests
