@@ -126,7 +126,12 @@ jobs:
       # Ein Filter, der nichts findet, kann alles oder nichts bedeuten. Deshalb
       # wird er hier gegen Schluessel geprueft, die er FINDEN MUSS. Faellt diese
       # Stufe durch, ist der Filter unbrauchbar -- auch wenn der Hauptlauf gruen ist.
-      - name: Gegenprobe: der Filter findet echte Schluessel
+      # Anfuehrungszeichen sind hier Pflicht, nicht Geschmack: ein unquotiertes
+      # "name: Gegenprobe: der Filter ..." liest YAML als Schluessel-Wert-Paar
+      # und der ganze Workflow faellt schon beim Parsen durch, mit 0 Sekunden
+      # Laufzeit und ohne eine einzige ausgefuehrte Zeile. Genau das ist
+      # geschehen: der erste Push nach dem Commit lief rot in 0s.
+      - name: "Gegenprobe: der Filter findet echte Schluessel"
         run: |
           set -euo pipefail
           if python3 tools/secret_gate.py tools/secret_gate_fixtures; then

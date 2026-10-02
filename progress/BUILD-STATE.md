@@ -66,6 +66,27 @@ Die Logik liegt jetzt in `tools/secret_gate.py` statt als Shell im Workflow — 
 
 Der erste Lösungsversuch nutzte eine Rückreferenz (`\1{7,}`) für „ein Zeichen, siebenmal wiederholt". `ugrep` lehnt sie ab (`invalid escape`). Das ist nicht nur ein Werkzeugdetail: **eine Regex-Rückreferenz in einem CI-Skript ist ohnehin eine unnötige Abhängigkeit.** Die fertige Regel steht deshalb in Python ohne Rückreferenzen.
 
+### Der erste Push nach dem Commit lief rot — in 0 Sekunden
+
+Nach dem Commit geprüft, nicht angenommen: `gh run list` zeigte **`verification.yml` failed in 0s** mit dem Hinweis *"This run likely failed because of a workflow file issue"*. **Null Sekunden Laufzeit** heißt: nicht ein Test rot, sondern der Workflow wurde **überhaupt nicht geparst**.
+
+Ursache: `- name: Gegenprobe: der Filter findet echte Schluessel`. Ein **unquotiertes `:` in einem YAML-Wert** liest YAML als Schlüssel-Wert-Paar — `Gegenprobe` wurde zum Schlüssel, der Rest zum Attribut. Der Job bricht beim Parsen ab, bevor eine Zeile Shell läuft.
+
+**Zwei Dinge, die das aufdeckt:**
+
+1. Meine eigene YAML-Schnellprüfung (Tabs, Anführungszeichen) meldete **„OK"** — sie war zu eng. Sie prüfte keine verschachtelten Mapping-Strukturen.
+2. PyYAML war auf diesem System **nicht installiert**, und `pip install` scheitert an PEP 668. Erst mit `--break-system-packages` ließ sich der echte Parser benutzen. **Die Prüfung war also die ganze Zeit nicht verfügbar, und ich hatte sie durch eine schlechtere ersetzt, ohne das zu benennen.**
+
+Der Wert ist jetzt quotiert, **und** PyYAML prüft alle drei Workflows:
+
+| Datei | Ergebnis |
+|---|---|
+| `verification.yml` | OK — Jobs `tests`, `geheimnisse`, 8 Steps |
+| `build-apk.yml` | OK |
+| `repo-health.yml` | OK |
+
+**Die Lehre ist die aus Sitzung 14 in neuer Form:** Derselbe Fehler wie bei den Übersetzungsfehlern — *grün gesehen statt geprüft*. Nur diesmal brauchte ein **Werkzeug**, um überhaupt eine Fehlermeldung zu bekommen. Wer `pip` nicht nutzen kann, braucht eine andere Prüfung als „sieht die Datei richtig aus"; das Fehlen des Werkzeugs ist kein Grund, die Prüfung zu überspringen, sondern ein Grund, sie zu suchen.
+
 ### Der Graphen wurde neu ausgewertet — und er zeigt eine Kette, die der Checkpoint nicht nennt
 
 Neu aus `tasks/*.md` gerechnet, nicht aus dem Checkpoint: freigegeben sind **085, 095, 130, 132, 134**. Neu sichtbar wurde die Kette **130 → 124 → 131**: Wer 130 abschließt, gibt zwei weitere Aufgaben frei. Das ist genau der Grund, warum diese Welle vor 095 (Geräteentscheidung) und 085 (Gerätetest) gebaut wurde.
