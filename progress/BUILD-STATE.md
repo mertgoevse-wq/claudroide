@@ -1,9 +1,71 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-02 (vierzehnte Sitzung — Tasks 083, 113, 115, 118, 121 und 125 verifiziert)
-**Status:** **111 von 135 Aufgaben `done`**, 24 offen, davon **16 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-02 (vierzehnte Sitzung, zweiter Teil — Tasks 126 und 123 verifiziert)
+**Status:** **113 von 135 Aufgaben `done`**, 22 offen, davon **15 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand:** `./gradlew :app:testDebugUnitTest` → **1758 Tests, 0 Fehler, 0 übersprungen** (+23 `PersistentFolderAccessTest`, +25 `LongTaskNotificationPolicyTest`, +22 `CommandAuditLogTest`, +23 `ApprovalHistoryTest`, +24 `SpecialFilePolicyTest`, +18 `ProviderPrivacyProfileTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20.4 MB.
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1798 Tests, 0 Fehler, 0 übersprungen** (+22 `DeviceProtectionPolicyTest`, +18 `SkillSupplyChainReviewTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20.4 MB.
+
+**Git-Stand:** `main` bei `90eb7a5`, **10 Commits vor `origin/main`** — **nicht gepusht**. Push ist nach CLAUDE.md eine externe Nebenwirkung und braucht eine ausdrückliche Freigabe.
+
+## Sitzung 14, achter Teil — Task 123: Skill-Quelle prüfen (SkillSupplyChainReview)
+
+### Was die Prüfung wirklich gefunden hat
+
+`progress/SKILL-SOURCE-REVIEW.md` hält den Nachweis fest. Die Aufgabe verlangt Kandidat, Herkunft, Repository, Lizenz, Inhalt, Werkzeuge und begründete Eignung — **belegt am Dateisystem**, nicht aus dem Gedächtnis. Drei Befunde, alle echt:
+
+1. **Vier Skills verweisen auf eine Lizenzdatei, die es nicht gibt.** `adaptive`, `android-permissions-security`, `testing-setup` und `android-profiler` führen jeweils `license: Complete terms in LICENSE.txt`. In **keinem** der vier Verzeichnisse liegt eine `LICENSE.txt`. Die Lizenz ist damit **unbelegt** — nicht „fehlend". Eine Zeile, die auf ein nicht vorhandenes Dokument verweist, belegt keine Nutzungsrechte. Die Freigabe stützt sich deshalb **nicht** auf diese Zeile.
+2. **Kein Skill führt etwas aus.** Jeder Skill-Körper auf `curl`, `wget`, `rm -rf`, Paketinstallation und Netzzugriff geprüft: keine Treffer. Einziger Treffer war die **Wortart** „Documentation retrieval" in `swarm-planner` — eine Anweisung an mich, keine ausgeführte Operation. **Das**, nicht die Lizenzzeile, ist der Grund für die Einsetzbarkeit.
+3. **`swarm-planner` und `parallel-task` ohne Herkunftsangabe** — kein `metadata.author`, keine Lizenz. Ihr Inhalt ist ebenfalls reiner Anweisungstext; die Herkunft bleibt **offen**. Sie waren bereits installiert und wurden weder heruntergeladen noch verändert.
+
+**Context7 fehlt.** `swarm-planner` verlangt es für Bibliotheksrecherche; es ist in dieser Sitzung nicht verfügbar. Nach CLAUDE.md wurde nichts behauptet und nichts geraten — 123 verlangt Lieferkette, nicht Bibliotheksrecherche.
+
+### Die zwei Zusagen als Verzweigung, nicht als Kommentar
+
+- **Nichts ausführen vor der Inhaltsprüfung.** `ReviewEvidence.mayRun` ist `false`, solange `contentInspected` fehlt, und `review` liefert `REJECTED`. Der Test `ohne Inhaltspruefung hilft auch eine perfekte Lizenz nicht` hält fest, dass der sonst sauberste Kandidat ohne Lektüre abgelehnt bleibt — eine Lizenzprüfung ist keine Inhaltsprüfung.
+- **Nicht lizenzierte Skills werden abgelehnt.** `LicenseEvidence` trennt `VERIFIED` von `UNVERIFIABLE_REFERENCE` und `NOT_STATED`; nur `VERIFIED` ist einsetzbar. Der Standard des Parameters ist bewusst `NOT_STATED` — wer das Argument weglässt, darf nicht versehentlich als geprüft durchgehen.
+- **Suche ist keine Installationsfreigabe.** `installRequiresUserConsent()` ist konstant `true`. Es gibt keinen Codepfad, der eine Installation ohne Rückfrage ergänzt, und keine spätere Änderung kann sie still abschalten, ohne dass ein Test auffällt.
+- **Reihenfolge ist die Aussage:** erst Inhalt, dann Lizenz, dann verdächtiger Inhalt. Fehlt die Lektüre, wird **das** genannt, weil ohne sie kein Urteil möglich ist.
+
+**Es wurde nichts installiert, nichts heruntergeladen, kein Repository geklont.**
+
+### Teststand
+
+- `./gradlew :app:testDebugUnitTest`: **1798 Tests, 0 Fehler, 0 übersprungen** (vorher 1780, +18).
+- **Zwei Mutationen geprüft, nicht nur „grün gesehen":** Lizenzprüfung entfernt → 3 Tests rot; `installRequiresUserConsent` auf `false` → 2 Tests rot. Beide Zusagen greifen wirklich.
+- `:app:assembleDebug`: **BUILD SUCCESSFUL**.
+- Geheimnis-Scan über die neuen Dateien: ohne Treffer. Dateien 217 / 221 Zeilen (Grenze 800).
+
+### Skills
+
+- **`android-permissions-security`** — die Grundregel jeder Lieferkette: nichts Ausführbares ohne vorherige Sichtung. Der Skill wird hier als **Inhalt** behandelt, nicht als Autorisierung; das ist die Zusage „nicht ausgeführt, bevor der Inhalt geprüft ist".
+- **`/swarm-planner`** — geladen und angewandt: Abhängigkeiten wurden neu ausgewertet, nicht aus dem Checkpoint übernommen. Das Ergebnis (085, 095, 123, 127, 129, 130, 132, 134 freigegeben) stammt aus dem Graphen. **Die Recherche-Anweisung des Skills (Context7) war nicht erfüllbar** und ist als offen dokumentiert.
+
+## Sitzung 14, siebter Teil — Task 126: App- und Geräteschutz (DeviceProtectionPolicy)
+
+### Ein Unterbrechungsfehler, der erst beim Kompilieren sichtbar wurde
+
+Die achtzehnte Sitzung brach **mitten in 126** ab: zwei Dateien lagen unversioniert im Arbeitsbaum. Der erste Testlauf **schlug beim Kompilieren fehl** — die angefangene Arbeit lief nicht. Ursache war kein Tippfehler, sondern ein **Gestaltungsfehler**: `statuses(...)` verlangte `notificationPrivacy` als Pflichtparameter, obwohl dieselbe Klasse dokumentiert, dass `SAFE_SUMMARY` **die Vorgabe** ist. Der Sammelbericht widersprach seiner eigenen Vorgabe, und jeder Aufrufer, der die Standards benutzte, konnte nicht übersetzen.
+
+**Am Code behoben, nicht am Test** (`notificationPrivacy` bekommt den Standard `defaultNotificationPrivacy()`). Der zweite Fehler lag im Test: `appSwitcherShielded` wurde an `facts(...)` statt an `statuses(...)` übergeben.
+
+### Die zwei Bedingungen der Aufgabe als Eigenschaft des Typs
+
+- **Keine biometrische Funktion ohne unterstützte Android-API.** `BiometricCapability` trennt `AVAILABLE` / `NOT_ENROLLED` / `UNSUPPORTED`; nur `AVAILABLE` bietet an. Eine als eingetragen gemeldete Fähigkeit **ohne** unterstützte API erreicht `AVAILABLE` nicht — es gibt keinen Konfigurationsweg, der fehlende Plattformunterstützung überlebt. `biometricExplanation` sagt bei `UNSUPPORTED` wörtlich, dass **keine** Option besteht.
+- **Benachrichtigungen zeigen standardmäßig keine vertraulichen Inhalte.** `SAFE_SUMMARY` ist eine **Vorgabe**, keine beim Start überschreibbare Voreinstellung. `SENSITIVE_DETAIL` verlangt eine ausdrückliche Wahl und trägt eine Warnung, weil ein Gerät ohne Sperre den Klartext sonst mitzeigt. Auch im Detailfall läuft der Text durch `SecretMasker` — Details sind nicht dasselbe wie ein Schlüssel im Klartext.
+- **Kein halb aktiver Zustand.** Auf einem Gerät **ohne** Sperre meldet `effectiveProtection` ehrlich „kein wirksamer Schutz", statt vier grüne Häkchen zu zeigen.
+
+### Teststand
+
+- `./gradlew :app:testDebugUnitTest`: **1780 Tests, 0 Fehler, 0 übersprungen** (vorher 1758, +22 `DeviceProtectionPolicyTest`).
+- **Zwei Mutationen geprüft:** Benachrichtigungsstandard auf `SENSITIVE_DETAIL` → Tests rot; Biometrie ohne unterstützte API anbieten → Tests rot.
+- `:app:assembleDebug`: **BUILD SUCCESSFUL**, APK 20 396 805 Bytes.
+- Geheimnis-Scan: der einzige Treffer in `app/src/main/` ist ein **vorbestehender** Maskierungsbeispiel-Kommentar in `AppSettings.kt` (Zeile 23), kein echter Schlüssel und nicht aus dieser Aufgabe. Die Test-Fixtures sind synthetisch.
+- **Kein Gerätetest** — kein Gerät, kein Emulator-Binary vorhanden.
+
+### Skills
+
+- **`android-permissions-security`** — Abschnitt 8 („Never cache permission states"): `DeviceSecurityFacts` ist ein **Faktenwert pro Aufruf**, kein zwischengespeicherter Zustand. Wer ein Feld „biometrisch eingerichtet" speichern würde, erzeugte genau den Zustand, den die Aufgabe verhindern soll.
+- **`testing-setup`** — Schritt 5 (Logikklassen testen, keine Compose-Layouts): reine JVM-Tests, kein Robolectric, kein Nachinstallieren von Test-Frameworks. Die Angriffsvarianten einzeln: API fehlt / unterstützt-nicht-eingerichtet / eingerichtet; Gerät mit und ohne Sperre; Standard und Detail; jede Abschaltentscheidung einzeln.
 
 ## Sitzung 14, sechster Teil — Task 125: Datenschutz je Anbieter (ProviderPrivacyProfile)
 
