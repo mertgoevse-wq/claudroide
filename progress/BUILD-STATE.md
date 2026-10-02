@@ -1,9 +1,49 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-02 (dreizehnte Sitzung abgeschlossen — Task 084 verifiziert)
-**Status:** **105 von 135 Aufgaben `done`**, 30 offen, davon **22 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-02 (vierzehnte Sitzung — Task 083 verifiziert)
+**Status:** **106 von 135 Aufgaben `done`**, 29 offen, davon **21 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand:** `./gradlew :app:testDebugUnitTest` → **1623 Tests, 0 Fehler, 0 übersprungen** (+23 Tests in `ZipProjectImportTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20 MB.
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1646 Tests, 0 Fehler, 0 übersprungen** (+23 Tests in `PersistentFolderAccessTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20 MB.
+
+## Sitzung 14 — Task 083: Ordnerzugriff merken (PersistentFolderAccess)
+
+### Ausgangslage
+
+Der Arbeitsbaum war sauber, Git und Checkpoint stimmten überein. `sync_frontmatter.py --check` grün über alle 135 Dateien: **105 erledigt, 30 offen**. Eine Neuauswertung des Abhängigkeitsgraphen — nicht der Checkpoint, nicht das Gedächtnis — ergab **15 freigegebene Aufgaben, alle mit `gate: true`**. Alle 15 sind in diesem Projekt als Policy-Klasse plus JVM-Tests gebaut worden (017, 045, 067, 084, 117, 119, 120), und ihre Briefings treffen die Entscheidungen selbst; es war also keine offene Nutzerfrage, sondern die früheste freigegebene Aufgabe.
+
+### Ein echter Entwurfsfehler, den die Tests aufgedeckt haben
+
+Die erste Fassung verglich **SAF-URIs** mit Dateisystempfaden: `covers()` und `isUsable()` nahmen einen Pfad `/storage/Projekt/main.kt` und prüften ihn gegen den Präfix eines `content://…/tree/…`-Eintrags. Fünf Tests fielen um — und **der Code hatte recht, die Tests hatten unreife Annahmen**: URI und Pfad sind getrennte Namensräume, ein SAF-URI lässt sich nicht in einen Pfad umrechnen und nie per Präfix prüfen.
+
+Die Lösung ist nicht ein Umweg, sondern eine Trennung, die zur restlichen App passt: `PersistedGrant` trägt **beides** — den `uriString` (opak, nur für [PermissionManager.takePersistableUriPermission] und `releasePersistableUriPermission`) und den `path` (die vergleichbare Seite). Damit rechnen alle Grenz- und Abdeckungsprüfungen mit Pfaden, genau wie `FolderSelectionState` und `ProjectAccessRegistry`, während die Erreichbarkeit weiterhin am URI geprüft wird, weil nur Android weiß, ob ein SAF-Ordner noch da ist. Ein `covers("/storage/…/Projekt-Alt")` gegen `/storage/…/Projekt` bleibt damit abgewiesen — getrennt am Trenner, wie in Aufgabe 082.
+
+### Die vier Zusagen strukturell abgesichert
+
+- **Widerruf sofort, ohne Neustart.** `revoke(path)` / `stateAfterRevoke(path)` entfernen den Eintrag und erhöhen die `generation`. Ein Urteil aus der alten Generation ist danach `verdictStillValid == false`. `canWrite` prüft gegen den **aktuellen** Stand — der Test hält fest, dass selbst mit demselben Verfügbarkeitsabfrager nicht mehr geschrieben werden kann.
+- **Gelöschte oder verschobene Ordner werden nicht still ersetzt.** `restore(availability)` prüft jede Freigabe neu. Was nicht erreichbar ist, wandert in `invalid` **mit Grund** („gelöscht oder verschoben" / „Schreibzugriff wurde entzogen") und wird **nicht** still durch einen gleichnamigen ersetzt und **nicht** still behalten. Der Bericht sagt wörtlich, der Nutzer solle neu wählen.
+- **Der Bericht ist Information, keine Freigabe.** `RestoreReport` hat **keine** Methode, die aus einem ungültigen Eintrag einen gültigen macht. Das wäre eine erfundene Berechtigung.
+- **Kein Freigabezustand zwischengespeichert.** `isUsable` rechnet bei jedem Aufruf gegen den übergebenen `UriAvailability`-Abfrager; es gibt kein `cached`-Feld. Der Test schaltet die Antwort des Abfragers zwischen zwei Aufrufen um — das hätte mit einem gespeicherten Ergebnis nicht funktioniert.
+
+**Nur-lesende Ordner:** Der Schreibzugriff ist ein eigener Zustand, keine Stufe davon. `readOnly` liefert `canWrite == false`, auch wenn `canRead == true`. Ein Test prüft beides zusammen.
+
+**Persistierung verweigert ⇒ keine Freigabe:** `persist(grant, NOT_PERSISTED)` lässt den Stand **unverändert** — der Ordner wäre nach dem Neustart ohnehin weg, ihn trotzdem zu übernehmen würde einen Zugriff vortäuschen, den es nicht gibt.
+
+### Teststand
+
+- `./gradlew :app:testDebugUnitTest`: **1646 Tests, 0 Fehler, 0 übersprungen** (vorher 1623, +23). Gezählt aus den JUnit-XML, nicht aus der letzten Logzeile.
+- `:app:assembleDebug`: **BUILD SUCCESSFUL**, APK 20 180 880 Bytes.
+- Geheimnis-Scan über beide neue Dateien: keine Treffer.
+- `python3 tools/sync_frontmatter.py --check`: OK (106 erledigt, 29 offen).
+
+### Skills
+
+- **`android-permissions-security`** — Abschnitt 8 („Never cache permission states") und Abschnitt 3 („Granular `UriPermission` Management") tragen den ganzen Entwurf: `UriAvailability` ist eine Funktion, kein Zustand; die Persistierung selbst bleibt in `PermissionManager` beim ContentResolver; und es gibt keinen Weg, aus einer Freigabe eine allgemeine Speicherberechtigung zu machen (per Reflexion über die Methodenliste geprüft).
+- **`testing-setup`** — Schritt 5 (Logikklassen testen, keine Compose-Layouts) und die Ablenkung über Grenzen: nicht gespeichert, zweimal gesichert, nur lesend, Schreibzugriff entzogen, Ordner gelöscht, Ordner verschoben, Nachbarordner mit ähnlichem Namen. Der Test, der die eigene Lücke festhält, ist der mit dem zwischen zwei Aufrufen umgeschalteten Abfrager.
+
+### Offen
+
+- **Kein Gerätetest.** Es gibt hier kein Gerät und keinen Emulator. Die Wiederherstellung nach einem echten Neustart und die tatsächliche Persistierung im ContentResolver sind am Quelltext und an den Tests verifiziert, **nicht am Gerät**.
+- 29 Aufgaben offen, 21 davon `gate: true`. Die nächste freigegebene ist **085 „USB-Projektzugriff"**; danach 095, 113, 115, 118, 121, 123, 125, 126, 127, 129, 130, 132, 134. **095 (Git-Zugang)** ist die einzige, die eine echte Produktentscheidung braucht (welcher Git-Weg, wie weit reicht er) und acht Aufgaben freigibt.
 
 **Git-Stand:** 105 Aufgaben abgeschlossen, Task 084 implementiert und getestet. Push-Ziel ist das private Repository `mertgoevse-wq/claudroide`.
 

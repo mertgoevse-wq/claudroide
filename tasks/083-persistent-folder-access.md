@@ -5,9 +5,9 @@ wave: "W19"
 depends_on: [082]
 files: [tasks/083-persistent-folder-access.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "46e06056f7285df9"
 ---
 # Aufgabe 083 — Ordnerzugriff merken
