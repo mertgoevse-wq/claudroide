@@ -1,7 +1,9 @@
 package org.claudroide.app.core.design
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -53,6 +55,19 @@ private val LightColorScheme = lightColorScheme(
     onSurfaceVariant = Color(0xFF434944),
 )
 
+/**
+ * Shape scale. Material's default goes fully rounded on large surfaces, which
+ * reads as soft and generic; these pull the corners back so cards and sheets
+ * sit as distinct objects with edges rather than pills.
+ */
+private val ClaudroideShapes = Shapes(
+    extraSmall = RoundedCornerShape(TypeTokens.CornerRadiusSmall),
+    small = RoundedCornerShape(TypeTokens.CornerRadiusSmall),
+    medium = RoundedCornerShape(TypeTokens.CornerRadiusMedium),
+    large = RoundedCornerShape(TypeTokens.CornerRadiusLarge),
+    extraLarge = RoundedCornerShape(TypeTokens.CornerRadiusLarge),
+)
+
 @Composable
 fun ClaudroideTheme(
     themeMode: ThemeMode = ThemeMode.DARK, // AMOLED Dark als Standard für maximale Akku-Effizienz auf dem A56
@@ -64,6 +79,8 @@ fun ClaudroideTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
+        typography = TypeTokens.Typography,
+        shapes = ClaudroideShapes,
         content = content
     )
 }
