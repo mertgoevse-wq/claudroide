@@ -5,9 +5,9 @@ wave: "W19b"
 depends_on: [088, 089, 119, 120]
 files: [tasks/090-file-edit-approval.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "46338e4949663cb9"
 ---
 # Aufgabe 090 — Änderungen freigeben

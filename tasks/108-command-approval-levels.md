@@ -5,9 +5,9 @@ wave: "W26"
 depends_on: [017, 018, 105, 107]
 files: [tasks/108-command-approval-levels.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "b6b3589a68ff6c24"
 ---
 # Aufgabe 108 — Freigabestufen

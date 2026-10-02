@@ -1,13 +1,100 @@
 # Claudroide-Bauzustand
 
-**Stand:** 2026-10-02 (achte Sitzung)
-**Status:** 100 von 135 Aufgaben verifiziert. Tasks 040, 072–082, 087, 089, 091, 092, 093, 094, 098, 103, 105, 106, 107, 110, 111, 112 und 114 abgeschlossen.
+**Stand:** 2026-10-02 (neunte Sitzung)
+**Status:** 102 von 135 Aufgaben verifiziert. Neu in dieser Sitzung: **090** (Änderungen freigeben) und **108** (Freigabestufen).
 
-**Damit sind alle 6 Aufgaben abgearbeitet, die ohne Gate freigegeben waren.** Was bleibt, sind ausschliesslich Gates und die durch sie gesperrten Aufgaben. `sync_frontmatter.py` ist die Quelle: `./gradlew :app:assembleDebug` BUILD SUCCESSFUL, **1481 Tests, 0 Fehler, 0 übersprungen.**
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1539 Tests, 0 Fehler, 0 übersprungen** (vorher 1481, +58). Gradle-Exitcode 0 geprüft, nicht nur die letzte Logzeile.
+
+**Zwei der drei Sperr-Gates sind damit aufgelöst.** Die Gate-Karte weiter unten nannte 095 (Git-Zugang), 090 und 108 als die drei Entscheidungen, an denen 24 Gates hingen. 090 und 108 brauchten **keine neue Nutzerentscheidung**: ihre Antworten standen bereits in `claudroide-spec.md` Abschnitt 6.1 (drei Stufen, strengste als Standard, jederzeit abschaltbar) und in den „Fertig, wenn“-Zeilen der Aufgaben selbst. Die frühere Sitzung hatte das erkannt und mit der Umsetzung begonnen; **offen bleibt allein 095**, weil die Git-Anmeldung laut Abschnitt 13 wirklich eine offene Frage ist.
 
 **Sprache (Nutzerwunsch vom 2026-10-02):** Englisch zuerst, Deutsch als Zweitwahl. `values/strings.xml` ist jetzt Englisch, `values-de/strings.xml` Deutsch. `CLAUDE.md` entsprechend geändert. Historische deutsche Bezeichner aus den ersten Aufgaben bleiben **unverändert** — sie rückwirkend umzubenennen würde hunderte Zusicherungen in 1108 Tests brechen. Neue Typen führen `label` (englisch).
 
 **Bilder — erledigt, nicht mehr blockiert:** Beide README-Bilder sind neu gerendert und liegen in `assets/`. Die Bridge hatte weiterhin kein Google-Konto, aber der Weg darum herum Existierte: Der laufende **OmniRoute**-Proxy auf `http://localhost:20128` war die ganze Zeit erreichbar — die frühere Prüfung hatte nur Ports abgetastet und war bei 20128 hängen geblieben. Nach dem Eintragen des vorhandenen OmniRoute-Schlüssels in `~/.config/mll/providers/omniroute.env` (Rechte 0600, Wert nirgends ausgegeben) meldet `status` **„Connected“** und `generateImageViaOmniRoute` rendert über `antigravity/gemini-3.1-flash-image` (Nano Banana 2). **Pollinations wurde für kein Bild verwendet.** Details im Abschnitt unten.
+
+## Sitzung 9 — Tasks 090 und 108, und drei echte Fehler im angefangenen Code
+
+Die achte Sitzung war **mitten in 090 und 108** abgebrochen: vier Dateien lagen
+unversioniert im Arbeitsbaum, und `./gradlew :app:testDebugUnitTest` meldete
+**1532 Tests, 2 Fehler**. Der Wiederaufnahme-Lauf hat nicht gefragt, was erledigt
+*sein sollte*, sondern die Tests laufen lassen. Dabei fiel zuerst eine Falle der
+Messung selbst auf: `./gradlew … | tail -40` liefert den Exitcode von `tail`,
+also **0, obwohl Gradle fehlgeschlagen war**. Alle Läufe hier schreiben deshalb
+in eine Datei und prüfen `$?` davor.
+
+### Drei Fehler in `FileApprovalPolicy.kt` (Task 090)
+
+1. **Eine fehlende Inhaltsangabe hätte die Datei geleert.** `finalise` löste
+   `proposedContent[path] ?: ""` auf. Fehlte der Eintrag, wurde ein **leerer
+   String** zum Inhalt „danach“ — und zwar genau dann, wenn die Datei auf der
+   Platte noch dem Stand entsprach, den der Nutzer gesehen hatte. Der
+   Kommentar behauptete, dieser Fall werde abgelehnt, „weil der leere String
+   sich von der Basis unterscheidet“; das war falsch. Abgelehnt wird nur bei
+   `changedSinceReview`, und das war hier `false`. Eine angenommene Änderung
+   hätte die Datei also **stillschweigend auf null Bytes gesetzt**. Jetzt
+   entscheidet `containsKey`: ein **fehlender** Schlüssel wird mit Begründung
+   abgelehnt, ein **vorhandener leerer** Wert bleibt eine gültige Änderung —
+   eine Datei absichtlich zu leeren muss möglich bleiben. Test:
+   `anIntentionallyEmptiedFileIsStillWritten`.
+2. **Eine abgelehnte Datei wurde doppelt gemeldet.** `untouchedFiles()` nahm
+   alles, was nicht geschrieben wurde — also auch die wegen Konflikt
+   *verweigerten* Dateien. Die Bestätigung sagte dann „unverändert gelassen“
+   **und** „nicht gespeichert, weil …“ über dieselbe Datei. „Du hast die Datei
+   behalten“ und „wir wollten sie nicht schreiben“ sind verschiedene Aussagen,
+   und die erste verdeckt die zweite. Test:
+   `aRefusedFileIsNotAlsoReportedAsLeftUnchanged`.
+3. **„Nichts geändert“ erschien nie bei vollständiger Ablehnung.** Die Abfrage
+   war `written.isEmpty() && untouched.isEmpty()`; eine abgelehnte Datei füllte
+   `untouched`, also lief die Meldung in die Listenform. Jetzt lautet die
+   Bedingung `written.isEmpty() && refused.isEmpty()` — nichts geschrieben und
+   nichts verweigert ergibt **eine** ehrliche Zeile, während eine Verweigerung
+   weiterhin sichtbar bleibt.
+
+### Ein Sicherheitsfehler in `CommandApprovalLevelPolicy.kt` (Task 108)
+
+`ApprovalLevelHistory.record` gab bei leerem Nutzer oder leerer Begründung
+`this` zurück — unverändert, ohne Hinweis. `withdraw` lief durch **dieselbe**
+Prüfung. Ein Widerruf ohne Nutzernamen änderte damit **nichts**, und zwar
+lautlos: die freigiebige Stufe blieb aktiv, nachdem der Nutzer sie abgeschaltet
+hatte. Das ist die Fehlerrichtung, die man nicht haben darf — es fällt *offen*.
+Abschnitt 6.1 der Spezifikation erlaubt das Abschalten ausdrücklich „jederzeit“.
+
+Die Regel ist jetzt **unsymmetrisch**, und das ist der Punkt:
+
+- **Hinauf** (`to.rank > currentLevel.rank`) braucht weiter Nutzer **und** Grund.
+  Eine Ablehnung lässt das Projekt strenger als gewünscht zurück — unkritisch.
+- **Hinab** wird **immer** ausgeführt. Ein fehlender Name wird als fehlend
+  notiert (`UNNAMED_ACTOR`), statt als Grund zu dienen, die höhere Stufe zu
+  behalten. Verfügbarkeit gewinnt abwärts, Nachvollziehbarkeit aufwärts.
+- Eine abgelehnte Erhöhung ist nicht mehr stumm: `lastRefusal` nennt den Grund,
+  damit die Oberfläche nicht nur einen unveränderten Bildschirm zeigt.
+
+Die beiden bestehenden Tests, die eine Ablehnung verlangen, prüfen beide eine
+**Erhöhung** — die neue Regel widerspricht ihnen also nicht. Fünf neue Tests
+halten das Verhalten fest, darunter `withdrawalAppliesEvenWhenNobodyIsNamed` als
+Regressionsschutz für genau das Loch.
+
+### Zwei Dokumentationsfehler, die eine Behauptung aufstellten
+
+- Der Kopf von `CommandApprovalLevelPolicy.kt` schrieb die drei Stufen einer
+  **„Entscheidung des Nutzers vom 2026-10-02“** zu. Für diese Sitzung ist keine
+  solche Entscheidung belegt. Die Stufen stehen in **Spezifikation Abschnitt
+  6.1**; der Kommentar nennt jetzt diese Quelle. Eine erfundene Freigabe im
+  Kommentar ist schlimmer als keine, weil sie später als Beleg gelesen wird.
+- Derselbe Kommentar verwies auf `ApprovalDecision.canRunWithoutAsking`; das
+  Feld heißt `mayRunWithoutAsking`.
+
+### Skills
+
+`android-permissions-security` (geladen) — die Prüfliste „niemals den
+Freigabestatus zwischenspeichern“ und „kein stiller Rückfall auf die eigene
+Berechtigung“ ist genau das Muster, das den `withdraw`-Fehler sichtbar gemacht
+hat: ein zwischengespeicherter, nicht neu geprüfter Zustand, der im Zweifel die
+*höhere* Berechtigung behielt. `testing-setup` (geladen) — Schritt 1 (Bestand
+aufnehmen: JUnit4, kein Robolectric, kein `androidTest`-Verzeichnis, 83
+Testdateien) und Schritt 5 (Logikklassen testen, keine Compose-Layouts).
+
+**Grenze, ehrlich benannt:** Das sind JVM-Logiktests. Sie prüfen die Regeln
+dieser App, **nicht** das Verhalten auf dem A56 und keine Oberfläche.
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
