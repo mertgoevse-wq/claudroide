@@ -5,9 +5,9 @@ wave: "W20"
 depends_on: [017, 045, 059]
 files: [tasks/098-git-change-list.md]
 skills: [`/code-review`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "7ba6115f33225fd5"
 ---
 # Aufgabe 098 — Git-Änderungsliste
