@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (siebte Sitzung)
-**Status:** 76 von 135 Aufgaben verifiziert. Tasks 040 (Chat und Projekt verbinden) und 072 (Agentenwerkzeuge verbinden) abgeschlossen.
+**Status:** 77 von 135 Aufgaben verifiziert. Tasks 040 (Chat und Projekt verbinden), 072 (Agentenwerkzeuge verbinden) und 073 (Agentenlauf speichern) abgeschlossen.
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -357,5 +357,30 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Geladene Skills:** `android-permissions-security` (jede Werkzeugaktion gegen Grenze **und** Freigabe, kein Pfad und kein Befehl aus Modelltext, `ProjectAccessRegistry` wird nur gelesen — `theRegistryIsNeverWidenedByTheLoop`) und `testing-setup` (Ablenkung über Grenzen: unbekanntes Werkzeug, unerwarteter Parameter, nicht erlaubte Aufgabe, Pfad außerhalb, Geheimnisdatei, Fehler in der Mitte, Abbruch, Aufrufgrenze — und ein Test, der die Ehrlichkeit *im Typ* festnagelt).
 
-**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 073, 074, 075, 076, 078, 079, 080 (alle W16), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 074, 075, 076, 078, 079, 080 (alle W16), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+
+## Task 073 erledigt — „Agentenlauf speichern“
+
+`AgentRunState.kt` (neu, `feature/agent/`) + `AgentRunStateTest.kt` (29 Tests).
+
+**Zustände wie im Auftrag:** geplant, wartet auf Zustimmung, läuft, beendet, abgebrochen, fehlerhaft — plus `UNCERTAIN_SIDE_EFFECT` für den Fall, dass nach einem Abbruch nicht feststeht, ob geschrieben wurde. Dieser siebte Zustand ist der ehrliche: Ohne ihn müsste ein ungeklärter Abbruch entweder als „beendet“ oder als „abgebrochen und wiederholbar“ erscheinen, und beides wäre falsch.
+
+**„Neustart führt keine Aktion doppelt aus“ — an zwei Stellen abgesichert:**
+- `mayExecuteCall(toolName, path)` beantwortet nur die Frage „darf das noch einmal?“ und kann nicht zum Ausführen benutzt werden. Nach `recordCall` ist derselbe Schlüssel gesperrt, auch wenn er mit anderer Groß-/Kleinschreibung geschrieben wird.
+- `stepsThatMayRunAgain()` liefert ausschließlich `PLANNED`, `WAITING_FOR_APPROVAL` und `ABORTED` — also Zustände, in denen nachweislich nichts passiert ist. `RUNNING`, `UNCERTAIN_SIDE_EFFECT`, `FAILED` mit Schreibvorgang und `FINISHED` gehören nicht dazu.
+- Ein zweiter `recordCall` mit demselben Schlüssel ändert den Zustand **nicht** (`AlreadyRecorded`) und vergrößert auch die Pfadliste nicht. Damit kann auch ein Fehler in der Aufrufschleife keinen zweiten Eintrag erzeugen.
+
+**„Keine Zugangsdaten im Laufstatus“ — zwei Ebenen:**
+- Der gespeicherte Zustand kennt keine Argumentwerte, nur Werkzeugnamen und Pfade. `ToolCall.arguments` hat im Protokoll keinen Platz.
+- Jeder von außen kommende Text läuft über `SecretMasker.redact`, bevor er gespeichert wird. `addNote` meldet zusätzlich `RecordOutcome.Redacted`, wenn ein Schlüssel erkannt wurde — der Aufrufer kann also anzeigen, dass etwas *nicht* gespeichert wurde. `markFailed` benutzt denselben Weg, weil eine Fehlermeldung eines Werkzeugs genau dort einen Schlüssel enthalten kann.
+
+**„Nutzer sieht, ob eine Änderung schon gespeichert wurde“:** `changedFileLines()` nennt jede berührte Datei mit ihrem `CommitState` (nicht gesichert / lokal gesichert / gesichert und hochgeladen / verworfen). `markFinished` mit geänderten Dateien erzwingt dabei `NOT_SAVED`, wenn kein Sicherungszustand übergeben wurde — ein Schritt, der geschrieben hat, kann nicht als „fertig und gesichert“ dastehen.
+
+**Ein Fehler, den der Test aufgedeckt hat:** `unsavedChangeLines()` hieß „unsaved“, gab aber *alle* berührten Dateien mit ihrem Zustand zurück. Die Funktion hätte damit eine Frage beantwortet und gleichzeitig eine andere verschwiegen — was passiert mit den gesicherten Dateien? Aufgeteilt in `changedFileLines()` (alle, mit Zustand) und `unsavedChangeLines()` (nur die ungesicherten).
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **776 Tests, 0 Fehler, 0 übersprungen** (vorher 747, +29 aus `AgentRunStateTest`). Der Geheimnis-Scan findet in den beiden Dateien nur zwei synthetische Test-Fixtures — sie sind genau die Belegstelle dafür, dass die Schwärzung greift.
+
+**Geladene Skills:** `testing-setup` (der entscheidende Test ist der mit dem ausgelösten Exception- und Fehlerpfad: `anUncertainWriteCountsAsNotSaved`, `aFailedStepWithWrittenChangesNeedsReview`) und `android-permissions-security` (Least Privilege auch für *Metadaten*: der Laufstatus ist eine Speicherstelle wie jeder andere und darf nicht zum Ort für Schlüssel werden).
+
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 074, 075, 076, 078, 079, 080 (alle W16), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
 

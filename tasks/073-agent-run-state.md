@@ -5,9 +5,9 @@ wave: "W16"
 depends_on: [070, 071]
 files: [tasks/073-agent-run-state.md]
 skills: [`testing-setup`, `android-permissions-security`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "514f88d45a80b90b"
 ---
 # Aufgabe 073 — Agentenlauf speichern
