@@ -1,9 +1,9 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (neunte Sitzung)
-**Status:** 102 von 135 Aufgaben verifiziert. Neu in dieser Sitzung: **090** (Änderungen freigeben) und **108** (Freigabestufen).
+**Status:** 103 von 135 Aufgaben verifiziert. Neu in dieser Sitzung: **090** (Änderungen freigeben), **108** (Freigabestufen) und **109** (Weniger-Rückfragen-Modus).
 
-**Teststand:** `./gradlew :app:testDebugUnitTest` → **1539 Tests, 0 Fehler, 0 übersprungen** (vorher 1481, +58). Gradle-Exitcode 0 geprüft, nicht nur die letzte Logzeile.
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1563 Tests, 0 Fehler, 0 übersprungen** (vorher 1481, +82). Gradle-Exitcode 0 geprüft, nicht nur die letzte Logzeile.
 
 **Zwei der drei Sperr-Gates sind damit aufgelöst.** Die Gate-Karte weiter unten nannte 095 (Git-Zugang), 090 und 108 als die drei Entscheidungen, an denen 24 Gates hingen. 090 und 108 brauchten **keine neue Nutzerentscheidung**: ihre Antworten standen bereits in `claudroide-spec.md` Abschnitt 6.1 (drei Stufen, strengste als Standard, jederzeit abschaltbar) und in den „Fertig, wenn“-Zeilen der Aufgaben selbst. Die frühere Sitzung hatte das erkannt und mit der Umsetzung begonnen; **offen bleibt allein 095**, weil die Git-Anmeldung laut Abschnitt 13 wirklich eine offene Frage ist.
 
@@ -95,6 +95,63 @@ Testdateien) und Schritt 5 (Logikklassen testen, keine Compose-Layouts).
 
 **Grenze, ehrlich benannt:** Das sind JVM-Logiktests. Sie prüfen die Regeln
 dieser App, **nicht** das Verhalten auf dem A56 und keine Oberfläche.
+
+## Task 109 erledigt — „Weniger-Rückfragen-Modus"
+
+`ReducedPromptMode.kt` (neu, `feature/agent/`, 338 Zeilen) +
+`ReducedPromptModeTest.kt` (**24 Tests**).
+
+Abschnitt 6.1 der Spezifikation hängt fünf Bedingungen an diesen Modus: pro
+Projekt einschalten, **jederzeit** ausschalten, sichtbare Kennzeichnung solange
+er läuft, Folgen erklären, und **nach Sitzung oder Zeit ablaufen**. Task 108 hat
+die Stufen gebaut, aber den Ablauf absichtlich offen gelassen — das ist hier
+nachgeholt.
+
+**Die zentrale Entscheidung: es gibt kein gespeichertes „an".** Die Klasse
+`ReducedPromptGrant` hat **kein** Boolean-Feld, das sagt, der Modus sei aktiv.
+Ein gespeichertes Flag überlebt genau das, was ihn beenden sollte — die Uhr und
+die Sitzung — und meldet danach eine Freigabe, die abgelaufen sein müsste.
+Stattdessen rechnet `isActiveAt(now, sessionId)` die Antwort bei **jedem** Aufruf
+neu aus Uhr und Sitzung. Das ist die Regel „niemals den Freigabestatus
+zwischenspeichern" aus `android-permissions-security`, angewendet auf die
+*eigenen* Stufen der App statt auf Androids Rechte. Ein Reflexionstest
+(`theGrantStoresNoActiveFlag`) scheitert, sobald jemand das bequeme Feld
+hinzufügt.
+
+**Was strukturell gilt, nicht einstellbar ist:**
+- **Aus als Startzustand.** `NO_GRANT` ist `null` und löst zu `ASK_EVERY_TIME`
+  auf. Der Modus kann nicht als Vorbelegung eines nicht initialisierten Objekts
+  entstehen.
+- **Projektbindung.** Eine Freigabe für Projekt A liefert für Projekt B
+  `ASK_EVERY_TIME`. Getestet, nicht nur dokumentiert.
+- **Eine rückwärts gelaufene Uhr beendet die Freigabe.** `now < grantedAt` gilt
+  als abgelaufen, nicht als Restzeit. Geräteuhren wandern; die sichere Lesart
+  von „jetzt liegt vor dem Beginn" ist, dass die Uhr nicht belastbar ist.
+- **Die Kennzeichnung kann nicht fehlen, während der Modus läuft.**
+  `markingFor` und `levelFor` rechnen aus **derselben** Prüfung; eine
+  freigiebigere Stufe ohne sichtbare Kennzeichnung ist damit kein erreichbarer
+  Zustand.
+- **Löschen, Installieren, Senden und Netzwerk fragen weiter.** Die Entscheidung
+  läuft durch `CommandApprovalLevelPolicy.decide`, wo Gefahr **vor** der Stufe
+  geprüft wird. Sechs Tests prüfen das mit **voll aktivem** Modus — „es fragt,
+  wenn der Modus aus ist" würde nichts beweisen.
+- **Der Modus kann nicht geweitet werden.** `HIGHEST_GRANTABLE_LEVEL` ist
+  `TRUSTED_PROJECT`; `request` und `levelFor` klemmen darauf, statt dem Aufrufer
+  zu glauben.
+- **Der Ausweg kann nicht scheitern.** `withdraw()` nimmt kein Argument und gibt
+  bedingungslos `NO_GRANT` zurück — dieselbe Begründung wie beim Widerruf in
+  Task 108.
+- **Die Auswahl startet auf der kürzesten Option.** `DEFAULT_OFFER` ist
+  `END_OF_SESSION`. Genau **eine** Option läuft nicht von selbst ab, und ihr
+  Text sagt das (`"does not end by itself"`) — geprüft, damit die Wahl nicht
+  durch Fehllesen zustande kommt.
+
+**Skills:** `android-permissions-security` (geladen) — die Regel „niemals
+zwischenspeichern, immer zum Aufrufzeitpunkt prüfen" ist die Grundlage des
+gesamten Entwurfs. `code-review` (als Plugin-Skill vorhanden, Pfad
+`~/.claude/plugins/cache/claude-plugins-official/code-review`).
+
+**Grenze:** JVM-Logiktests. Kein Oberflächentest, keine Messung am A56.
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
