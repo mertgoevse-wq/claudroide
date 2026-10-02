@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (siebte Sitzung)
-**Status:** 79 von 135 Aufgaben verifiziert. Tasks 040, 072, 073, 074 und 075 abgeschlossen.
+**Status:** 80 von 135 Aufgaben verifiziert. Tasks 040, 072, 073, 074, 075 und 076 abgeschlossen.
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -427,5 +427,25 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Geladene Skills:** `adaptive` (Kurzfassung bei kompakter Breite, Stopp-Knopf in der Mindestgröße des Projekts, Fortschrittsanzeige ohne erfundene Prozentwerte, wenn die Gesamtzahl nicht bekannt ist) und `testing-setup` (der Test `onlyTheFinishedPhaseCountsAsDone` läuft über *alle* Phasen statt über zwei ausgewählte, damit eine neu hinzugefügte Phase nicht ungeprüft durchrutscht).
 
-**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 076, 078, 079, 080 (alle W16), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 078, 079, 080 (alle W16), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+
+## Task 076 erledigt — „Ergebnis zusammenfassen“
+
+`AgentResultSummary.kt` (neu, `feature/agent/`) + `AgentResultSummaryTest.kt` (50 Tests).
+
+**Die beiden Fertig-Kriterien strukturell abgesichert:**
+- **Vorschlag, gespeicherte Änderung und Git-Upload bleiben unterscheidbar.** `ChangeLevel` kennt sechs Stufen von `PROPOSED` bis `PUSHED`, und `AgentResultSummary.changeLevel` nennt für den Lauf die **schwächste** — nicht die stärkste. Vier hochgeladene und eine nur lokal gespeicherte Datei ergeben damit „lokal gespeichert, nicht hochgeladen“. `hasReached` ist die einzige Stelle, die eine Stufe bejaht, und sie ist für *jede* Änderung wahr, nicht für die beste. `changeSentence()` benennt die Stufe im Klartext, damit die Oberfläche nichts anderes daraus machen kann.
+- **Fehler und unbestätigte Punkte bleiben sichtbar.** `RunVerdict` ist **kein** übergebener Wert, sondern wird aus Tests, Fehlern, Abbruchgrund, unbestätigten Punkten und erreichter Stufe berechnet. Ein ungeklärter Nebeneffekt kann damit strukturell nicht als „abgeschlossen“ erscheinen. `reportLines()` stellt Fehler und offene Punkte **vor** die nächsten Möglichkeiten, damit sie beim Scrollen nicht aus dem Blick geraten.
+
+**Teststatus korrekt ausweisen:** `TestOutcome` hat neben `PASSED`/`FAILED` den ehrlichen Sonderfall `RAN_UNVERIFIED` — ein gelaufener Befehl, dessen Ausgabe niemand gelesen hat, ist kein bestandener Test. `ReportedTest` erzwingt im `init`, dass `PASSED` und `FAILED` Zahlen tragen müssen und die beiden Zustände ohne Auswertung **keine** tragen dürfen; es gibt keinen Weg, „bestanden“ ohne Testergebnis zu melden. `fromRun` **rät die Ausgabe nicht**, sondern trägt einen fehlenden Nachweis selbst als `RAN_UNVERIFIED` ein.
+
+**Schutz:** Jeder Text läuft über `SecretMasker`; der `init`-Block weist zusätzlich jeden ungeprüften Text im fertigen Bericht ab (`build` ist der vorgesehene Weg). Getestet mit Schlüssel in Fehlermeldung, Dateiname und Befehl.
+
+**Zwei echte Fehler, die die Tests aufgedeckt haben:**
+1. **Eine ungeklärte Nebenwirkung ohne bekannte Datei wurde als `SAVED` gemeldet.** Der Schritt endete in `UNCERTAIN_SIDE_EFFECT`, hatte aber keine `touchedPaths` — also kam nichts in die Änderungsliste, und der Bericht stand auf „lokal gespeichert“, obwohl möglicherweise geschrieben wurde. Behoben mit dem abgeleiteten Feld `unresolvedSideEffect`, das in `fromRun` aus dem Laufstatus **berechnet** und nicht übergeben wird: Der Aufrufer kann eine ungeklärte Nebenwirkung nicht stillschweigend als geklärt deklarieren.
+2. **Ein gelaufener Test ohne Auswertung verschwand.** `fromRun` mit `tests = emptyList()` und `expectedTestCount = 0` hätte einen Lauf **mit** Test wie einen Lauf ganz ohne Tests aussehen lassen — und als abgeschlossen. Der fehlende Nachweis wird jetzt ausdrücklich als `RAN_UNVERIFIED` eingetragen und blockiert den Erfolg. Dieser Fehler fiel nicht im ersten Testlauf auf, sondern erst beim Review des eigenen Diffs nach der Skill-Vorgabe; der zugehörige Test prüft ihn mit einem echten `ToolLoopRun`.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **880 Tests, 0 Fehler, 0 übersprungen** (vorher 830, +50 aus `AgentResultSummaryTest`).
+
+**Geladene Skills:** `testing-setup` (Grenztests an den Zusagen, nicht an den Zeilen; jeder ehrliche Sonderfall hat einen eigenen Test) und als Ersatz für das nicht verfügbare `/code-review` neu installiert: **`requesting-code-review`** aus `obra/superpowers` (MIT, 294 106 Sterne, nicht archiviert, zuletzt gepusht 2026-09-27). Prüfung vor der Installation: Das Skill-Verzeichnis enthält nur `SKILL.md` und `code-reviewer.md` — **keine Skripte, keine ausführbaren Dateien**; `npx skills`bewertete es mit „Safe / 0 alerts / Low Risk“. Installation projektlokal unter `.agents/skills/` (nicht global), da die Freigabe des Nutzers allgemein war und nicht für ein fremdes global verändertes Verzeichnis. Genutzt als Review-Checkliste auf den eigenen Diff — daher der zweite Fund oben.
 

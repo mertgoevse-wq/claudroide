@@ -5,9 +5,9 @@ wave: "W16"
 depends_on: [070, 071]
 files: [tasks/076-agent-result-summary.md]
 skills: [`/code-review`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "293abcb5a776f114"
 ---
 # Aufgabe 076 — Ergebnis zusammenfassen
