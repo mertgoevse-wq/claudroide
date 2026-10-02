@@ -5,9 +5,9 @@ wave: "W16"
 depends_on: [070, 071]
 files: [tasks/075-agent-progress-ui.md]
 skills: [`adaptive`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "ee3ac41a0fdbe302"
 ---
 # Aufgabe 075 — Fortschritt anzeigen

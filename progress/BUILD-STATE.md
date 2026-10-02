@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (siebte Sitzung)
-**Status:** 78 von 135 Aufgaben verifiziert. Tasks 040 (Chat und Projekt verbinden), 072 (Agentenwerkzeuge verbinden), 073 (Agentenlauf speichern) und 074 (Kontext verwalten) abgeschlossen.
+**Status:** 79 von 135 Aufgaben verifiziert. Tasks 040, 072, 073, 074 und 075 abgeschlossen.
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -409,5 +409,23 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Geladene Skills:** `android-permissions-security` (die Kürzung ist ein zweiter Weg in den Datenweg — sie bekommt dieselbe Geheimnisregel wie die Auswahl; zusätzlich wird ein Schlüssel im Gespräch vor dem Senden geschwärzt **und** als geschwärzt gemeldet) und als Ersatz für das nicht verfügbare `/claude-api` die direkte Quellenprüfung der Provider-Dokumentation.
 
-**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 075, 076, 078, 079, 080 (alle W16), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+## Task 075 erledigt — „Fortschritt anzeigen“
+
+`AgentProgressPresenter.kt` (neu, `feature/agent/`) + `AgentProgressTest.kt` (27 Tests).
+
+**Beide Abnahmekriterien strukturell abgesichert:**
+- **„Fortschritt gibt nicht vor, eine unbekannte Aufgabe sei abgeschlossen“.** Der Zustand kennt `ProgressPhase.UNKNOWN`, und `isComplete` ist ausschliesslich bei `FINISHED` `true`. `AgentProgressPresenter.fromRun` erzeugt `UNKNOWN`, wenn zu einem genannten Schritt **kein** Eintrag im Laufstatus existiert — aus „kein Eintrag“ wird nicht „fertig“. Ohne bekannte Gesamtzahl wird kein Fortschrittsbalken gezeigt, sondern der Text „Fortschritt: noch nicht bekannt“.
+- **„Wartezeiten mit Stop-/Abbruchmöglichkeit verbunden“.** `showStopAction` ist aus `phase.isWaiting` **abgeleitet**, nicht angegeben: Eine Wartephase ohne Stopp-Knopf ist nicht darstellbar. Das gilt auch für die Benachrichtigung — sie nennt die Wartezeit *und* den Abbruch. Der Knopf ist `AccessibilityPolicy.MinimumTouchTarget` (48 dp); die Konstante kommt aus dem Projekt, nicht aus einer zweiten Zahl im Code.
+
+**Schutz: keine privaten Werkzeugausgaben in Benachrichtigungen.** `notificationText()` entsteht aus einer Positivliste — Phase, Schrittbezeichnung, Abbruchhinweis. Das Feld `lastToolOutput` existiert für den Bildschirm und wird von dieser Funktion nicht gelesen; es gibt damit keinen Weg, die Ausgabe in eine Benachrichtigung zu bringen. Zusätzlich läuft jeder Text durch `SecretMasker`. Getestet mit einer Ausgabe, die einen fremden App-Pfad und einen Schlüssel enthält.
+
+**Anpassung ans Display:** `lines(isCompact = true)` liefert auf schmaler Breite Phase, Schritt, Fortschritt und Stopp-Hinweis, aber keine Werkzeugausgabe — die braucht Platz, den ein schmales Display nicht hat. Der Stopp-Hinweis bleibt in beiden Fällen stehen.
+
+**Ein Fehler, den der Test aufgedeckt hat:** Bei einem Lauf ohne Schritte stand `totalSteps` auf `0` statt auf `-1`. `progressFraction()` lieferte zwar korrekt `null`, die Bedeutung der beiden Kennzahlen war aber uneinheitlich: `-1` heißt „unbekannt“, `0` heißt „null Schritte“. Beide stehen jetzt auf `-1`, damit „unbekannt“ nur eine einzige Darstellung hat.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **830 Tests, 0 Fehler, 0 übersprungen** (vorher 803, +27 aus `AgentProgressTest`).
+
+**Geladene Skills:** `adaptive` (Kurzfassung bei kompakter Breite, Stopp-Knopf in der Mindestgröße des Projekts, Fortschrittsanzeige ohne erfundene Prozentwerte, wenn die Gesamtzahl nicht bekannt ist) und `testing-setup` (der Test `onlyTheFinishedPhaseCountsAsDone` läuft über *alle* Phasen statt über zwei ausgewählte, damit eine neu hinzugefügte Phase nicht ungeprüft durchrutscht).
+
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 076, 078, 079, 080 (alle W16), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
 
