@@ -1,7 +1,11 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (siebte Sitzung)
-**Status:** 85 von 135 Aufgaben verifiziert. Tasks 040, 072–082 abgeschlossen (W16 vollständig).
+**Status:** 86 von 135 Aufgaben verifiziert. Tasks 040, 072–082 und 087 abgeschlossen (W16 vollständig).
+
+**Sprache (Nutzerwunsch vom 2026-10-02):** Englisch zuerst, Deutsch als Zweitwahl. `values/strings.xml` ist jetzt Englisch, `values-de/strings.xml` Deutsch. `CLAUDE.md` entsprechend geändert. Historische deutsche Bezeichner aus den ersten Aufgaben bleiben **unverändert** — sie rückwirkend umzubenennen würde hunderte Zusicherungen in 1108 Tests brechen. Neue Typen führen `label` (englisch).
+
+**Bilder — blockiert, ehrlich dokumentiert:** Beide README-Bilder sollen neu erstellt werden. `~/claude-media-bridge` ist installiert, aber `claude-media-bridge status` meldet **„Not logged in“**; `generate --provider google` endet mit *„No Google credentials found“*. Der einzige konfigurierte Anbieter ist Pollinations — vom Nutzer ausdrücklich **nicht** gewünscht. `login` ist ein interaktiver Google-OAuth und kann nicht aus einer Agentensitzung laufen. **Es ist kein Bild erzeugt und kein Platzhalter eingesetzt worden.** Die neuen englischen Bildaufträge liegen in `assets/logo-brief.md` und sind ausführungsbereit.
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -429,7 +433,7 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Push erfolgt:** Am 2026-10-02 mit Nutzerfreigabe `cb88e3b..2aafa36` nach `origin/main` (privat) gepusht. Danach Aufgaben 080 und 081 committet.
 
-**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt, ohne Gate): 087, 092, 093, 098, 103, 105.
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt, ohne Gate): 089, 092, 093, 098, 103, 105.
 **Durch 082 neu freigegeben** (es hing an dieser Aufgabe): 083, 085, 086, 089, 090, 091, 094, 121.
 
 ## Task 082 erledigt — „Android-Ordner auswählen“
@@ -452,8 +456,46 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Geladene Skills:** `android-permissions-security` (daraus die beiden Prüfungen über Reflexion: kein Berechtigungsfeld, keine anfordernde Methode — der Task verlangt „keine umfassende Speicherberechtigung“, und das wird am Typ geprüft, nicht in einem Kommentar behauptet) und `testing-setup` (der Abbruch-Fall steht mit Abspruch an erster Stelle, weil er der häufigste ist).
 
+## Task 087 erledigt — „Dateien finden“
+
+`LocalFileSearch.kt` (neu, `feature/project/`) + `LocalFileSearchTest.kt` (37 Tests). Erster neuer Typ nach der Sprachumstellung, deshalb englisch.
+
+**Die drei Zusagen strukturell abgesichert:**
+- **Dateiinhalte werden bei lokaler Suche nicht übertragen.** `SearchMatch` trägt Pfad, Zeilennummer und Suchbegriff — **nicht** die Zeile. Ein Reading einer Zeile ist ein eigener Aufruf mit dem Rückgabetyp `LocalOnlyContent`, der in keinem Ergebnis und in keinem Übertragungsweg vorkommt. Zwei Tests prüfen die Feldliste **über Reflexion**, damit ein späteres „nur mal eine Vorschau dazu“ sofort auffällt. Ein Test mit einem Schlüssel in der gefundenen Zeile belegt, dass er in der Anzeige nicht auftaucht.
+- **Die Suche endet sofort auf widerrufenen Bereichen.** Beim ersten widerrufenen Pfad bricht die Schleife **ab** (`break`), nicht nur `continue` — die restlichen Dateien können ebenfalls unerreichbar sein. Die Phase ist dann `STOPPED_REVOKED` und `isPartial` `true`, damit kein Aufrufer „Suche fertig“ mit „Suche vollständig“ verwechselt. `isRevoked` trennt am `/`, damit `privat2` nicht als `privat` gilt.
+- **Versteckte Dateien und große Ordner nach festen Regeln.** `ScanRules` hält die Grenzen als benannte Konstanten (Projektvorgaben, keine Gerätemessung). Jeder ausgelassene Pfad erscheint mit **Grund**; die Reihenfolge ist bewusst so gewählt, dass der aussagekräftigere Grund gewinnt.
+
+**Zwei Testfehler, die ich behoben habe:** Ich hatte `.env` als Beispiel für die Hidden-Regel und `.git/config` für den versteckten Ordner gewählt — beide fallen aber unter **strengere** Regeln (`BLOCKED_BY_POLICY` bzw. `HEAVY_DIRECTORY`), weil die Prüfung absichtlich den informativsten Grund zuerst nennt. Der Code war richtig; die Beispiele sind jetzt regelkonfliktfrei, und zwei zusätzliche Tests halten die Vorrangordnung fest.
+
+**Ehrlich benannt:** `ProjectExclusionPolicy` hat **keine** versteckten Dateien in seiner Liste (dort geht es um Geheimnisse und schwere Ordner). Die Hidden-Regel ist deshalb neu in `ScanRules` definiert, statt eine vorhandene Liste zu überschreiben.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1108 Tests, 0 Fehler, 0 übersprungen** (vorher 1071, +37).
+
+**Skills:** `android-profiler` (Scan-Grenzen als benannte Vorgaben, damit klar ist, dass es Projektentscheidungen und keine Messung auf dem A56 sind) und `testing-setup` (Feldlisten per Reflexion statt per Beispiel, damit eine spätere Erweiterung auffällt).
+
+**Zusätzlich installiert (alle MIT/Apache-2.0, nur Markdown, „Safe / 0 alerts“):** `modularization`, `android-source-search`, `android-testing`, `compose`, `gradle-build-performance` aus `rcosteira79/android-skills` (MIT, 149 Sterne, aktiv). **Ehrlich:** `android-source-search` habe ich wegen seines Namens installiert, er ist aber für **AOSP-/AndroidX-Quellcode**, nicht für die projekteigene Suche — für Aufgabe 087 also **nicht** brauchbar. Die anderen vier passen zu den anstehenden Aufgaben.
+
 ## Task 081 erledigt — „Projektübersicht“
 **Gates mit offener Entscheidung** (Nutzerentscheidung nötig): 084, 095, 117, 118, 123, 125, 126, 127, 129, 130.
+
+## Task 087 erledigt — „Dateien finden“
+
+`LocalFileSearch.kt` (neu, `feature/project/`) + `LocalFileSearchTest.kt` (37 Tests). Erster neuer Typ nach der Sprachumstellung, deshalb englisch.
+
+**Die drei Zusagen strukturell abgesichert:**
+- **Dateiinhalte werden bei lokaler Suche nicht übertragen.** `SearchMatch` trägt Pfad, Zeilennummer und Suchbegriff — **nicht** die Zeile. Ein Reading einer Zeile ist ein eigener Aufruf mit dem Rückgabetyp `LocalOnlyContent`, der in keinem Ergebnis und in keinem Übertragungsweg vorkommt. Zwei Tests prüfen die Feldliste **über Reflexion**, damit ein späteres „nur mal eine Vorschau dazu“ sofort auffällt. Ein Test mit einem Schlüssel in der gefundenen Zeile belegt, dass er in der Anzeige nicht auftaucht.
+- **Die Suche endet sofort auf widerrufenen Bereichen.** Beim ersten widerrufenen Pfad bricht die Schleife **ab** (`break`), nicht nur `continue` — die restlichen Dateien können ebenfalls unerreichbar sein. Die Phase ist dann `STOPPED_REVOKED` und `isPartial` `true`, damit kein Aufrufer „Suche fertig“ mit „Suche vollständig“ verwechselt. `isRevoked` trennt am `/`, damit `privat2` nicht als `privat` gilt.
+- **Versteckte Dateien und große Ordner nach festen Regeln.** `ScanRules` hält die Grenzen als benannte Konstanten (Projektvorgaben, keine Gerätemessung). Jeder ausgelassene Pfad erscheint mit **Grund**; die Reihenfolge ist bewusst so gewählt, dass der aussagekräftigere Grund gewinnt.
+
+**Zwei Testfehler, die ich behoben habe:** Ich hatte `.env` als Beispiel für die Hidden-Regel und `.git/config` für den versteckten Ordner gewählt — beide fallen aber unter **strengere** Regeln (`BLOCKED_BY_POLICY` bzw. `HEAVY_DIRECTORY`), weil die Prüfung absichtlich den informativsten Grund zuerst nennt. Der Code war richtig; die Beispiele sind jetzt regelkonfliktfrei, und zwei zusätzliche Tests halten die Vorrangordnung fest.
+
+**Ehrlich benannt:** `ProjectExclusionPolicy` hat **keine** versteckten Dateien in seiner Liste (dort geht es um Geheimnisse und schwere Ordner). Die Hidden-Regel ist deshalb neu in `ScanRules` definiert, statt eine vorhandene Liste zu überschreiben.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1108 Tests, 0 Fehler, 0 übersprungen** (vorher 1071, +37).
+
+**Skills:** `android-profiler` (Scan-Grenzen als benannte Vorgaben, damit klar ist, dass es Projektentscheidungen und keine Messung auf dem A56 sind) und `testing-setup` (Feldlisten per Reflexion statt per Beispiel, damit eine spätere Erweiterung auffällt).
+
+**Zusätzlich installiert (alle MIT/Apache-2.0, nur Markdown, „Safe / 0 alerts“):** `modularization`, `android-source-search`, `android-testing`, `compose`, `gradle-build-performance` aus `rcosteira79/android-skills` (MIT, 149 Sterne, aktiv). **Ehrlich:** `android-source-search` habe ich wegen seines Namens installiert, er ist aber für **AOSP-/AndroidX-Quellcode**, nicht für die projekteigene Suche — für Aufgabe 087 also **nicht** brauchbar. Die anderen vier passen zu den anstehenden Aufgaben.
 
 ## Task 081 erledigt — „Projektübersicht“
 

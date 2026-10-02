@@ -5,9 +5,9 @@ wave: "W18"
 depends_on: [010, 017]
 files: [tasks/087-file-tree-and-search.md]
 skills: [`android-profiler`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "7562a9be821bbab1"
 ---
 # Aufgabe 087 — Dateien finden
