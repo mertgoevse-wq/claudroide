@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (siebte Sitzung)
-**Status:** 81 von 135 Aufgaben verifiziert. Tasks 040, 072, 073, 074, 075, 076 und 078 abgeschlossen.
+**Status:** 82 von 135 Aufgaben verifiziert. Tasks 040, 072, 073, 074, 075, 076, 078 und 079 abgeschlossen.
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -427,7 +427,27 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Geladene Skills:** `adaptive` (Kurzfassung bei kompakter Breite, Stopp-Knopf in der Mindestgröße des Projekts, Fortschrittsanzeige ohne erfundene Prozentwerte, wenn die Gesamtzahl nicht bekannt ist) und `testing-setup` (der Test `onlyTheFinishedPhaseCountsAsDone` läuft über *alle* Phasen statt über zwei ausgewählte, damit eine neu hinzugefügte Phase nicht ungeprüft durchrutscht).
 
-**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 079, 080 (beide W16), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 080 (W16), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+
+## Task 079 erledigt — „Wiederholungsregeln“
+
+`AgentRetryPolicy.kt` (neu, `feature/agent/`) + `AgentRetryPolicyTest.kt` (42 Tests).
+
+**Die beiden Fertig-Kriterien strukturell abgesichert:**
+- **Schreib-, Installations- und Git-Aktionen werden nie automatisch wiederholt.** `RetryAction.neverAutoRetry` hängt am Typ: `WRITE_FILE`, `DELETE_FILE`, `INSTALL`, `GIT_COMMIT` und `GIT_PUSH` sind darauf gesetzt, und **kein Parameter von `decide` hebt es auf** — weder eine Idempotenz-Bescheinigung noch eine Nutzerbestätigung. Diese Aktionen enden immer in `AskUser`. Getestet ausdrücklich mit beiden Gegenbelegen.
+- **Kostenpflichtige Anfragen sind vor der Wiederholung sichtbar.** Für `MODEL_REQUEST` (und `INSTALL`) verlangt `decide` das Flag `costNoticeShown`. Ohne dieses Flag gibt es **kein** `RetryNow`, sondern `AskUser` mit dem Grund „Kosten nicht sichtbar gemacht“. Ein Hinweistext im Nachhinein genügt nicht — er muss vorher gezeigt worden sein.
+
+**Schutz gegen Doppelausführung:** `decideWithStore` fragt `AgentRunStore.mayExecuteCall` aus Aufgabe 073 ab. Damit hängt die Wiederholungsregel an **derselben Quelle**, die auch den Neustart schützt: Was dort verbucht ist, wird nicht erneut versucht (`ALREADY_EXECUTED`), und dieser Grund schlägt alle anderen — auch eine Seitenwirkung ohne Sperrvermerk.
+
+**Ein Fehler, den der Test aufgedeckt hat:** Der Test, der jede Aktion einer von drei Gruppen zuordnet, schlug zunächst fehl: `MODEL_REQUEST` gehörte in **keine** Gruppe. Die Liste behauptete eine Vollständigkeit, die nicht stimmte. Die dritte Gruppe (kostenpflichtig, ohne Nebenwirkung, nicht gesperrt) ist jetzt ausdrücklich aufgenommen, sodass jede neue Aktion in [RetryAction] sofort benannt wird, wenn sie nicht in eine der drei passt.
+
+**Offen benannt — toter Zweig:** Der Zweig `NEEDS_CONFIRMATION` („Nebenwirkung ohne Idempotenznachweis“) ist mit dem heutigen Aktionssatz **nicht erreichbar**: Jede Aktion mit `hasSideEffect` trägt auch die strengere automatische Sperre, die vorher greift. Der Zweig bleibt als zweite Linie für künftige Aktionen stehen und ist im Kommentar als solcher benannt; der zugehörige Test sagt ausdrücklich, dass er die Erreichbarkeit **nicht** vortäuselt, sondern die Überlagerung dokumentiert.
+
+**Zwei weitere Entscheidungen, die als Tests festgehalten sind:** (1) Ein **ungeklärter** Fehler wird nicht wie ein vorübergehender behandelt — er fragt nach Nachsehen statt zu wiederholen, weil nach einem Abbruch mit ungeklärter Nebenwirkung Wiederholen die riskantere Annahme ist. (2) Ist die Versuchsgrenze **wirklich** erreicht, schlägt sie auch die automatische Sperre (`ATTEMPTS_EXHAUSTED` statt `NEVER_AUTOMATIC`) — es gibt keinen vierten Versuch, den man anbieten könnte.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **969 Tests, 0 Fehler, 0 übersprungen** (vorher 927, +42 aus `AgentRetryPolicyTest`).
+
+**Geladene Skills:** `testing-setup` (die Gruppenzuordnung prüft jede Aktion einzeln statt zwei Stichproben, damit eine neue Aktion nicht ungeprüft durchrutscht) und `android-permissions-security` (daraus die zweite Linie: Nebenwirkungen werden nie stillschweigend wiederholt, und jeder Eingriff braucht eine sichtbare Zustimmung — dasselbe Prinzip wie bei Berechtigungen).
 
 ## Task 078 erledigt — „Parallelität begrenzen“
 

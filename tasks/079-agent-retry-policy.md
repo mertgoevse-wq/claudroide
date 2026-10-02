@@ -5,9 +5,9 @@ wave: "W16"
 depends_on: [070, 071]
 files: [tasks/079-agent-retry-policy.md]
 skills: [`testing-setup`, `android-permissions-security`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "c7089bbb3c43de26"
 ---
 # Aufgabe 079 — Wiederholungsregeln
