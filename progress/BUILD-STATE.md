@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (achte Sitzung)
-**Status:** 93 von 135 Aufgaben verifiziert. Tasks 040, 072–082, 087, 089, 092, 093, 098, 103, 105 und 106 abgeschlossen.
+**Status:** 94 von 135 Aufgaben verifiziert. Tasks 040, 072–082, 087, 089, 092, 093, 098, 103, 105, 106 und 107 abgeschlossen.
 
 **Sprache (Nutzerwunsch vom 2026-10-02):** Englisch zuerst, Deutsch als Zweitwahl. `values/strings.xml` ist jetzt Englisch, `values-de/strings.xml` Deutsch. `CLAUDE.md` entsprechend geändert. Historische deutsche Bezeichner aus den ersten Aufgaben bleiben **unverändert** — sie rückwirkend umzubenennen würde hunderte Zusicherungen in 1108 Tests brechen. Neue Typen führen `label` (englisch).
 
@@ -752,6 +752,28 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 **Teststand:** `./gradlew :app:testDebugUnitTest` → **1001 Tests, 0 Fehler, 0 übersprungen** (vorher 969, +32 aus `ProviderCapabilityPolicyTest`). Die 1000er-Marke ist erreicht.
 
 **Geladene Skills:** als Ersatz für das nicht verfügbare `/claude-api` die **direkte Quellenprüfung** der Anbieterdokumentation (nicht geraten: die zitierten Sätze wurden von der Quelle geholt und das Abrufdatum steht im Code), und `testing-setup` (jede der fünf `AgentFeature` wird einzeln mit vollem und leerem Profil geprüft, damit eine neue Funktion nicht ungeprüft mitläuft).
+
+## Task 107 erledigt — „Befehl vorher zeigen“
+
+`CommandPreview.kt` (neu, `feature/agent/`) + `CommandPreviewTest.kt` (28 Tests).
+
+**Die drei Zusagen sind strukturell abgesichert, nicht als Konvention:**
+
+- **Die Vorschau löst nichts aus.** `CommandPreview` ist eine Datenklasse, `CommandPreviewPolicy` ein reines Entscheidungsobjekt — **beide besitzen keinen Aufruf zum Ausführen**. Der Test prüft das **per Reflexion über die öffentliche API** und lässt die vom Kotlin-Compiler erzeugten `copy`, `componentN`, `toString`, `equals`, `hashCode` aus; diese entstehen für jeden Typ und stammen nicht aus der Hand des Autors. Ein zweiter Test verlangt zusätzlich, dass **jedes Feld ein reiner Wert** ist (String, Enum, Boolean, Long, Liste) — damit fällt auch ein unauffälliges `onConfirm: () -> Unit` durch, das die Namensprüfung bestünde und trotzdem ein Auslöser wäre.
+- **Installieren, Löschen und externe Übertragung sind einzeln markiert.** Sie stehen als eigene Werte in `CommandEffect` mit `isIrreversible`, und `highlightedEffects()` führt sie **in fester Reihenfolge** nach vorn — die irreversiblen zuerst, weil man sie beim Scrollen überliest. `warningFor` erzeugt genau dann einen Warnsatz, wenn etwas Unumkehrbares dabei ist; ein ruhiger Befehl bleibt ruhig, statt bei jedem Kommando Alarm zu schreien.
+- **Unbekannte Befehle gelten nie als ungefährlich.** `CommandRisk` kennt kein „safe“: `classify` liefert `UNRECOGNISED`, dessen Beschriftung „unknown — the app cannot tell what this command does“ lautet und das **immer** eine Bestätigung verlangt. Ein Test läuft über **alle** Werte von `CommandRisk` und schlägt fehl, sobald einer „safe“, „harmless“ oder „no risk“ behauptet — damit fällt auch ein künftiger, neu hinzugefügter Wert mit beruhigendem Etikett durch.
+
+**Zwei echte Fehler, die die Tests aufgedeckt haben:**
+1. **`rm -rf` galt als unbekannt.** Die Werkzeugauflösungnahm blind die ersten zwei Wörter. Damit wurde aus `rm -rf` das Werkzeug `rm -rf`, aus `ls -la` das Werkzeug `ls -la` — **der destruktivste Befehl überhaupt** wurde als „die App weiß nicht, was das tut“ gemeldet. Das ist genau das Versagen, das die dritte Regel verhindern soll. Die Auflösung ist jetzt **längste-zuerst mit Rückfall**: ein Zweiwort-Unterbefehl gewinnt (`git push` ≠ `git status`), sonst zählt das Einzelwort (`gradle assembleDebug` → `gradle`, `rm -rf` → `rm`). Ein Argument macht einen bekannten Befehl nie unbekannt.
+2. **Ein Test behauptete das Gegenteil der Wirklichkeit.** `previewOutsideTheReleasedFolderIsNotAccepted` prüfte mit `describe(..., "build")` — aber `build` ist ein Unterordner des freigegebenen Projekts, also **innerhalb**. Der Test war falsch, nicht der Code; er prüft jetzt `../other`, was tatsächlich hinausführt. Der alte Test hätte einen echten Ausbruch als „akzeptiert“ durchgewinkt.
+
+**Anforderungen sind abgeleitet, nicht zugesagt:** `requirementsFor` rechnet Speicher und Netzwerk aus den Wirkungen. Ein Aufrufer kann einen installierenden Befehl nicht als „braucht nichts“ deklarieren.
+
+**Der Ordner gehört in die Vorschau.** `isPreviewForReleasedFolder` prüft über `WorkingDirectoryPolicy` aus Aufgabe 106 — eine Warnung zu `rm -rf` im falschen Ordner wäre sonst eine Warnung zum falschen Ding.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1325 Tests, 0 Fehler, 0 übersprungen** (vorher 1297, +28 aus `CommandPreviewTest`).
+
+**Geladene Skills:** `adaptive` (die Zeilen der Vorschau stehen in fester Reihenfolge — Befehl, Ordner, Zweck, Risiko, Markierungen, Anforderungen — damit derselbe Befehl auf jedem Gerät gleich gelesen wird; die Liste ist bewusst-linear statt adaptiv gebaut, weil eine umsortierte Warnung auf einem Tablet schlechter lesbar wäre als eine gleichbleibende) und `android-permissions-security` (daraus die zweite Linie: Jeder Eingriff braucht eine **sichtbare Zustimmung**, und ein unbekannter Befehl ist nicht „freigegeben“, nur weil nichts dagegen spricht — dasselbe Prinzip wie bei Berechtigungen).
 
 ## Task 106 erledigt — „Arbeitsordner begrenzen“
 

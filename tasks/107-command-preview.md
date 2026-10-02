@@ -5,9 +5,9 @@ wave: "W25"
 depends_on: [105, 119, 120]
 files: [tasks/107-command-preview.md]
 skills: [`adaptive`, `android-permissions-security`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "046415b6cae35f82"
 ---
 # Aufgabe 107 — Befehl vorher zeigen
