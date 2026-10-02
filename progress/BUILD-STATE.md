@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (siebte Sitzung)
-**Status:** 80 von 135 Aufgaben verifiziert. Tasks 040, 072, 073, 074, 075 und 076 abgeschlossen.
+**Status:** 81 von 135 Aufgaben verifiziert. Tasks 040, 072, 073, 074, 075, 076 und 078 abgeschlossen.
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -427,7 +427,25 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Geladene Skills:** `adaptive` (Kurzfassung bei kompakter Breite, Stopp-Knopf in der Mindestgröße des Projekts, Fortschrittsanzeige ohne erfundene Prozentwerte, wenn die Gesamtzahl nicht bekannt ist) und `testing-setup` (der Test `onlyTheFinishedPhaseCountsAsDone` läuft über *alle* Phasen statt über zwei ausgewählte, damit eine neu hinzugefügte Phase nicht ungeprüft durchrutscht).
 
-**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 078, 079, 080 (alle W16), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 079, 080 (beide W16), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+
+## Task 078 erledigt — „Parallelität begrenzen“
+
+`AgentConcurrencyLimiter.kt` (neu, `feature/agent/`) + `AgentConcurrencyLimiterTest.kt` (47 Tests).
+
+**Die beiden Fertig-Kriterien strukturell abgesichert:**
+- **Gleichzeitige Dateiänderungen überschreiben sich nicht.** Jede angemeldete Einheit hält ihre Pfade belegt, und ein kollidierender Zugriff wird mit `Admission.Denied` **plus Nennung des konfligierenden Pfades und der belegenden Einheit** abgewiesen. Die Sperre entsteht durch [FileAccess] (`coexistsWith`), nicht durch eine Konvention: zwei **Leser** desselben Pfads dürfen parallel laufen, ein Leser gegen einen Schreiber nicht. `release` gibt die Pfade wieder frei.
+- **Knappes RAM/Akku verlangsamt oder warnt.** `ResourceAdvisor` kennt vier Lagen: `FULL_SPEED`, `THROTTLED`, `PAUSE_SUGGESTED` und `UNKNOWN`. `effectiveLimit` ist `minOf(configuredLimit, …)` — die Lage kann das Limit **nur senken, nie erhöhen**. Am Kabel bremst ein niedriger Akkustand nicht.
+
+**Schutz gegen die Hintergrundmodellladung:** `requestBackgroundModelLoad` liefert `BLOCKED`, solange `allowBackgroundModelLoad` nicht ausdrücklich gesetzt wurde — auch bei 6 GB freiem Speicher. Es gibt **keinen Parameter, der diese Sperre aufhebt**; selbst mit Zustimmung wird blockiert, wenn der Bedarf über dem freien Speicher liegt.
+
+**Ehrlich bei fehlender Messung:** `ResourceSample.isMeasured` ist im Konstruktor sichtbar. Ohne Messung bleibt der Rat `UNKNOWN`, `freeMemoryFraction` ist `null`, und das Limit wird **weder gesenkt noch erhöht** — ein geratener RAM-Wert wäre hier schlimmer als keiner, weil er als Messung auftrate. Die Schwellen (`MEMORY_THROTTLE_FRACTION = 0.15` usw.) sind als benannte Projektvorgaben im Code, nicht als scheinbare Gerätemesswerte; **es liegen keine A56-Messungen vor und es wird auch keine behauptet**.
+
+**Ein Fund beim Review des eigenen Diffs:** Der Kommentar an `tryAcquire` behauptete, der Dateikonflikt werde „erst nach dem Limit geprüft, damit die Meldung den Pfad nennen kann“ — das war falsch: Bei vollem Limit hätte die Limit-Prüfung abgebrochen und der Pfad wäre **nie** genannt worden, also genau das Gegenteil der Begründung. Die Reihenfolge ist jetzt Pause → Ressourcenlage → **Dateikonflikt** → Limit, mit der Begründung im Kommentar. Zwei Tests pinnen das fest: bei vollem Limit **mit** Konflikt kommt der Pfad, **ohne** Konflikt greift weiterhin das Limit.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **927 Tests, 0 Fehler, 0 übersprungen** (vorher 880, +47 aus `AgentConcurrencyLimiterTest`).
+
+**Geladene Skills:** `android-profiler` (der Kern des Auftrags ist Ressourcenmessung — daraus die Pflicht, *gemessen* und *angenommen* zu trennen, statt eine Zahl zu behaupten) und `parallel-task` (daraus die Regel „ein Agent pro Dateibereich, keine gemeinsamen Dateien“ — als Code umgesetzt: die Pfadsperre in `tryAcquire`).
 
 ## Task 076 erledigt — „Ergebnis zusammenfassen“
 

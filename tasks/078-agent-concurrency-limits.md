@@ -5,9 +5,9 @@ wave: "W16"
 depends_on: [070, 071]
 files: [tasks/078-agent-concurrency-limits.md]
 skills: [`android-profiler`, `parallel-task`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "a489448769a7e8b5"
 ---
 # Aufgabe 078 — Parallelität begrenzen
