@@ -5,9 +5,9 @@ wave: "W24"
 depends_on: [017, 045, 082]
 files: [tasks/121-symlink-and-special-file-defense.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "aa58582f5b8a52e6"
 ---
 # Aufgabe 121 — Links und Sonderdateien

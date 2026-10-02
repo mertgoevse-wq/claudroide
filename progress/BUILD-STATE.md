@@ -1,9 +1,48 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-02 (vierzehnte Sitzung — Tasks 083, 113, 115 und 118 verifiziert)
-**Status:** **109 von 135 Aufgaben `done`**, 26 offen, davon **18 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-02 (vierzehnte Sitzung — Tasks 083, 113, 115, 118 und 121 verifiziert)
+**Status:** **110 von 135 Aufgaben `done`**, 25 offen, davon **17 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand:** `./gradlew :app:testDebugUnitTest` → **1716 Tests, 0 Fehler, 0 übersprungen** (+23 `PersistentFolderAccessTest`, +25 `LongTaskNotificationPolicyTest`, +22 `CommandAuditLogTest`, +23 `ApprovalHistoryTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20.4 MB.
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1740 Tests, 0 Fehler, 0 übersprungen** (+23 `PersistentFolderAccessTest`, +25 `LongTaskNotificationPolicyTest`, +22 `CommandAuditLogTest`, +23 `ApprovalHistoryTest`, +24 `SpecialFilePolicyTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20.4 MB.
+
+## Sitzung 14, fünfter Teil — Task 121: Links und Sonderdateien (SpecialFilePolicy)
+
+### Was 121 zu 120 hinzufügt
+
+`PathBoundaryGuard` (Aufgabe 120) entscheidet über **Pfade** — und behandelt einen Verweis-Ausbruch nur dann, wenn der Aufrufer den aufgelösten Pfad mitgibt. 121 ist die Schicht darüber: Sie erkennt, **was** ein Eintrag ist (Verweis, harte Verknüpfung, Gerät, Socket, Pipe), und erzwingt vor allem, dass das Ziel **überhaupt ermittelt** wurde, bevor zugegriffen wird.
+
+**Die Kernzusage — „keine Linkverfolgung ohne erneute Begrenzungsprüfung" — ist als Ablauf verankert:**
+1. Unbekannte Dateiart → abgelehnt (lieber ratlos als unsicher).
+2. Sonderdatei (Gerät, Socket, FIFO) → abgelehnt, mit Namen der Art; lesen könnte blockieren oder in Systeme schreiben.
+3. Verweis **ohne ermitteltes Ziel** → abgelehnt, **vor** jeder Grenzprüfung, weil ohne Ziel nichts geprüft werden kann.
+4. Verweis **mit Ziel** → das **aufgelöste** Ziel läuft durch `PathBoundaryGuard.check` — nicht der geschriebene Pfad.
+5. Gewöhnliche Datei → der geschriebene Pfad entscheidet.
+
+Es wird **nie** gelesen und **nie** geschrieben; `isPermitted` sagt nur, ob es erlaubt wäre.
+
+### Der Test, der einen echten Loch geschlossen hat
+
+`eine harte Verknuepfung ohne Ziel wird abgelehnt` schlug fehl — **das war ein echter Fehler, kein Testerwartungsfehler.** `isUnresolvedLink` prüfte nur auf `SYMLINK`; eine `HARD_LINK` ohne Ziel fiel durch bis zur Grenzprüfung des geschriebenen Pfades und bekam `ALLOWED`. Eine harte Verknüpfung ist aber genauso ein Verweis wie eine symbolische — sie nur für eine Art zu behandeln hieße, dass die andere ungeprüft durchkäme. `isUnresolvedLink` prüft jetzt **beide** Verweisarten. Genau der Fehler, den die Aufgabe verhindern soll.
+
+### Git- und Anbietergrenzen, wie gefordert
+
+- **Git:** ein Verweis auf `.git/objects/info/alternates` (wohin `git` bei Objektfehlern folgt) wird abgelehnt.
+- **Harte Verknüpfung:** ins fremde Ziel aufgelöst → abgelehnt; ohne Ziel → abgelehnt.
+- **Android-Anbieter:** ein `content://com.android.providers.downloads/document/42`-Pfad liegt außerhalb des Projektordners und wird nicht als „irgendwie erreichbar" behandelt.
+
+**Gleiches Urteil für dasselbe Ziel, unabhängig vom Namen:** Der Test `derselbe fremde Pfad wird bei direktem Zugriff genauso abgelehnt` prüft, dass ein Verweis auf `/data/data/com.other.app/…` und ein direkt geschriebener Pfad auf denselben Ort dasselbe Urteil bekommen — die frühere Lehre aus Aufgabe 119, dasselbe Ziel nicht je nach Benennung anders zu behandeln.
+
+### Teststand
+
+- `./gradlew :app:testDebugUnitTest`: **1740 Tests, 0 Fehler, 0 übersprungen** (vorher 1716, +24). Gezählt aus den JUnit-XML.
+- `:app:assembleDebug`: **BUILD SUCCESSFUL**, APK 20 396 805 Bytes.
+- Geheimnis-Scan über `app/src/main/`: ohne Treffer.
+- `python3 tools/sync_frontmatter.py --check`: OK (110 erledigt, 25 offen).
+
+### Skills
+
+- **`android-permissions-security`** — die Pfadgrenze aus 120 wird hier zur Vorbedingung: kein Zugriff ohne aufgelösten Pfad. Die Reihenfolge der Prüfungen ist die Sicherheitsaussage (unbekannt → Sonderdatei → unaufgelöst → Ziel außerhalb), und jede Ablehnung nennt einen Grund.
+- **`testing-setup`** — die Angriffsvarianten einzeln: symbolischer Link, harte Verknüpfung, je mit und ohne Ziel; Sonderdatei je Art; unbekannte Art; Git-`alternates`; Anbieter-URI; traversierendes Ziel; Nachbarordner; jede Zugriffsabsicht einzeln. Der Regelabstand „beide Verweisarten" wird vom fehlgeschlagenen Test erzwungen.
 
 ## Sitzung 14, vierter Teil — Task 118: Freigabeverlauf (ApprovalHistory)
 
