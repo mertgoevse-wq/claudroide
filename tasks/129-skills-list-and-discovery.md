@@ -5,9 +5,9 @@ wave: "W27"
 depends_on: [001, 002, 017]
 files: [tasks/129-skills-list-and-discovery.md]
 skills: [`/swarm-planner`, `android-permissions-security`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "7d1735acbc0a6fff"
 ---
 # Aufgabe 129 — Skills finden
