@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
-**Stand:** 2026-10-01 (sechste Sitzung)
-**Status:** 74 von 135 Aufgaben verifiziert. Tasks 063 (Ersatzmodell), 068 (Gate: minimaler Projektkontext) und 071 (Aufgaben planen) abgeschlossen.
+**Stand:** 2026-10-02 (siebte Sitzung)
+**Status:** 75 von 135 Aufgaben verifiziert. Task 040 (Chat und Projekt verbinden) abgeschlossen.
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -306,4 +306,30 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 **Geladene Skills:** `/swarm-planner` (explizite `depends_on` je Aufgabe, atomare Schritte, Wellenbildung — die Regel „keine gemeinsame Datei" aus dem Skill wurde direkt zu `parallelGroups()`) und als Ersatz für das in dieser Sitzung **nicht verfügbare** `/code-review` die `testing-setup`-Prüflinie: jede Zusage bekommt einen Test, der sie an der Grenze belastet, nicht nur im glücklichen Fall. Die nicht verfügbaren Skills `/code-review` und `/claude-api` sind hiermit für 071 bzw. 068 dokumentiert; beide wurden nach CLAUDE.md ersetzt, nicht geraten.
 
 **Neu freigegeben durch 071:** 072, 073, 074, 075, 076, 078, 079, 080, 040 (und damit die Welle W15/W16).
+
+## Wiederaufnahme 2026-10-02 (siebte Sitzung) — verifizierter Stand
+
+**Ausgangslage:** Checkpoint und Git stimmten überein, der Arbeitsbaum war sauber. `tools/sync_frontmatter.py --check` grün über alle 135 Dateien: **74 Aufgaben `done`, 61 offen**. Früheste offene Aufgabe mit erfüllten Abhängigkeiten war **040** (W16, `depends_on: 031, 035, 070, 071`). Acht Commits liegen vor `origin/main`; ein Push ist weiterhin nicht freigegeben.
+
+**Task 040 erledigt — „Chat und Projekt verbinden“:** `ChatProjectLink.kt` (neu, `feature/chat/`) + `ChatProjectLinkTest.kt` (32 Tests).
+
+**Vier Zusagen des Aufgabenbriefs strukturell abgesichert, nicht nur per Test:**
+
+1. **„Nutzer erkennt, welche Dateien an die KI gehen könnten“.** `disclosureLines()` nennt das verknüpfte Projekt, den Ordner und jede bereitstehende Datei. Die Zeilen für die Dateien kommen aus `ContextSelection.disclosureLines()` — dieselbe Quelle wie beim eigentlichen Versand, damit Anzeige und Übertragung nicht auseinanderlaufen können. Ohne Projekt steht dort „Projektbezug: keiner“, ohne Auswahl „Es ist keine Datei für dieses Gespräch ausgewählt“.
+
+2. **„Projektwechsel nicht still Dateien aus dem alten Projekt weitergibt“.** Der Kontext ist ein `PreparedContext` mit der Bindungs-Generation, für die er erzeugt wurde. `activateProject`, `bind` und `unbind` erhöhen die Generation und verwerfen die Vorbereitung. Der Versand nimmt nicht blind das, was er hat, sondern fragt `isUsableForSend(context)` — eine ältere `PreparedContext`, die ein Aufrufer noch in der Hand hält, wird mit `CONTEXT_OUTDATED` abgelehnt. `prepareContext()` hat **keinen** Parameter für ein Zielprojekt: die Auswahl wird immer aus der aktuellen Bindung abgeleitet.
+
+3. **„Verknüpfte Projektberechtigung bleibt widerrufbar“.** Diese Klasse ruft an keiner Stelle `ProjectAccessRegistry.update`. Sie *fragt* die Grenze über `check` ab und bindet nur an einen Ordner, den die App bereits freigegeben hat; ein nicht freigegebener Ordner wird mit `PROJECT_NOT_PERMITTED` abgelehnt. Widerruft der Nutzer den Ordner, meldet `evaluateSend()` `PROJECT_ACCESS_REVOKED` — auch noch für eine Vorbereitung, die vor dem Widerruf erzeugt wurde. Test: der Widerruf greift sofort, ohne Appstart.
+
+4. **„Warnung, wenn ein anderer Projektordner aktiv wird“.** Aktiviert die App einen anderen Ordner, bleibt die Bindung bestehen (kein stilles Umschreiben) und der Versand wird mit `ACTIVE_PROJECT_DIFFERS` blockiert. Vor einem erneuten Binden kommt `NeedsConfirmation` mit `ProjectSwitchWarning`, das **beide** Ordner sowie die Dateien nennt, die wegfallen und die hinzukämen. Eine abgelehnte Umsicht bewegt weder Bindung noch Generation.
+
+**Ein echter Fehler in meiner ersten Fassung, gefunden und behoben:** In `bind()` habe ich für die Vorschau der Warnung `ContextSelectionPolicy.select(project.id, …)` aufgerufen — die **Projekt-ID als Modellkennung**. Das Budget hängt am Kontextfenster des Modells; eine Projektbezeichnung ist keine belegte Fenstergröße. Für ein Projekt ohne Modell-Eintrag hätte die Warnung still mit dem konservativen 32 000-Token-Wert gerechnet und das als gültige Zahl dargestellt. Korrigiert auf den echten `modelId`-Parameter, der in der Warnungsberechnung jetzt durchgereicht wird.
+
+**Zwei weitere Korrekturen während des Kompilierens:** `ProjectRef` ist eine verschachtelte Klasse und konnte das private `strip()` der äußeren Klasse nicht auflösen — der Pfadvergleich liegt jetzt in einer dateiweiten `normaliseRoot()`. Und `CONTEXT_OUTDATED` war zunächst toter Zweig: `invalidateContext()` setzte die Vorbereitung auf `null`, wodurch „alt, aber vorhanden“ gar nicht auftreten konnte. Jetzt wird die verworfene Vorbereitung in `discarded` gehalten, damit die Blockierung die betroffenen Dateien *nennen* kann, statt nur „bitte neu auswählen“ zu sagen.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **712 Tests, 0 Fehler, 0 übersprungen** (vorher 680, +32 aus `ChatProjectLinkTest`). Kein Test wurde umbenannt oder entfernt. Geheimnis-Scan über beide neuen Dateien ohne Treffer.
+
+**Geladene Skills:** `android-permissions-security` (Least Privilege auf dem Datenweg: die Verknüpfung darf die Berechtigungsstufe nicht anheben — deshalb der Test `bindingDoesNotMoveTheRegistryGeneration`; und ein gespeichertes Leserecht kann jederzeit überstimmt werden) und `testing-setup` (Ablenkung über die Grenzen: nicht freigegebener Ordner, abgelehnte Umsicht, blockierter Versand und **ein Aufrufer, der eine alte Dateiauswahl noch hält** — der Fall, der beim bloßen Lesen des Codes unsichtbar bleibt).
+
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 072, 073, 074, 075, 076, 078, 079, 080 (alle W16, `depends_on: 070, 071`), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
 

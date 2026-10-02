@@ -5,9 +5,9 @@ wave: "W16"
 depends_on: [031, 035, 070, 071]
 files: [tasks/040-chat-project-link.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "30edc18e55c4dbbb"
 ---
 # Aufgabe 040 — Chat und Projekt verbinden
