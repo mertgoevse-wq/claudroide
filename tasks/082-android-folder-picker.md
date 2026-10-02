@@ -5,9 +5,9 @@ wave: "W18"
 depends_on: [010, 017]
 files: [tasks/082-android-folder-picker.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "5daba620d9887b71"
 ---
 # Aufgabe 082 — Android-Ordner auswählen

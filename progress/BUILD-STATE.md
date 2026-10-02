@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (siebte Sitzung)
-**Status:** 84 von 135 Aufgaben verifiziert. Tasks 040, 072–081 abgeschlossen (W16 vollständig).
+**Status:** 85 von 135 Aufgaben verifiziert. Tasks 040, 072–082 abgeschlossen (W16 vollständig).
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -429,7 +429,30 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Push erfolgt:** Am 2026-10-02 mit Nutzerfreigabe `cb88e3b..2aafa36` nach `origin/main` (privat) gepusht. Danach Aufgaben 080 und 081 committet.
 
-**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt, ohne Gate): 082, 087, 092, 093, 098, 103, 105.
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt, ohne Gate): 087, 092, 093, 098, 103, 105.
+**Durch 082 neu freigegeben** (es hing an dieser Aufgabe): 083, 085, 086, 089, 090, 091, 094, 121.
+
+## Task 082 erledigt — „Android-Ordner auswählen“
+
+`FolderSelectionPolicy.kt` (neu, `feature/project/`) + `FolderSelectionPolicyTest.kt` (29 Tests).
+
+**Die beiden Fertig-Kriterien strukturell abgesichert:**
+- **Abbrechen erzeugt keine Berechtigung.** `SelectionOutcome.CANCELLED` wird in `fold` **ganz zuerst** behandelt und liefert `Cancelled` — und zwar auch dann, wenn der Aufrufer trotzdem einen Namen und einen Pfad mitgibt. Sonst könnte man durch Mitgeben eines Pfades aus einem Abbruch doch noch eine Berechtigung bauen; genau das ist als Test festgehalten. Ein Abbruch wird nicht als Fehler behandelt, weil er der Normalfall des Dialogs ist.
+- **Nur der ausgewählte Bereich.** `covers()` prüft mit dem Trenner `"/"`: `/ab/main.kt` gehört **nicht** zu `/a`. Ohne diesen Trenner wäre das ein stiller Zugriff auf Nachbarordner mit ähnlichem Namen — der Test nennt genau diesen Fall.
+
+**Schutz: keine umfassende Speicherberechtigung.** Der Typ hat **kein Feld** und **keine Methode**, die eine Berechtigung anfordert; beide Zuspitschaften sind über Reflexion geprüft. Ergänzend steht im Manifest nur `INTERNET` und `ACCESS_NETWORK_STATE`.
+
+**`fold` und `stateAfter` getrennt:** `fold` liefert nur das **Ergebnis**, `stateAfter` den neuen Stand. Wer den Stand braucht, muss ihn ausdrücklich schreiben — sonst könnte ein Aufrufer ein erfolgreiches Ergebnis sehen und einen veralteten Stand behalten. Bei Abbruch bleibt der Stand **unverändert** (statt stillschweigend zurückgesetzt).
+
+**Erneute Auswahl nennt, was wegfällt:** `Replaced.droppedRoots` listet die verlorenen Wurzeln, und `stateAfter` bestätigt, dass der alte Ordner danach nichts mehr abdeckt.
+
+**Zwei Testfehler, die ich behoben habe:** Der Test „keine Methode anfordert“ war zu grob — `getGrantedRoots` enthält „grant“, fragt aber nichts an; jetzt werden nur echte Aktionen geprüft. Und der Test suchte nach „keine allgemeine Zugriffsberechtigung“, während der Code „wird nicht verlangt“ sagt — beide Male war der Code richtig. Dazu vier Stellen, an denen `assertTrue(x is T)` keinen Smart Cast auslöst (JUnit-Methoden haben keinen Vertrag); dort steht jetzt ein expliziter Cast.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1071 Tests, 0 Fehler, 0 übersprungen** (vorher 1042, +29).
+
+**Geladene Skills:** `android-permissions-security` (daraus die beiden Prüfungen über Reflexion: kein Berechtigungsfeld, keine anfordernde Methode — der Task verlangt „keine umfassende Speicherberechtigung“, und das wird am Typ geprüft, nicht in einem Kommentar behauptet) und `testing-setup` (der Abbruch-Fall steht mit Abspruch an erster Stelle, weil er der häufigste ist).
+
+## Task 081 erledigt — „Projektübersicht“
 **Gates mit offener Entscheidung** (Nutzerentscheidung nötig): 084, 095, 117, 118, 123, 125, 126, 127, 129, 130.
 
 ## Task 081 erledigt — „Projektübersicht“
