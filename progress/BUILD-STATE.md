@@ -1,11 +1,47 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-02 (vierzehnte Sitzung, zweiter Teil — Tasks 126 und 123 verifiziert)
-**Status:** **113 von 135 Aufgaben `done`**, 22 offen, davon **15 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-02 (vierzehnte Sitzung, zweiter Teil — Tasks 126, 123 und 127 verifiziert)
+**Status:** **114 von 135 Aufgaben `done`**, 21 offen, davon **14 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand:** `./gradlew :app:testDebugUnitTest` → **1798 Tests, 0 Fehler, 0 übersprungen** (+22 `DeviceProtectionPolicyTest`, +18 `SkillSupplyChainReviewTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20.4 MB.
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1818 Tests, 0 Fehler, 0 übersprungen** (+22 `DeviceProtectionPolicyTest`, +18 `SkillSupplyChainReviewTest`, +20 `DataRetentionPolicyTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20 396 805 Bytes.
 
-**Git-Stand:** `main` bei `90eb7a5`, **10 Commits vor `origin/main`** — **nicht gepusht**. Push ist nach CLAUDE.md eine externe Nebenwirkung und braucht eine ausdrückliche Freigabe.
+**Git-Stand:** `main` bei `8dada34`, **12 Commits vor `origin/main`** — **nicht gepusht**. Push ist nach CLAUDE.md eine externe Nebenwirkung und braucht eine ausdrückliche Freigabe.
+
+## Sitzung 14, neunter Teil — Task 127: Daten aufbewahren und löschen (DataRetentionPolicy)
+
+### Zwei echte Fehler, die die Tests aufgedeckt haben
+
+1. **Eine Löschung, die nichts löschte, meldete Erfolg.** `isCompletelyDeleted` prüfte `unreachableScopes.isEmpty() && records.isNotEmpty() && records.all { it.survivesRestart }`. Eine Löschung mit `removedItems = 0` erfüllte alle drei Bedingungen und meldete „vollständig gelöscht" — für eine Handlung, die **nicht stattgefunden** hatte. Der Test `eine leere Loeschung meldet nicht etwa Erfolg` fiel um. Jetzt gilt zusätzlich `records.any { it.removedItems > 0 }`. Das ist genau die Falle, die die Aufgabe mit „nicht fälschlich als gelöscht bezeichnet" meint — diesmal auf die **eigene** Seite statt auf den Anbieter.
+2. **Der Bericht sagte nichts darüber, welche Datenart geprüft wurde.** Bei komplett leerem Bestand kam nur „Es wurde nichts gelöscht." Damit blieb offen, ob geprüft oder **übersprungen** wurde. Der vollständige Suite-Lauf fing das auf (der isolierte Lauf hatte es nicht gesehen): Jetzt wird die leere Datenart **namentlich** genannt („… war bereits leer"), und ein in diesem Lauf entfernter Schlüssel wird trotzdem gemeldet.
+
+**Beides am Code behoben, nicht am Test.**
+
+### Die Kernzusage: lokale Löschung ist keine vollständige
+
+Die Aufgabe verlangt, anbieter-seitig gespeicherte Daten **nicht** als lokal gelöscht zu bezeichnen. Genau dieser Irrtum wäre hier entstanden:
+
+- `DataScope` trennt `LOCAL` von `PROVIDER_HELD` — der Anbieter ist eine fremde Partei, dort kann nur sie löschen.
+- `DeletionOutcome.unreachableScopes` nennt, was die lokale Löschung **nicht** erreichen konnte. `covers(scope)` liefert für `PROVIDER_HELD` dann `false`.
+- Der Bericht stellt die Warnung **vor** das Fazit: „Achtung: Es liegt noch eine Kopie beim Anbieter gespeichert. Diese Daten hat ClauDroide nicht gelöscht — dort kann nur der Anbieter löschen." Eine Fußnote wäre hier die falsche Gewichtung.
+- **Es gibt keine Methode**, die aus einem unvollständigen Ergebnis „alles gelöscht" macht.
+
+**Löschung nach Neustart:** `DeletionRecord.survivesRestart` ist Teil des Datensatzes, und `isCompletelyDeleted` verlangt ihn. Eine nicht dauerhafte Löschung wird als solche gemeldet („noch nicht dauerhaft gesichert") statt als Erfolg.
+
+**Schlüssel separat und sofort entfernbar:** `KeyRemoval.remove` liefert `0` für einen **nicht vorhandenen** Schlüssel — „1 Schlüssel entfernt" wäre eine falsche Angabe. Das Löschen eines Chats nimmt den Schlüssel **nicht** mit (`eine leere Datenart mit entfernter Schluesselmeldung bleibt ehrlich`).
+
+**Fristen:** Standard `UNTIL_MANUAL` — nichts verschwindet ungefragt. Eine rückwärts gelaufene Uhr (`now < createdAt`) ergibt **keine** Frist, statt eine zu erfinden. Geprüft wird bei jedem Aufruf neu, nie aus einem gespeicherten Ergebnis.
+
+### Teststand
+
+- `./gradlew :app:testDebugUnitTest`: **1818 Tests, 0 Fehler, 0 übersprungen** (vorher 1798, +20).
+- **Zwei Mutationen geprüft:** Anbieterkopie als gelöscht ausgeben → 3 Tests rot; `survivesRestart` aus der Vollständigkeitsprüfung streichen → 2 Tests rot.
+- `:app:assembleDebug`: **BUILD SUCCESSFUL**, APK 20 396 805 Bytes.
+- Geheimnis-Scan: ohne Treffer. Dateien 351 / 298 Zeilen (Grenze 800).
+
+### Skills
+
+- **`android-permissions-security`** — der Anbieter ist eine fremde Partei mit eigener Zuständigkeit. Die Aufgabe „nicht fälschlich als lokal gelöscht bezeichnen" ist auf dieser Ebene dasselbe Muster wie `checkCallingOrSelfPermission` in Abschnitt 5: Ein Urteil darf sich nicht auf den eigenen Zuständigkeitsbereich erstrecken. Der Bericht grenzt deshalb **ein**, wer löschen kann.
+- **`testing-setup`** — Schritt 5 (Logikklassen testen): reine JVM-Tests. Die Varianten einzeln: leerer Bestand, einzelner und mehrere Einträge, mit und ohne Anbieterkopie, dauerhaft und flüchtig, Nutzerwunsch und Fristablauf, vorhandener und fehlender Schlüssel, unmögliche Werte (negative Anzahl).
 
 ## Sitzung 14, achter Teil — Task 123: Skill-Quelle prüfen (SkillSupplyChainReview)
 
