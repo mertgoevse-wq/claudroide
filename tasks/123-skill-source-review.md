@@ -5,9 +5,9 @@ wave: "W27"
 depends_on: [001, 002, 017]
 files: [tasks/123-skill-source-review.md]
 skills: [`android-permissions-security`, `/swarm-planner`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "c4f5ddd3b9b42068"
 ---
 # Aufgabe 123 — Skill-Quelle prüfen
