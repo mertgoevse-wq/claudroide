@@ -1,11 +1,20 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-02 (elfte Sitzung) — Tasks 021 und 022 abgeschlossen
-**Status:** **103 von 135 Aufgaben `done`**, 32 offen, davon **24 mit `gate: true`**. Die Zahl stimmt diesmal aus dem Frontmatter, nicht aus einer Zählung im Protokoll: der vorige Checkpoint nannte 103, verzeichnete aber nur 101 `done` — 021 und 022 standen noch auf `in_progress`, obwohl ihre Bilder seit dem letzten Commit im Repo lagen.
+**Stand:** 2026-10-02 (elfte Sitzung abgeschlossen — Übergabepunkt für nächste Sitzung)
+**Status:** **103 von 135 Aufgaben `done`**, 32 offen, davon **24 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand (in dieser Sitzung gelaufen):** `./gradlew :app:testDebugUnitTest` → **1574 Tests, 0 Fehler, 0 übersprungen** (1570 vorher, +4 aus `BrandAssetContractTest`; aus den JUnit-XML gezählt, nicht aus der letzten Logzeile). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 19 MB. Beide Exitcodes geprüft.
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1577 Tests, 0 Fehler, 0 übersprungen** (+3 Tests in `BrandAssetContractTest`: Name-Guard `ClauDroide`, Alt-Text-Konsistenz, Banner/Mark-Geometrie). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 19 MB.
 
-## Sitzung 11 — die Marke war im Repo, aber nicht in der App
+**Git-Stand:** Vollständig synchron mit `origin/main` (privates Repository `mertgoevse-wq/claudroide`). Letzter Stand inklusive Umbenennung auf ClauDroide, Zwei-Boten-Banner, Bild-Alt-Texte und Tests ist gepusht.
+
+**Nächste freigegebene Aufgabe bei Wiederaufnahme (`/claudroide-resume`):**
+- **Task 117:** „Freigabeübersicht" (W24, `gate: true`, Skills: `adaptive` + `android-permissions-security`).
+- Nutzer hat volle Autonomie und Entscheidungsfreiheit erteilt.
+- Task 117 ist der Hebel, der die abhängigen Tasks 132–135 (Spezialhelfer, Helferrechte, Externe Werkzeuge) entsperrt.
+- Nachfolgende Themen laut `progress/TODO.md`: 4KB/16KB-Seitenkompatibilität, Abwärtskompatibilität/Lite-Profil, NPU-Fallback-Kette.
+- Hinweis zu Bild/Banner: Der Nutzer möchte das Banner später noch feinschleifen (Bild gefällt noch nicht ganz, ist aktuell aber zweitrangig).
+
+## Sitzung 11 — Marke, Namensumstellung ClauDroide und Zwei-Boten-Banner
 
 ### Der Befund
 

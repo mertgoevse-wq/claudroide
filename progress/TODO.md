@@ -9,11 +9,12 @@ Legende: `[ ]` offen · `[~]` läuft · `[x]` erledigt und verifiziert · `[!]` 
 
 ## A — Auftrag vom 2026-10-02
 
-- [~] **A1** Umstellung auf „ClauDroide" (Anzeigename; Package bleibt `org.claudroide.app`)
-- [ ] **A2** Neues Banner: Android-Bot und Terminal-Bot nebeneinander, Hand in Hand
-- [ ] **A3** Neues Signet passend zur neuen Bildsprache
-- [ ] **A4** Bild-Alt-Texte auf die neue Bildsprache aktualisieren
-- [ ] **A5** Bildsprache gegen den Unabhängigkeitshinweis prüfen — beide müssen wahr sein
+- [x] **A1** Umstellung auf „ClauDroide" (Anzeigename; Package bleibt `org.claudroide.app`) — verifiziert in APK `resources.arsc`
+- [x] **A2** Neues Banner: Android-Bot und Terminal-Bot nebeneinander, Hand in Hand (`tools/brand_banner.py` erzeugt `assets/brand/banner.png` + `claudroide_banner.webp`)
+- [x] **A3** Signet: bleibt die Einzelfigur (`mark-256.png`), da bei 48–96dp zwei Figuren unlesbar wären (per Test fixiert)
+- [x] **A4** Bild-Alt-Texte auf die neue Bildsprache aktualisiert (in `values/` und `values-de/`)
+- [x] **A5** Bildsprache gegen den Unabhängigkeitshinweis geprüft — generischer Terminal-Bot mit `>_`, kein Anthropic-Klon (beide Aussagen wahr)
+- [ ] **A6** Banner-Feinschliff (später: Nutzer wünscht Nachbesserung am Aussehen, aktuell vorerst abgenommen)
 
 ## B — Verifizierbare Technik (ohne Gerät prüfbar)
 
