@@ -19,12 +19,12 @@ class ConversationManagerTest {
         val conv = ConversationManager.createConversation(
             initialPrompt = "Write unit tests",
             projectId = "p-1",
-            projectName = "Claudroide Core"
+            projectName = "ClauDroide Core"
         )
         assertEquals("Write unit tests", conv.title)
         assertTrue(conv.isProjectBound)
         assertEquals("p-1", conv.projectId)
-        assertEquals("Claudroide Core", conv.projectName)
+        assertEquals("ClauDroide Core", conv.projectName)
     }
 
     @Test

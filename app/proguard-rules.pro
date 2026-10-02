@@ -1,4 +1,4 @@
-# Claudroide — R8/ProGuard rules for the release build.
+# ClauDroide — R8/ProGuard rules for the release build.
 #
 # Goal: keep the release APK small without breaking Compose, Kotlin
 # reflection-free serialization, or the security layer. Add a rule only with a

@@ -48,10 +48,10 @@ class NavigationStructureTest {
         val boundState = NavigationState(
             currentScreen = Screen.ChatDetail,
             activeProjectId = "proj-1",
-            activeProjectName = "Claudroide Core"
+            activeProjectName = "ClauDroide Core"
         )
         assertTrue(boundState.isProjectBound)
-        assertEquals("Claudroide Core", boundState.projectBadgeText)
+        assertEquals("ClauDroide Core", boundState.projectBadgeText)
     }
 
     @Test

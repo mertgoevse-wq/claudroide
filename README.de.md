@@ -1,13 +1,13 @@
-# Claudroide
+# ClauDroide
 
 <p align="center">
-  <img src="assets/brand/banner.png" alt="Claudroide — eine Android-Kuppel, verschmolzen mit einem Claude-Funken" width="100%" style="border-radius: 12px;" />
+  <img src="assets/brand/banner.png" alt="ClauDroide — eine grüne Android-Kuppel und ein Terminal-Bot, die sich an den Händen halten, neben dem Produktnamen" width="100%" style="border-radius: 12px;" />
 </p>
 
 <p align="center">
-  <img src="assets/brand/mark-256.png" alt="Claudroide-Signet" width="96" />
+  <img src="assets/brand/mark-256.png" alt="ClauDroide-Signet" width="96" />
   <br>
-  <b>Claudroide</b> — Eigenständiger mobiler KI-Coding-Assistent für Android
+  <b>ClauDroide</b> — Eigenständiger mobiler KI-Coding-Assistent für Android
   <br>
   <sub>Native Touch-Bedienung · BYOK (Bring Your Own Key) · A56 5G optimiert · Privater GitHub Sync</sub>
 </p>
@@ -20,14 +20,14 @@
   <img src="https://img.shields.io/badge/Phase-Entwurfsplanung-informational" alt="Phase" />
   <img src="https://img.shields.io/badge/Bauaufgaben-135-blue" alt="Aufgaben" />
   <img src="https://img.shields.io/badge/Verifiziert-103%20%2F%20135-yellow" alt="Status" />
-  <img src="https://img.shields.io/badge/Tests-1574%20bestanden-success" alt="Tests" />
+  <img src="https://img.shields.io/badge/Tests-1577%20bestanden-success" alt="Tests" />
   <img src="https://img.shields.io/badge/Zielger%C3%A4t-Galaxy%20A56%205G-orange" alt="Gerät" />
   <img src="https://img.shields.io/badge/Repo-privat-success" alt="Repo" />
 </p>
 
-Claudroide ist eine eigenständige Android-App für KI-gestützte Projektarbeit (Claude-Code-artig, aber eigene Marke und eigener Code). Erstes Zielgerät: Samsung Galaxy A56 5G. Dieses Repository enthält die Spezifikation, 135 maschinenlesbare Bauaufgaben und die autonome Bau-Schleife.
+ClauDroide ist eine eigenständige Android-App für KI-gestützte Projektarbeit (Claude-Code-artig, aber eigene Marke und eigener Code). Erstes Zielgerät: Samsung Galaxy A56 5G. Dieses Repository enthält die Spezifikation, 135 maschinenlesbare Bauaufgaben und die autonome Bau-Schleife.
 
-> **Unabhängigkeitshinweis:** Claudroide ist ein unabhängiges Open-Source-Projekt und steht in keiner geschäftlichen oder offiziellen Verbindung zu Anthropic, PBC. Claude ist eine eingetragene Marke von Anthropic. Claudroide ermöglicht die Nutzung offizieller Entwickler-Schnittstellen auf Basis eigener API-Schlüssel (BYOK).
+> **Unabhängigkeitshinweis:** ClauDroide ist ein unabhängiges Open-Source-Projekt und steht in keiner geschäftlichen oder offiziellen Verbindung zu Anthropic, PBC. Claude ist eine eingetragene Marke von Anthropic. ClauDroide ermöglicht die Nutzung offizieller Entwickler-Schnittstellen auf Basis eigener API-Schlüssel (BYOK).
 
 **Inhalt:** [Schnellstart](#schnellstart-in-claude-code) · [Wie der Bau abläuft](#wie-der-bau-abläuft) · [Status](#status) · [Bilder & Maskottchen](#bilder-und-maskottchen) · [Grenzen](#sicherheits--und-produktgrenzen) · [Dokumente](#alle-dokumente)
 
@@ -171,7 +171,7 @@ flowchart LR
 - **Banner:** [`assets/brand/banner.png`](assets/brand/banner.png) — 1376x768, 16:9. Die Wortmarke ist echtes Inter, der Produktname ist deshalb konstruktionsbedingt richtig geschrieben.
 - **In der App:** Beides liegt als WebP daraus abgeleitet im Build — `res/drawable-nodpi/claudroide_mark.webp` (13 KB) und `claudroide_banner.webp` (15 KB, aus 112 KB). Die PNGs bleiben als verlustfreie Quelle im Repo; der Deckel von 50 KB gilt für das, was aufs Gerät geht, und `BrandAssetContractTest` prüft ihn je ausgelieferter Datei.
 - **Gestaltung:** eine Android-Kuppel in `#3DDC84` mit einem Claude-Funken als Krone. Die beiden Strahlen bei ±26° sind zugleich die Antennen des Droiden **und** zwei Strahlen des Funkens — dieselben Striche tragen beide Systeme, sodass sich keine Hälfte löschen lässt, ohne die andere zu zerstören. Das ist die Vorgabe „kein untergeordnetes Symbol" als Geometrie, nicht als Bildunterschrift.
-- Als exakte Vektorgeometrie von [`tools/brand.py`](tools/brand.py) gezeichnet, nicht von einem Bildmodell: die Wortmarke muss „Claudroide" schreiben, und Diffusionsmodelle schreiben Wortmarken falsch. Banner und App-Symbol importieren dieselbe Geometrie und können deshalb nicht auseinanderlaufen.
+- Als exakte Vektorgeometrie von [`tools/brand.py`](tools/brand.py) gezeichnet, nicht von einem Bildmodell: die Wortmarke muss „ClauDroide" schreiben, und Diffusionsmodelle schreiben Wortmarken falsch. Banner und App-Symbol importieren dieselbe Geometrie und können deshalb nicht auseinanderlaufen.
 - Kein SVG als fertiges Logo oder Illustration. Fertige Grafiken liegen ausschließlich als PNG, WebP oder JPG vor (geprüft durch CI `.github/workflows/repo-health.yml`). Die SVGs unter `assets/brand/.build/` sind Build-Eingang, keine ausgelieferten Dateien. Quelldateien unter `assets/brand/` sind unbeschränkt; der 50-KB-Deckel gilt für ausgelieferte App-Ressourcen und ist testgeprüft.
 
 ---

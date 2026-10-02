@@ -27,7 +27,7 @@ package org.claudroide.app.feature.project
 enum class MergeChoice(val label: String) {
 
     /** Write the agent's version over the current one. */
-    TAKE_AGENT("keep the version Claudroide prepared"),
+    TAKE_AGENT("keep the version ClauDroide prepared"),
 
     /** Leave the file exactly as it is now. */
     KEEP_CURRENT("keep the file as it is now"),
@@ -51,7 +51,7 @@ enum class ConflictState(val label: String, val blocksWrite: Boolean) {
      * The write stops. Not a warning — a stop, because the alternative is
      * writing over something the user did.
      */
-    CONFLICT("the file changed while Claudroide was working", true),
+    CONFLICT("the file changed while ClauDroide was working", true),
 
     /** The file is not there any more. */
     FILE_VANISHED("the file is gone", true),
@@ -99,7 +99,7 @@ data class ConflictCheck(
         (change.currentContent ?: "(the file is gone)").lines()
             .take(DIFFERENCE_LINE_LIMIT)
             .forEach { add("  | $it") }
-        add("Claudroide prepared:")
+        add("ClauDroide prepared:")
         change.proposedContent.lines()
             .take(DIFFERENCE_LINE_LIMIT)
             .forEach { add("  > $it") }
@@ -233,7 +233,7 @@ object FileConflictPolicy {
         buildString {
             check.differenceLines().forEach { appendLine(it) }
             if (choice == null) {
-                appendLine("Choose: keep Claudroide's version, keep the file, keep both, or look yourself.")
+                appendLine("Choose: keep ClauDroide's version, keep the file, keep both, or look yourself.")
             } else {
                 appendLine("Chosen: ${choice.label}.")
             }

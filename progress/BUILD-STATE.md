@@ -1,4 +1,4 @@
-# Claudroide-Bauzustand
+# ClauDroide-Bauzustand
 
 **Stand:** 2026-10-02 (elfte Sitzung) — Tasks 021 und 022 abgeschlossen
 **Status:** **103 von 135 Aufgaben `done`**, 32 offen, davon **24 mit `gate: true`**. Die Zahl stimmt diesmal aus dem Frontmatter, nicht aus einer Zählung im Protokoll: der vorige Checkpoint nannte 103, verzeichnete aber nur 101 `done` — 021 und 022 standen noch auf `in_progress`, obwohl ihre Bilder seit dem letzten Commit im Repo lagen.
@@ -72,7 +72,7 @@ stehen in der kompilierten `resources.arsc`.
 ### Was bewusst nicht angefasst wurde
 
 `OnboardingScreen` und `SettingsScreen` enthalten **fest verdrahtete deutsche
-Zeichenketten** im Compose-Code („Willkommen bei Claudroide", „Schritt 3 von 4",
+Zeichenketten** im Compose-Code („Willkommen bei ClauDroide", „Schritt 3 von 4",
 „Anbieter & API-Schlüssel (BYOK)"). Ein Sprachwechsel übersetzt diese nicht. Das ist
 ein echter Fehler, aber er gehört zu anderen Aufgaben; hier wurde er weder behoben
 noch stillschweigend umgangen.
@@ -148,7 +148,7 @@ Die beiden alten Bot-Bilder sind gelöscht und durch `assets/brand/` ersetzt:
   die **echte** Geometrie — alle Füllungen auf Weiß, Visor ausgeschnitten,
   Augen wieder darübergelegt. Nichts wird noch einmal von Hand abgeleitet.
 
-**Warum Geometrie und kein Bildmodell:** die Wortmarke muss „Claudroide"
+**Warum Geometrie und kein Bildmodell:** die Wortmarke muss „ClauDroide"
 schreiben, und Diffusionsmodelle schreiben Wortmarken falsch. Jede Glyphe ist
 echtes Inter, positioniert nach gemessener Vorschubbreite. `tools/brand.py`
 besitzt die Marke, `banner.py` und `app_icon.py` importieren sie — eine Quelle,
@@ -163,7 +163,7 @@ das adaptive XML den Namen `ic_launcher` trägt.
 
 ### Figma
 
-Datei **Claudroide Design System** angelegt (`iHmsF05ljgxRRvNeVlz4fe`) mit 22
+Datei **ClauDroide Design System** angelegt (`iHmsF05ljgxRRvNeVlz4fe`) mit 22
 Token-Variablen, einer Foundations-Board und dem Chat-Screen als Entwurf. Der
 Sitz ist „View" (Starter), Schreiben funktioniert trotzdem — geprüft, nicht
 angenommen.
@@ -332,7 +332,7 @@ gesamten Entwurfs. `code-review` (als Plugin-Skill vorhanden, Pfad
 **Grenze:** JVM-Logiktests. Kein Oberflächentest, keine Messung am A56.
 
 ## Erledigt
-- `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
+- `ClauDroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
 - Genau 135 nummerierte Aufgabendateien unter `tasks/`, plus `skill-matrix.md` und `DEPENDENCIES.md`.
 - **Welle 0 (W0) vollständig abgeschlossen:**
   - **Task 001 erledigt:** „Produktregeln und offene Entscheidungen“ — Governance-Matrix, Produktziele, harte Nicht-Ziele, Freigabestufen und Zuständigkeiten vollständig spezifiziert (`done_since_last_edit: true`).
@@ -360,9 +360,9 @@ gesamten Entwurfs. `code-review` (als Plugin-Skill vorhanden, Pfad
   - **Task 017 erledigt (Gate):** „Android-Erlaubnisse“ — Least Privilege verankert, kein `MANAGE_EXTERNAL_STORAGE`, `PermissionManager.kt` mit SAF-Persistierung und Denial-Handling implementiert (`done_since_last_edit: true`).
   - **Task 018 erledigt (Gate):** „Hintergrundaufgaben“ — Lebenszyklusmodell (`TaskLifecycleState`) und `BackgroundTaskManager.kt` mit Start, Pause, Abbruch und Bereinigung implementiert (`done_since_last_edit: true`).
 - **Welle 6 (W6) vollständig abgeschlossen:**
-  - **Task 020 erledigt:** „Logo und App-Symbol“ — Maskottchen-Logo (`assets/claudroide-mascot-logo.jpg`) und Adaptive-Icon-Spezifikation (108 dp Canvas, 66 dp Safe Zone, A56 FHD+ Dichteskalierung) verifiziert (`done_since_last_edit: true`).
+  - **Task 020 erledigt:** „Logo und App-Symbol“ — Maskottchen-Logo (`assets/ClauDroide-mascot-logo.jpg`) und Adaptive-Icon-Spezifikation (108 dp Canvas, 66 dp Safe Zone, A56 FHD+ Dichteskalierung) verifiziert (`done_since_last_edit: true`).
   - **Task 021 erledigt:** „Eigene App-Bilder“ — Leerstufen- und Zustandskatalog (EmptyChat, EmptyProject, Offline, Approval) mit Vektor-Vorrang und 50 KB Deckel spezifiziert (`done_since_last_edit: true`).
-  - **Task 022 erledigt:** „Kopf- und Bannerbilder“ — 16:9-Banner (`assets/claudroide-banner.jpg`), Safe-Content-Zonen, Kompression und Alternativtexte implementiert (`done_since_last_edit: true`).
+  - **Task 022 erledigt:** „Kopf- und Bannerbilder“ — 16:9-Banner (`assets/ClauDroide-banner.jpg`), Safe-Content-Zonen, Kompression und Alternativtexte implementiert (`done_since_last_edit: true`).
   - **Task 023 erledigt:** „Farben und Kontrast“ — Semantische Farb-Tokens (`ColorTokens.kt`), WCAG 2.2 AAA/AA Kontrastprüfung und Nicht-Allein-Farbe-Statusgarantie implementiert (`done_since_last_edit: true`).
   - **Task 024 erledigt:** „Schrift und Abstände“ — Typografie (`TypeTokens.kt`), Material 3 Mindest-Touch-Targets (48 dp), Spacings und Code-Horizontalskroll-Regeln implementiert (`done_since_last_edit: true`).
 - **Welle 7 (W7) vollständig abgeschlossen:**
@@ -394,7 +394,7 @@ gesamten Entwurfs. `code-review` (als Plugin-Skill vorhanden, Pfad
   - **Task 037 erledigt:** „Code und Antworten anzeigen“ — Parser für Fenced Code-Blocks (`MarkdownMessageParser`), Schwellenwert für Einklappen (`CodeBlockPolicy`), striktes Verbot automatischer Codeausführung und verlustfreies Kopieren mit Unit-Tests (`CodeBlockRendererTest.kt`) verifiziert (`done_since_last_edit: true`).
   - **Task 042 erledigt:** „Gesprächsdatenschutz“ — Garantie null Telemetrie (`ZERO_TELEMETRY_INVARIANT`), Bestätigungszwang für externe Übertragungen (`PrivacyEnforcer.canDispatchExternalPrompt`), Blockade sensibler Dateimuster (.env, id_rsa, .pem) und Offline-Lesbarkeit mit Unit-Tests (`ChatPrivacyTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Assets & Dokumentation:**
-  - 16:9 Header-Banner (`assets/claudroide-banner.jpg`) mit Android-Bot und Terrakotta-KI-Funken via Claude Media Bridge generiert.
+  - 16:9 Header-Banner (`assets/ClauDroide-banner.jpg`) mit Android-Bot und Terrakotta-KI-Funken via Claude Media Bridge generiert.
   - Zweisprachige GitHub-Dokumentation: Englisches Haupt-README (`README.md`) mit interaktivem Sprachwechsler zu deutschem `README.de.md`.
 - **Neu:** Jede Aufgabendatei trägt YAML-Frontmatter (`id`, `title`, `wave`, `depends_on`, `files`, `skills`, `status`, `gate`, `done_since_last_edit`, `content-hash`). Quelle der Wahrheit ist `tools/sync_frontmatter.py`; `--check` prüft, `--status ID=...` setzt Status. Ein `done` gilt nur bei unverändertem Inhalt als verifiziert.
 - **Neu:** `tasks/DEPENDENCIES.md` Lücken geschlossen: 091 in W19, 125 in W24, 131 in W27; neue Sperrkanten 088+089→091, 124→131, 070→125, W24→W25 als Extra-Abhängigkeit von 106.
@@ -433,7 +433,7 @@ gesamten Entwurfs. `code-review` (als Plugin-Skill vorhanden, Pfad
   - **Task 055 erledigt:** „Modellnamen verwalten“ — Modellkatalog und manuelle Eingabe (`ModelRegistry`, `ModelDescriptor`), Unterscheidung verifizierter Modelle von manuellen Nutzereingaben (`ModelOrigin`) und anfragefreie Modellauswahl mit Unit-Tests (`ModelNameTest.kt`) verifiziert (`done_since_last_edit: true`).
 - **Nächste Aufgabe: Task 061:** „Modellfähigkeiten“ (W13, Abhängigkeiten: keine, Skills `/claude-api` + `testing-setup`).
   - Ziel: Fähigkeiten eines Modells (Streaming, Werkzeugaufrufe, Bildeingabe) nur aus belegter Quelle ableiten, nie aus dem Modellnamen raten. Ohne Beleg: „unbekannt“, Aktion wird blockiert statt geraten.
-  - Arbeitsdateien: `app/src/main/java/org/claudroide/app/feature/provider/ModelCapabilityRegistry.kt` (liegt bereits uncommitted vor), zugehörige Testdatei, `tasks/061-model-capability-labels.md`, `progress/BUILD-STATE.md`.
+  - Arbeitsdateien: `app/src/main/java/org/ClauDroide/app/feature/provider/ModelCapabilityRegistry.kt` (liegt bereits uncommitted vor), zugehörige Testdatei, `tasks/061-model-capability-labels.md`, `progress/BUILD-STATE.md`.
   - Geladene Skills: `/claude-api`, `testing-setup`.
 - `python3 tools/sync_frontmatter.py --check` läuft grün über alle 135 Task-Dateien (58 erledigt, 77 offen).
 
@@ -1106,7 +1106,7 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 - Der Vergleich läuft über den **vollständigen Inhalt**, nicht über Zeitstempel oder Größe: Ein Zeitstempel stimmt nicht mehr, sobald zwei Änderungen in derselben Sekunde landen, eine Größe nicht mehr, sobald eine Änderung die Länge behält.
 - **Keine stillen Überschreibungen:** Drei der vier `ConflictState`-Werte blockieren den Schreibvorgang — `CONFLICT`, `FILE_VANISHED`, `TYPE_CHANGED`.
-- **Der Nutzer sieht die Unterschiede vor dem Zusammenführen:** `differenceLines()` zitiert **beide Seiten** — was die Datei jetzt sagt und was Claudroide vorbereitet hat. Eine Konfliktmeldung, die nur eine Seite nennt, lässt den Nutzer raten, worauf er verzichtet.
+- **Der Nutzer sieht die Unterschiede vor dem Zusammenführen:** `differenceLines()` zitiert **beide Seiten** — was die Datei jetzt sagt und was ClauDroide vorbereitet hat. Eine Konfliktmeldung, die nur eine Seite nennt, lässt den Nutzer raten, worauf er verzichtet.
 - **`MergeChoice` hat keinen automatischen Eintrag.** Es gibt keinen Wert „AUTO“, also keinen Pfad, auf dem ohne Person zusammengeführt wird. „Kein automatischer Datenverlust“ ist damit eine Eigenschaft des Typs, keine Einstellung.
 - **`KEEP_BOTH` gibt es, weil ein Konflikt keinen Gewinner braucht.** Ein Werkzeug, das nur „meins“ und „deins“ anbietet, erzwingt einen Verlust.
 - `contentAfter` ist nach dem benannt, was es tut: es liefert den Text, der **geschrieben würde**. Das Schreiben gehört dem Aufrufer — dieses Objekt hat keinen Schreibweg.
@@ -1251,9 +1251,9 @@ Der Rest (083, 084, 085, 113, 115, 117, 118, 121, 123, 125, 126, 127, 129, 130) 
 
 | Datei | Maß | Verwendung |
 | :--- | :--- | :--- |
-| `assets/claudroide-mascot-logo.png` | 665x796, RGBA | Vollauflösung, transparenter Hintergrund |
-| `assets/claudroide-mascot-logo-small.png` | 320x320, RGBA | Ecken-Logo im README |
-| `assets/claudroide-banner.jpg` | 1376x768, 16:9 | Kopfband im README |
+| `assets/ClauDroide-mascot-logo.png` | 665x796, RGBA | Vollauflösung, transparenter Hintergrund |
+| `assets/ClauDroide-mascot-logo-small.png` | 320x320, RGBA | Ecken-Logo im README |
+| `assets/ClauDroide-banner.jpg` | 1376x768, 16:9 | Kopfband im README |
 
 **Der Stern ist fusioniert, nicht gefressen:** Er sitzt als **eine massive Intarsie in der Brustplatte**, seine Kurven laufen in den Konstruktionslinien des Roboters weiter. Vier Spitzen, konkav geschwungene Kanten, **ein** ungebrochener massiver Umriss — kein Kreis, kein Punkt, kein Loch in der Mitte.
 

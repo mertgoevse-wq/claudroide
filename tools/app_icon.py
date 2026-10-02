@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the Claudroide adaptive launcher icon from the merged mark.
+"""Generate the ClauDroide adaptive launcher icon from the merged mark.
 
 The launcher icon was a flat colour rectangle (`@color/launcher_fg`), so the
 app had no icon at all. This draws the same mark the README uses, at the

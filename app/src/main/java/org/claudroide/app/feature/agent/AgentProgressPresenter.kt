@@ -198,7 +198,7 @@ object AgentProgressPresenter {
          * nicht über eine Umleitung: Diese Funktion liest sie nicht.
          */
         fun notificationText(): String {
-            val head = "Claudroide: ${phase.germanLabel}"
+            val head = "ClauDroide: ${phase.germanLabel}"
             val detail = when {
                 stepTitle.isNotBlank() -> " — $stepTitle"
                 else -> ""

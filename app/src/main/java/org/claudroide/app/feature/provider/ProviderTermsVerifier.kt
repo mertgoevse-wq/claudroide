@@ -17,7 +17,7 @@ data class ProviderTermsRecord(
     val privacyPolicyUrl: String,
     val lastVerifiedDate: String, // YYYY-MM-DD
     val verifiedEpochDays: Long,
-    val verifiedBy: String = "Claudroide Core Governance",
+    val verifiedBy: String = "ClauDroide Core Governance",
     val isOfficial: Boolean = true,
     val prohibitsSubscriptionScraping: Boolean = true
 )

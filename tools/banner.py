@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Draw the Claudroide README banner: the merged mark, the wordmark, a tagline.
+"""Draw the ClauDroide README banner: the merged mark, the wordmark, a tagline.
 
 Why geometry and not an image model: a diffusion model cannot spell
-"Claudroide" reliably, and a banner whose product name is misspelled is worse
+"ClauDroide" reliably, and a banner whose product name is misspelled is worse
 than no banner. Every glyph here is real Inter, so the wordmark is correct by
 construction.
 
@@ -32,7 +32,7 @@ GREEN = brand.GREEN
 CORAL = brand.CORAL
 MUTED = "#8E9A93"
 
-WORD = "Claudroide"
+WORD = "ClauDroide"
 TAGLINE = "Mobile AI coding assistant · on-device, your keys"
 
 

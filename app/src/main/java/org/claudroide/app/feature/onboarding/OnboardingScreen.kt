@@ -133,7 +133,7 @@ private fun WelcomeStep() {
             size = 96.dp,
         )
         Text(
-            text = "Willkommen bei Claudroide",
+            text = "Willkommen bei ClauDroide",
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center
         )
@@ -177,7 +177,7 @@ private fun LanguageThemeStep() {
             textAlign = TextAlign.Center
         )
         Text(
-            text = "Claudroide passt sich automatisch an deine Handysprache an. Das dunkle AMOLED-Theme schont den Akku deines A56.",
+            text = "ClauDroide passt sich automatisch an deine Handysprache an. Das dunkle AMOLED-Theme schont den Akku deines A56.",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -217,7 +217,7 @@ private fun ProviderExplanationStep() {
             textAlign = TextAlign.Center
         )
         Text(
-            text = "Claudroide ist unabhängig und verkauft keine KI-Nutzung weiter. Du nutzt deine eigenen Schlüssel für Claude API, OpenRouter oder lokale Server.",
+            text = "ClauDroide ist unabhängig und verkauft keine KI-Nutzung weiter. Du nutzt deine eigenen Schlüssel für Claude API, OpenRouter oder lokale Server.",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant

@@ -44,7 +44,7 @@ enum class StopReason {
 /**
  * A single parsed server-sent event from the Anthropic Messages API.
  *
- * Claudroide talks to the provider over raw HTTP, so the wire format is parsed here
+ * ClauDroide talks to the provider over raw HTTP, so the wire format is parsed here
  * rather than by an SDK. Unknown event types are preserved as [Unknown] so a new
  * server event can never crash the stream.
  */
@@ -63,7 +63,7 @@ sealed class SseEvent {
      * `content_block_delta` — an incremental update to block [index].
      *
      * Only [text] and [partialJson] carry user-visible payload. [thinkingDelta] is
-     * recorded but not rendered: Claudroide never shows raw model reasoning.
+     * recorded but not rendered: ClauDroide never shows raw model reasoning.
      */
     data class ContentBlockDelta(
         val index: Int,

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Claudroide</string>
+    <string name="app_name">ClauDroide</string>
     <string name="app_tagline">Mobile AI Coding Assistant</string>
 
     <!-- Navigation -->
@@ -10,7 +10,7 @@
 
     <!-- Disclaimer & Info -->
     <string name="disclaimer_title">Independent Open-Source Project</string>
-    <string name="disclaimer_text">Claudroide is an independent open-source project and is not affiliated with or endorsed by Anthropic, PBC. Claude is a registered trademark of Anthropic. Claudroide provides official API access using your own keys (BYOK).</string>
+    <string name="disclaimer_text">ClauDroide is an independent open-source project and is not affiliated with or endorsed by Anthropic, PBC. Claude is a registered trademark of Anthropic. ClauDroide provides official API access using your own keys (BYOK).</string>
 
     <!-- Empty States -->
     <string name="empty_chat_title">No active conversations</string>
@@ -19,8 +19,8 @@
     <string name="empty_project_desc">Select a project directory on your device to inspect and edit code.</string>
 
     <!-- Brand imagery (accessibility text) -->
-    <string name="banner_alt_text">Claudroide banner: the green robot mark beside the product name.</string>
-    <string name="brand_mark_alt_text">Claudroide mark: a green robot with a glowing terracotta spark.</string>
+    <string name="banner_alt_text">ClauDroide banner: a green Android dome and a terminal-screen bot standing side by side and holding hands, beside the product name.</string>
+    <string name="brand_mark_alt_text">ClauDroide mark: a green robot with a glowing terracotta spark.</string>
 
     <!-- Chat screen -->
     <string name="chat_session_title">Build session</string>

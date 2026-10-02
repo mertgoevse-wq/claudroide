@@ -1,8 +1,8 @@
-# Claudroide — Produktspezifikation und Baugrundlage
+# ClauDroide — Produktspezifikation und Baugrundlage
 
 **Stand:** 2026-09-30
 **Status:** Entwurf nach Nutzerinterview; Grundlage für die 135 Aufgabenpläne unter `tasks/`
-**Projektname:** Claudroide (vorläufiger Eigenname)
+**Projektname:** ClauDroide (vorläufiger Eigenname)
 **Erstes Zielgerät:** Samsung Galaxy A56 5G des Nutzers; genaue Gerätevariante, Android-Version, RAM und freier Speicher sind vor dem Gerätetest zu erfassen.
 **Zielgruppe zuerst:** Nutzer und ausgewählte Mitwirkende; private Entwicklung, spätere Öffentlichkeit nur nach ausdrücklicher Freigabe.
 **Dokumentensprache:** Deutsch, verständlicher Alltagswortschatz. Technische Begriffe werden beim ersten Auftreten erklärt.
@@ -11,11 +11,11 @@
 
 ## 1. Kurzbeschreibung
 
-Claudroide soll eine eigenständige Android-App für die Arbeit an Code-Projekten und allgemeine KI-Unterstützung werden. Sie soll sich direkt auf dem Galaxy A56 installieren und bedienen lassen – ohne dass der Nutzer zusätzlich Termux oder einen Computer benötigt. Die Bedienung soll sich an der Klarheit moderner KI-Chat-Apps orientieren, bevorzugt an der einfachen Smartphone-Bedienung der Claude-App, aber mit eigenem Namen, eigenen Zeichen, Farben, Bildern und einem klaren Hinweis, dass die App unabhängig ist.
+ClauDroide soll eine eigenständige Android-App für die Arbeit an Code-Projekten und allgemeine KI-Unterstützung werden. Sie soll sich direkt auf dem Galaxy A56 installieren und bedienen lassen – ohne dass der Nutzer zusätzlich Termux oder einen Computer benötigt. Die Bedienung soll sich an der Klarheit moderner KI-Chat-Apps orientieren, bevorzugt an der einfachen Smartphone-Bedienung der Claude-App, aber mit eigenem Namen, eigenen Zeichen, Farben, Bildern und einem klaren Hinweis, dass die App unabhängig ist.
 
 Der Kern ist eine sichere, projektbezogene Arbeitsmaschine: Sie soll Projekte öffnen, deren Dateien verstehen, passende Stellen finden, Änderungen vorschlagen, nach Freigabe Dateien ändern und erlaubte Prüf- oder Projektbefehle ausführen können. Sie soll Sitzungen und den Projektkontext behalten, Git-Repositories laden und Änderungen zeigen können sowie Claude-Code-ähnliche Projektanweisungen, wiederverwendbare Fähigkeiten, externe Werkzeuge und Spezialhelfer schrittweise unterstützen. „Claude Code-kompatibel“ bedeutet in dieser Spezifikation, nützliche Projektdateien und Arbeitsweisen zu verstehen, nicht Anthropic-Software umzuschreiben oder sich als offizielles Produkt auszugeben.
 
-Die App soll vom Start an eigene Anbieter-Schlüssel (BYOK: „Bring Your Own Key“, also der Nutzer trägt seinen eigenen Schlüssel ein), eigene Modellnamen und eigene Serveradressen unterstützen. Claude soll über einen selbst eingegebenen Claude-API-Schlüssel angeboten werden. Kein Vermitteln eines Claude-Free/Pro/Max-Logins, kein Sammeln von Abo-Sitzungsschlüsseln und keine inoffiziellen Umwege über fremde Kommandozeilen-Anmeldungen. Andere Anbieter werden nur über dokumentierte, erlaubte Wege angebunden. Anbieter können direkt mit dem Nutzer abrechnen; Claudroide verkauft in der ersten Fassung keine KI-Nutzung weiter.
+Die App soll vom Start an eigene Anbieter-Schlüssel (BYOK: „Bring Your Own Key“, also der Nutzer trägt seinen eigenen Schlüssel ein), eigene Modellnamen und eigene Serveradressen unterstützen. Claude soll über einen selbst eingegebenen Claude-API-Schlüssel angeboten werden. Kein Vermitteln eines Claude-Free/Pro/Max-Logins, kein Sammeln von Abo-Sitzungsschlüsseln und keine inoffiziellen Umwege über fremde Kommandozeilen-Anmeldungen. Andere Anbieter werden nur über dokumentierte, erlaubte Wege angebunden. Anbieter können direkt mit dem Nutzer abrechnen; ClauDroide verkauft in der ersten Fassung keine KI-Nutzung weiter.
 
 Die App soll später kleine Modelle ohne Internet ausprobieren können. CPU (Hauptrechner), Grafikchip und NPU (Spezialteil für bestimmte KI-Rechenaufgaben) sollen nur genutzt werden, soweit Android und die tatsächlichen Treiber des A56 dies sicher und messbar zulassen. Die NPU-Nutzung ist ein zu prüfendes Entwicklungsziel, keine vorab versprochene Fähigkeit. Akku, Wärme, Speicher, Antwortzeit und verfügbare Hardware werden gemessen; die App zeigt verständliche Statuswerte und Warnungen, die Nutzer in den Einstellungen abschalten können.
 
@@ -41,7 +41,7 @@ Die App soll später kleine Modelle ohne Internet ausprobieren können. CPU (Hau
 ### 2.3 Nicht-Ziele und Grenzen
 
 - Keine vollständige Nachbildung der Claude-App oder Claude-Code-Marken, -Logos, -Bildsprache oder geschützten Oberflächen. Ähnliche Bedienungsprinzipien sind okay; die Gestaltung muss eigenständig sein.
-- Keine Anmeldung mit Claude-Abo als Anmeldemethode von Claudroide und kein Umleiten von Claude Free/Pro/Max-Abfragen über Drittsoftware. Ein späterer Weg über ein unverändertes Anthropic-Programm darf ausschließlich separat und nach schriftlicher Klärung der Bedingungen untersucht werden; er ist nicht Voraussetzung und nicht Teil des sicheren Startumfangs.
+- Keine Anmeldung mit Claude-Abo als Anmeldemethode von ClauDroide und kein Umleiten von Claude Free/Pro/Max-Abfragen über Drittsoftware. Ein späterer Weg über ein unverändertes Anthropic-Programm darf ausschließlich separat und nach schriftlicher Klärung der Bedingungen untersucht werden; er ist nicht Voraussetzung und nicht Teil des sicheren Startumfangs.
 - Keine Nutzung durchgesickerter, rückentwickelter oder unerlaubt kopierter Claude-Code-Quellen. Keine Änderung oder Tarnung eines Anthropic-Binaries.
 - Keine Garantie, jede Desktop-Funktion auf Android exakt oder sofort zu übernehmen. Jede Funktion braucht Machbarkeits-, Datenschutz-, Android- und Lizenzprüfung. Fehlende oder nicht sichere Funktionen sind sichtbar als nicht verfügbar zu erklären.
 - Keine Root-Rechte, kein verstecktes Entsperren des Telefons und kein Zugriff auf Dateien, die der Nutzer nicht ausdrücklich auswählt.
@@ -53,7 +53,7 @@ Die App soll später kleine Modelle ohne Internet ausprobieren können. CPU (Hau
 
 | Thema | Bestätigte Richtung |
 |---|---|
-| Name | Claudroide als vorläufiger eigener Name; finaler Marken- und Namenscheck vor Veröffentlichung. |
+| Name | ClauDroide als vorläufiger eigener Name; finaler Marken- und Namenscheck vor Veröffentlichung. |
 | Design | Smartphonegerecht, ähnlich bequem wie Claude, aber klar eigener Auftritt mit eigenem Logo, Farben, Symbolen und Grafiken. |
 | Erste Seite | Chatliste; daneben Projekte und neue Unterhaltung gut erreichbar. |
 | Umfang | Vollständiges Zielbild von Anfang an; Umsetzung in geordneten Aufgaben und sichtbaren Ausbaustufen. |
@@ -61,7 +61,7 @@ Die App soll später kleine Modelle ohne Internet ausprobieren können. CPU (Hau
 | Gerät | Galaxy A56 zuerst; weitere Android-Geräte sind kein Pflichtziel der ersten Fassung. |
 | Sprachen | Deutsch und Englisch; anfängliche Wahl folgt der Handysprache, manuelle Auswahl bleibt möglich. |
 | Anbieter | Claude API, OpenRouter, OpenCode-bezogene offizielle Wege, Google Antigravity nur falls offiziell dokumentiert und erlaubt, plus frei einstellbare Anbieter/Endpunkte. Verfügbarkeit ist zu prüfen. |
-| Schlüssel | Nutzer trägt eigene Schlüssel ein; Kosten werden nicht von Claudroide weiterverkauft. Zugang nur über offiziell erlaubte Wege. |
+| Schlüssel | Nutzer trägt eigene Schlüssel ein; Kosten werden nicht von ClauDroide weiterverkauft. Zugang nur über offiziell erlaubte Wege. |
 | Projekte | Handyordner, ZIP, GitHub/Git-Server und USB-Speicher, soweit Android-Zugriff dies zulässt. |
 | Sicherheit | Projektbezogene Freigabestufe; Standard vorsichtig. Ein optionaler, deutlich gekennzeichneter Modus für weniger Rückfragen darf nie still aktiviert sein. |
 | Offline | Dateien/gespeicherte Inhalte weiter nutzen; kleines lokales Modell als Möglichkeit, sofern Gerät, Lizenz, Speicher und Beschleuniger es zulassen. |
@@ -98,7 +98,7 @@ Die App soll später kleine Modelle ohne Internet ausprobieren können. CPU (Hau
 - Repository aus unterstützter Git-Adresse laden oder vorhandenen Ordner anbinden.
 - Vor dem Laden Adresse, Anbieter, Zielpfad und mögliche Zugangsanfrage zeigen. Zugangsdaten sicher halten.
 - Änderungen, neue Dateien, gelöschte Dateien und Konflikte anzeigen. Vor Upload an GitHub/Git-Server zeigen, was gesendet wird und wohin.
-- Für Claudroide-Bauarbeit: Aufgaben nacheinander umsetzen, nach sinnvollen Aufgabenblöcken committen (lokalen Änderungsstand benennen/speichern), danach in das private Ziel-Repository pushen (hochladen), sobald Credentials und Nutzerfreigabe vorhanden sind. Nicht jede einzelne Zeile muss einen eigenen Commit bekommen; kein Push ohne eingerichtetes Ziel und Freigabe.
+- Für ClauDroide-Bauarbeit: Aufgaben nacheinander umsetzen, nach sinnvollen Aufgabenblöcken committen (lokalen Änderungsstand benennen/speichern), danach in das private Ziel-Repository pushen (hochladen), sobald Credentials und Nutzerfreigabe vorhanden sind. Nicht jede einzelne Zeile muss einen eigenen Commit bekommen; kein Push ohne eingerichtetes Ziel und Freigabe.
 - Keine Datei mit Geheimnissen in Commit, Patch oder Aufgabenbericht aufnehmen; vor jedem Commit auf Schlüssel/Token prüfen.
 
 ### 4.4 Anbieter und Antworten
@@ -174,7 +174,7 @@ Auch bei weniger Rückfragen bleiben Android-Systemfreigaben in Androids Hand. Z
 4. Ein vom Nutzer gewähltes Projekt wird gelesen; das Modell kann relevante Dateien referenzieren; eine Änderung wird vorher/nachher gezeigt, ausdrücklich angenommen oder abgelehnt und anschließend gespeichert.
 5. Ein zulässiger Projekt-Testbefehl kann im klar begrenzten Arbeitsbereich nach der gewählten Freigabe ausgeführt, abgebrochen und mit verständlicher Ausgabe angezeigt werden. Versuch, außerhalb des erlaubten Bereichs zu schreiben, wird blockiert oder sicher bestätigt.
 6. Projektdateien und Geheimnisse werden nicht ohne Erklärung vollständig übertragen. Verschlüsselte manuelle Sicherung lässt sich erzeugen und testweise wiederherstellen.
-7. Ein getrenntes/entzogenes USB-Projekt verursacht keine stillen Schreibverluste; Claudroide stoppt und erklärt die nächste Handlung.
+7. Ein getrenntes/entzogenes USB-Projekt verursacht keine stillen Schreibverluste; ClauDroide stoppt und erklärt die nächste Handlung.
 8. Git-Änderungen und Uploadziel sind sichtbar; Geheimnisprüfung läuft; Push erfordert eingerichtetes Ziel und bewusste Freigabe.
 9. Hintergrundaufgabe ist sichtbar und stoppbar; Warnungen für knappen Speicher, hohen Verbrauch oder nicht verfügbaren lokalen Beschleuniger sind verständlich und die nicht-kritischen Warnungen abschaltbar.
 10. Tests decken Schlüssel, Pfadgrenzen, Berechtigungen, Abbruch, Wiederherstellung, Offline-Verhalten und Fehlerfälle ab; Ergebnisse sind im Markdown dokumentiert.
@@ -215,7 +215,7 @@ Recherche ist eine Momentaufnahme. Anbieterregeln, APIs, Android-Versionen und D
 5. **Android-Dateiauswahl:** Androids Storage Access Framework lässt Nutzer Dateien/Ordner über die Systemauswahl freigeben; Zugriff kann Nutzerkontrolle und dauerhafte Berechtigung berücksichtigen. Große Ordner können Leistung beeinträchtigen; externer Speicher hängt vom Dokumentanbieter ab. Quelle: [Access documents and other files](https://developer.android.com/training/data-storage/shared/documents-files), abgerufen 2026-09-30.
 6. **Android-Hintergrundarbeit:** Sichtbare lang laufende Arbeit kann einen Foreground Service erfordern, mit dauerhafter Statusbenachrichtigung und Nutzerbewusstsein; Einsatz und Diensttyp müssen zur Android-Version passen. Quelle: [Foreground services overview](https://developer.android.com/develop/background-work/services/fgs), abgerufen 2026-09-30.
 7. **Lokale KI-Beschleunigung:** Android dokumentiert, dass NNAPI mit Android 15 abgekündigt wurde; aktuelle Migrations- und Beschleunigerwege sind beim Implementieren zu untersuchen. Quelle: [Android NNAPI migration guide](https://developer.android.com/ndk/guides/neuralnetworks/migration-guide), abgerufen 2026-09-30. Ein allgemeiner verfügbarer NPU-Zugriff auf dem A56 ist durch diese Recherche nicht bestätigt.
-8. **AnyClaw als Architektur-Inspiration:** Das öffentlich sichtbare Repository beschreibt ein einzelnes Android-Paket mit eingebettetem Linux-Bereich, App-Oberfläche, lokaler Diensteverwaltung und BYOK-/Agent-Funktionen. Es enthält auch konkrete Sicherheits-/Lizenzrisiken und Behauptungen, die nicht als verifiziert übernommen werden. Claudroide darf allgemeine Lösungsfragen untersuchen, aber Quellcode, Logos, Marke, Lizenz und Sicherheit separat prüfen und nichts ungeprüft übernehmen. Quelle: [AnyClaw GitHub repository](https://github.com/OpenClawAndroid/openclaw-android-assistant), abgerufen 2026-09-30.
+8. **AnyClaw als Architektur-Inspiration:** Das öffentlich sichtbare Repository beschreibt ein einzelnes Android-Paket mit eingebettetem Linux-Bereich, App-Oberfläche, lokaler Diensteverwaltung und BYOK-/Agent-Funktionen. Es enthält auch konkrete Sicherheits-/Lizenzrisiken und Behauptungen, die nicht als verifiziert übernommen werden. ClauDroide darf allgemeine Lösungsfragen untersuchen, aber Quellcode, Logos, Marke, Lizenz und Sicherheit separat prüfen und nichts ungeprüft übernehmen. Quelle: [AnyClaw GitHub repository](https://github.com/OpenClawAndroid/openclaw-android-assistant), abgerufen 2026-09-30.
 9. **OpenRouter, OpenCode, Antigravity und weitere Dienste:** Die Recherche bestätigt nicht, dass alle angebotenen CLI-Anmeldungen oder Token-Importe in einer Drittanbieter-App erlaubt sind. Deshalb: dokumentierte offizielle API/Anbieterwege zuerst, keine inoffizielle Sitzungs-Weiterleitung. Jede konkrete Integration muss Anbieter-Dokumentation, Nutzungsbedingungen, Authentifizierungsweg und Schlüsselablage vor ihrer Umsetzung bestätigen.
 
 ## 13. Offene Entscheidungen – vor Umsetzung nicht erfinden
@@ -228,7 +228,7 @@ Recherche ist eine Momentaufnahme. Anbieterregeln, APIs, Android-Versionen und D
 - Welche Anbieter in erster nutzbarer Fassung tatsächlich verfügbar sind und welche freien Nutzungsstufen derzeit bestehen.
 - Welche lokale Modelle und Dateigrößen auf genau dem A56 sinnvoll und rechtlich nutzbar sind; ob überhaupt NPU-Beschleunigung verfügbar ist.
 - Ob privates GitHub-Repository schon existiert, Zieladresse, Zugangsweg, Mitwirkende und Upload-Schlüssel. Hier im Dokumentationsschritt wird keines erstellt.
-- Wie genau und wann Claudroide Geld durch getrennte Zusatzdienste einnehmen darf, falls überhaupt.
+- Wie genau und wann ClauDroide Geld durch getrennte Zusatzdienste einnehmen darf, falls überhaupt.
 - Ziel-Mindestversion Android, Verteilung zuerst per direkt installierbarer APK oder Store, Signaturschlüssel und Updateweg.
 - Schwellenwerte für Warnung bei Akku, Speicher, Wärme und Downloadgröße; auf A56 messen statt raten.
 
@@ -368,7 +368,7 @@ Alle 135 nummerierten Einzelpläne stehen in `tasks/`; ergänzend existieren `sk
 ## Repositories und GitHub
 95. `tasks/095-git-provider-auth.md` — GitHub/Git-Server über unterstützten Zugang anbinden.
 96. `tasks/096-clone-repository.md` — Git-Repository laden, Ziel und Zugriff anzeigen.
-97. `tasks/097-create-private-project-repository.md` — Privates Claudroide-Bau-Repo erst nach Zugang und Bestätigung einrichten.
+97. `tasks/097-create-private-project-repository.md` — Privates ClauDroide-Bau-Repo erst nach Zugang und Bestätigung einrichten.
 98. `tasks/098-git-change-list.md` — Änderungen, neue und entfernte Dateien auflisten.
 99. `tasks/099-git-commit-flow.md` — Aufgabenblock als benannten lokalen Stand sichern.
 100. `tasks/100-git-secret-scan.md` — Vor Commit/Push Geheimnisse erkennen und stoppen.

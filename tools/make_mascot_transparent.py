@@ -9,7 +9,7 @@ neighbours are dropped. A highlight enclosed by green is never reached.
 
 Run with the Pillow venv:
     /tmp/imgvenv/bin/python tools/make_mascot_transparent.py \
-        /tmp/logos/mascot-v3.jpg assets/claudroide-mascot-logo.png
+        /tmp/logos/mascot-v3.jpg assets/ClauDroide-mascot-logo.png
 """
 import sys
 from collections import deque

@@ -1,7 +1,7 @@
 package org.claudroide.app.core.navigation
 
 /**
- * Type-safe destination routes for Claudroide navigation shell.
+ * Type-safe destination routes for ClauDroide navigation shell.
  * Covers ChatList, ProjectExplorer, Search, NewChat, Settings, Onboarding, and ChatDetail.
  */
 sealed class Screen(

@@ -1,4 +1,4 @@
-# Claudroide — Anweisungen für Claude Code
+# ClauDroide — Anweisungen für Claude Code
 
 Lies vor jeder Umsetzung `claudroide-spec.md`, `tasks/skill-matrix.md` und `progress/BUILD-STATE.md`. Nutzerwünsche und ausdrückliche Freigaben haben Vorrang; erfinde keine offenen Geräte-, Rechts-, Kosten- oder Anbieterangaben.
 

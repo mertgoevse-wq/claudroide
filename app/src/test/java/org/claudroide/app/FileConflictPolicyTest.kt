@@ -293,7 +293,7 @@ class FileConflictPolicyTest {
         val text = FileConflictPolicy.describe(FileConflictPolicy.check(change(current = "x")))
         assertTrue(
             "the user must be offered all four ways out, was: $text",
-            text.contains("keep Claudroide's version") &&
+            text.contains("keep ClauDroide's version") &&
                 text.contains("keep the file") &&
                 text.contains("keep both") &&
                 text.contains("look yourself")

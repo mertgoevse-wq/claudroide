@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Four candidate constructions for the Claudroide mark, rendered side by side.
+"""Four candidate constructions for the ClauDroide mark, rendered side by side.
 
 The brief: an Android droid and the Claude spark fused so that NEITHER reads as
 decoration on the other. The test applied to each candidate is deletion -- if

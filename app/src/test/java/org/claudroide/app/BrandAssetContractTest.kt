@@ -1,5 +1,6 @@
 package org.claudroide.app
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
@@ -84,5 +85,75 @@ class BrandAssetContractTest {
             "German is missing keys present in English: ${(keys - deKeys).sorted()}",
             keys.none { it !in deKeys },
         )
+    }
+
+    @Test
+    fun theDisplayedNameIsTheOneTheOwnerChose() {
+        // Guards the rename from "Claudroide" to "ClauDroide". Only the
+        // *display* name is capitalised this way; the package identifier
+        // deliberately stays org.claudroide.app, so this test must not look at
+        // it. What it does guard is the visible string drifting back.
+        val appName = Regex("<string name=\"app_name\">([^<]+)</string>")
+            .find(File(resRoot, "values/strings.xml").readText())!!.groupValues[1]
+        assertEquals("ClauDroide", appName)
+    }
+
+    @Test
+    fun theAltTextDescribesTheArtworkThatActuallyExists() {
+        // The alt text used to say "the green robot mark beside the product
+        // name", which described the previous single-droid banner. When the
+        // artwork changed to two figures holding hands, the description did not
+        // follow, and a screen-reader user was told about a picture that was no
+        // longer on the screen. The description has to name both figures.
+        val alt = Regex("<string name=\"banner_alt_text\">([^<]+)</string>")
+            .find(File(resRoot, "values/strings.xml").readText())!!.groupValues[1]
+        assertTrue(
+            "banner alt text must mention both figures, was: $alt",
+            alt.contains("Android") && alt.contains("bot") && alt.contains("hands"),
+        )
+    }
+
+    @Test
+    fun theBannerShowsTwoFigures_andTheMarkStaysTheSingleDroid() {
+        // The artwork now carries a second bot, but the launcher icon and the
+        // empty-state mark must stay the single dome: at 96dp two figures would
+        // be unreadable, and the icon is the one asset that has to work at
+        // 48dp in a notification shade. Read the shipped PNG dimensions rather
+        // than trusting this comment.
+        val banner = repoFile("assets/brand/banner.png")
+        val mark = repoFile("assets/brand/mark-256.png")
+        assertTrue("banner.png missing", banner.exists())
+        assertTrue("mark-256.png missing", mark.exists())
+        assertTrue(
+            "the banner must be wide enough for two figures plus a wordmark",
+            banner.readPngWidth() > mark.readPngWidth(),
+        )
+    }
+
+    /**
+     * Locate a repository file from the directory Gradle runs tests in.
+     *
+     * The working directory for `:app:testDebugUnitTest` is `app/`, so the
+     * repository root is one level up. The first version used `../..`, which
+     * pointed above the repository, and every asset test failed with
+     * "banner.png missing" -- a wrong path wearing the costume of a missing
+     * file, which is the kind of failure that makes you delete something that
+     * was never broken. Each candidate is checked for existence, and the error
+     * names the directory searched rather than just the file.
+     */
+    private fun repoFile(rel: String): File {
+        val candidates = listOf(File(rel), File("..", rel), File("../..", rel))
+        return candidates.firstOrNull { it.exists() }
+            ?: error("cannot locate $rel from ${File(".").absolutePath}")
+    }
+
+    /** PNG width from the IHDR chunk; avoids pulling in an image library. */
+    private fun File.readPngWidth(): Int {
+        val head = readBytes().take(24)
+        require(head.size >= 24) { "not a PNG: $name" }
+        return ((head[16].toInt() and 0xFF) shl 24) or
+            ((head[17].toInt() and 0xFF) shl 16) or
+            ((head[18].toInt() and 0xFF) shl 8) or
+            (head[19].toInt() and 0xFF)
     }
 }

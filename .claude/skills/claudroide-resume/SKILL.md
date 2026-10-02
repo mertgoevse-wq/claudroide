@@ -1,11 +1,11 @@
 ---
 name: claudroide-resume
-description: Resume the Claudroide build from its verified checkpoint after a Claude Code, Termux, or device interruption. Use when the user invokes /claudroide-resume or asks to continue the interrupted Claudroide task autonomously.
+description: Resume the ClauDroide build from its verified checkpoint after a Claude Code, Termux, or device interruption. Use when the user invokes /claudroide-resume or asks to continue the interrupted ClauDroide task autonomously.
 argument-hint: "[optional task ID or instruction]"
 user-invocable: true
 ---
 
-# Claudroide: sicher am letzten Stand fortsetzen
+# ClauDroide: sicher am letzten Stand fortsetzen
 
 ## Auftrag
 

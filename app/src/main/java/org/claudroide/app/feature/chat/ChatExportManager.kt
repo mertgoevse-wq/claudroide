@@ -55,7 +55,7 @@ object ChatExportManager {
                 buildString {
                     appendLine("# ${ErrorSanitizer.sanitizeErrorMessage(conversation.title)}")
                     appendLine()
-                    appendLine("> Exportiert aus Claudroide am $formattedDate")
+                    appendLine("> Exportiert aus ClauDroide am $formattedDate")
                     if (conversation.isProjectBound) {
                         appendLine("> Projekt: ${conversation.projectName ?: conversation.projectId}")
                     }

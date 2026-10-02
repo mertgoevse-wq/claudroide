@@ -1,13 +1,13 @@
-# Claudroide
+# ClauDroide
 
 <p align="center">
-  <img src="assets/brand/banner.png" alt="Claudroide — an Android dome fused with a Claude burst" width="100%" style="border-radius: 12px;" />
+  <img src="assets/brand/banner.png" alt="ClauDroide — a green Android dome and a terminal-screen bot holding hands beside the product name" width="100%" style="border-radius: 12px;" />
 </p>
 
 <p align="center">
-  <img src="assets/brand/mark-256.png" alt="Claudroide mark" width="96" />
+  <img src="assets/brand/mark-256.png" alt="ClauDroide mark" width="96" />
   <br>
-  <b>Claudroide</b> — Autonomous Mobile AI Coding Assistant for Android
+  <b>ClauDroide</b> — Autonomous Mobile AI Coding Assistant for Android
   <br>
   <sub>Native Touch Interface · BYOK (Bring Your Own Key) · Samsung Galaxy A56 5G Tuned · Private GitHub Sync</sub>
 </p>
@@ -20,14 +20,14 @@
   <img src="https://img.shields.io/badge/Phase-Design%20%26%20Engineering-informational" alt="Phase" />
   <img src="https://img.shields.io/badge/Tasks-135%20Total-blue" alt="Tasks" />
   <img src="https://img.shields.io/badge/Verified-103%20%2F%20135-yellow" alt="Status" />
-  <img src="https://img.shields.io/badge/Tests-1574%20passing-success" alt="Tests" />
+  <img src="https://img.shields.io/badge/Tests-1577%20passing-success" alt="Tests" />
   <img src="https://img.shields.io/badge/Target-Galaxy%20A56%205G-orange" alt="Device" />
   <img src="https://img.shields.io/badge/Repo-private-success" alt="Repo" />
 </p>
 
-Claudroide is an independent native Android application for AI-assisted software engineering and project management (inspired by the Claude Code CLI paradigm, but with an independent brand, clean-room architecture, and mobile-native Compose UI). Primary hardware benchmark: Samsung Galaxy A56 5G. This repository contains the complete specification, 135 machine-readable task briefs, and the deterministic autonomous engineering loop.
+ClauDroide is an independent native Android application for AI-assisted software engineering and project management (inspired by the Claude Code CLI paradigm, but with an independent brand, clean-room architecture, and mobile-native Compose UI). Primary hardware benchmark: Samsung Galaxy A56 5G. This repository contains the complete specification, 135 machine-readable task briefs, and the deterministic autonomous engineering loop.
 
-> **Independence Notice:** Claudroide is an independent open-source project and is not commercially or officially affiliated with Anthropic, PBC. Claude is a registered trademark of Anthropic. Claudroide interacts exclusively via official developer APIs with user-provided API keys (BYOK).
+> **Independence Notice:** ClauDroide is an independent open-source project and is not commercially or officially affiliated with Anthropic, PBC. Claude is a registered trademark of Anthropic. ClauDroide interacts exclusively via official developer APIs with user-provided API keys (BYOK).
 
 **Navigation:** [Quickstart](#quickstart-in-claude-code) · [Engineering Loop](#how-the-autonomous-loop-works) · [Progress Status](#progress-status) · [Assets & Mascot](#assets-and-visual-identity) · [Security Guardrails](#security-and-product-guardrails) · [Documentation Index](#complete-documentation-index)
 
@@ -169,7 +169,7 @@ flowchart LR
 - **Banner:** [`assets/brand/banner.png`](assets/brand/banner.png) — 1376x768, 16:9. The wordmark is real Inter, so the product name is spelled correctly by construction.
 - **In the app:** both ship as WebP derived from those PNG sources — `res/drawable-nodpi/claudroide_mark.webp` (13 KB) and `claudroide_banner.webp` (15 KB, down from 112 KB). The PNGs stay in the repo as the lossless source; the 50 KB cap applies to what goes on the device, and `BrandAssetContractTest` enforces it per shipped file.
 - **Design:** an Android dome in `#3DDC84` wearing a Claude-grammar burst as its crown. The two rays at ±26° are the droid's antennae **and** two rays of the burst — the same strokes serve both systems, so neither half can be deleted without breaking the other. That is the "no subordinate symbol" requirement expressed as geometry rather than as a caption.
-- Drawn as exact vector geometry by [`tools/brand.py`](tools/brand.py), not by an image model: the wordmark has to spell "Claudroide", and diffusion models misspell wordmarks. The banner and the launcher icon import the same geometry, so they cannot drift apart.
+- Drawn as exact vector geometry by [`tools/brand.py`](tools/brand.py), not by an image model: the wordmark has to spell "ClauDroide", and diffusion models misspell wordmarks. The banner and the launcher icon import the same geometry, so they cannot drift apart.
 - Binary integrity enforced by CI: no SVG permitted in `assets/` (`.github/workflows/repo-health.yml`). The SVGs under `assets/brand/.build/` are build input, not shipped assets. Source files under `assets/brand/` are uncapped; the per-image 50 KB cap applies to shipped app resources and is test-enforced.
 
 ---

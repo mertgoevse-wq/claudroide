@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "claudroide"
+rootProject.name = "ClauDroide"
 include(":app")

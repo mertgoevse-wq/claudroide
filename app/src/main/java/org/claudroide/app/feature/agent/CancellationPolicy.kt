@@ -88,7 +88,7 @@ enum class CleanupDecision(val label: String, val removesFile: Boolean) {
      * Only for files the app itself made: its own scratch files, with nothing
      * of the user's in them.
      */
-    REMOVE_OWN_FILE("removed — it was Claudroide's own scratch file", true),
+    REMOVE_OWN_FILE("removed — it was ClauDroide's own scratch file", true),
 
     /**
      * Leave it alone because the app cannot prove it created it.
@@ -188,7 +188,7 @@ data class CancellationPlan(
 
         val removed = filesToRemove()
         if (removed.isNotEmpty()) {
-            add("Removed Claudroide's own scratch files: ${removed.joinToString(", ")}")
+            add("Removed ClauDroide's own scratch files: ${removed.joinToString(", ")}")
         }
         val kept = filesToKeep()
         if (kept.isNotEmpty()) {

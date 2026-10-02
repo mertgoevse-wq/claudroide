@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Draw the Claudroide brand marks as exact vector geometry, then rasterise.
+"""Draw the ClauDroide brand marks as exact vector geometry, then rasterise.
 
-Why geometry and not an image model: the wordmark has to spell "Claudroide",
+Why geometry and not an image model: the wordmark has to spell "ClauDroide",
 and diffusion models misspell wordmarks. Geometry also lets the two halves of
 the mark be measured against each other, which is the whole point of the brief
 -- neither the droid nor the burst may read as decoration on the other.

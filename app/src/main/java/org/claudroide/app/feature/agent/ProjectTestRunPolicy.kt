@@ -54,7 +54,7 @@ enum class TestEnvironment(val label: String, val isAvailableOnThisDevice: Boole
      * Possible because those classes are written without Android imports —
      * see the feasibility report from task 105.
      */
-    IN_PROCESS_LOGIC_TESTS("this app's own logic tests, run inside Claudroide", true),
+    IN_PROCESS_LOGIC_TESTS("this app's own logic tests, run inside ClauDroide", true),
 
     /**
      * A real Gradle build on the device.

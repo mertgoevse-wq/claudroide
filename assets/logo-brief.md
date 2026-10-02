@@ -1,4 +1,4 @@
-# Claudroide brand brief — the mark, the banner, the launcher icon
+# ClauDroide brand brief — the mark, the banner, the launcher icon
 
 **Status: shipped as vector geometry (2026-10-02).**
 
@@ -30,7 +30,7 @@ instead of being part of one.
 
 ## Why geometry and not an image model
 
-The wordmark has to spell "Claudroide". Diffusion models misspell wordmarks — the
+The wordmark has to spell "ClauDroide". Diffusion models misspell wordmarks — the
 earlier renders produced a mascot holding a spark, and before that a spark with
 a lightbulb disc in the middle. A misspelled product name on a 1376px banner is
 worse than no banner.

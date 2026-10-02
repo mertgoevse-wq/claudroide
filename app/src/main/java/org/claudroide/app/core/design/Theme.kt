@@ -9,7 +9,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-// Claudroide Farbpalette (Task 019 Spezifikation)
+// ClauDroide Farbpalette (Task 019 Spezifikation)
 val AndroidGreen = Color(0xFF3DDC84)
 val DarkForestGreen = Color(0xFF2E7D32)
 val TerracottaSpark = Color(0xFFE06D53)

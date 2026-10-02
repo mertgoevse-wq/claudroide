@@ -3,7 +3,7 @@ package org.claudroide.app.feature.agent
 /**
  * Task 108 (Gate) — "Approval levels" (Freigabestufen).
  *
- * **Source of the three levels: `claudroide-spec.md` section 6.1**, which names
+ * **Source of the three levels: `ClauDroide-spec.md` section 6.1**, which names
  * them (careful / balanced / fewer prompts), makes the careful one the default,
  * and requires that the first version never starts silently in the permissive
  * mode. This file implements that section; it does not invent a policy.
@@ -226,7 +226,7 @@ data class ApprovalLevelChange(
  * before this was split, [withdraw] went through the same blank-field check and
  * returned the old history unchanged, so a withdrawal with no user attached
  * silently did nothing while the screen had already said it was off. Section
- * 6.1 of `claudroide-spec.md` grants switching the mode off *at any time*, so
+ * 6.1 of `ClauDroide-spec.md` grants switching the mode off *at any time*, so
  * availability wins on the way down and auditability wins on the way up.
  *
  * A refused raise is also no longer silent: [lastRefusal] says why nothing

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Claudroide</string>
+    <string name="app_name">ClauDroide</string>
     <string name="app_tagline">Mobiler KI-Coding-Assistent</string>
 
     <!-- Navigation -->
@@ -10,7 +10,7 @@
 
     <!-- Disclaimer & Info -->
     <string name="disclaimer_title">Unabhängiges Open-Source-Projekt</string>
-    <string name="disclaimer_text">Claudroide ist ein unabhängiges Open-Source-Projekt und steht in keiner geschäftlichen oder offiziellen Verbindung zu Anthropic, PBC. Claude ist eine eingetragene Marke von Anthropic. Claudroide ermöglicht die Nutzung offizieller Schnittstellen auf Basis eigener API-Schlüssel (BYOK).</string>
+    <string name="disclaimer_text">ClauDroide ist ein unabhängiges Open-Source-Projekt und steht in keiner geschäftlichen oder offiziellen Verbindung zu Anthropic, PBC. Claude ist eine eingetragene Marke von Anthropic. ClauDroide ermöglicht die Nutzung offizieller Schnittstellen auf Basis eigener API-Schlüssel (BYOK).</string>
 
     <!-- Empty States -->
     <string name="empty_chat_title">Keine aktiven Unterhaltungen</string>
@@ -19,8 +19,8 @@
     <string name="empty_project_desc">Wähle einen Projektordner auf deinem Galaxy A56 aus, um Quellcode zu analysieren und zu bearbeiten.</string>
 
     <!-- Brand imagery (accessibility text) -->
-    <string name="banner_alt_text">Claudroide-Banner: die grüne Robotermarke neben dem Produktnamen.</string>
-    <string name="brand_mark_alt_text">Claudroide-Marke: ein grüner Roboter mit leuchtendem Terrakotta-Funken.</string>
+    <string name="banner_alt_text">ClauDroide-Banner: eine grüne Android-Kuppel und ein Terminal-Bot nebeneinander, die sich an den Händen halten, neben dem Produktnamen.</string>
+    <string name="brand_mark_alt_text">ClauDroide-Marke: ein grüner Roboter mit leuchtendem Terrakotta-Funken.</string>
 
     <!-- Chat screen -->
     <string name="chat_session_title">Build-Sitzung</string>

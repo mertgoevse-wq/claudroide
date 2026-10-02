@@ -3,7 +3,7 @@ package org.claudroide.app.feature.agent
 /**
  * Task 109 (Gate) — "Fewer prompts" mode (Weniger-Rückfragen-Modus).
  *
- * **Source: `claudroide-spec.md` section 6.1**, which calls this a *deliberate
+ * **Source: `ClauDroide-spec.md` section 6.1**, which calls this a *deliberate
  * exception mode* and attaches five conditions to it: the user switches it on
  * **per project**, can switch it off **at any time**, a **visible marking**
  * stays while it runs, the mode **explains its consequences**, and it **expires
@@ -72,7 +72,7 @@ object ReducedPromptModePolicy {
 
     /** What this mode does not touch, whatever the user picks. */
     const val SYSTEM_FLOOR_NOTE: String =
-        "This setting only affects when Claudroide asks you. It does not change " +
+        "This setting only affects when ClauDroide asks you. It does not change " +
             "what Android allows, it does not release a folder you did not " +
             "choose, and it does not change how you sign in to a provider."
 
