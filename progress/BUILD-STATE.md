@@ -1,11 +1,51 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-02 (vierzehnte Sitzung, zweiter Teil — Tasks 126, 123 und 127 verifiziert)
-**Status:** **114 von 135 Aufgaben `done`**, 21 offen, davon **14 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-02 (fünfzehnte Sitzung — Task 129 verifiziert)
+**Status:** **115 von 135 Aufgaben `done`**, 20 offen, davon **13 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand:** `./gradlew :app:testDebugUnitTest` → **1818 Tests, 0 Fehler, 0 übersprungen** (+22 `DeviceProtectionPolicyTest`, +18 `SkillSupplyChainReviewTest`, +20 `DataRetentionPolicyTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20 396 805 Bytes.
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1855 Tests, 0 Fehler, 0 übersprungen** (+37 `SkillDiscoveryInventoryTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20 396 805 Bytes.
 
-**Git-Stand:** `main` bei `8dada34`, **12 Commits vor `origin/main`** — **nicht gepusht**. Push ist nach CLAUDE.md eine externe Nebenwirkung und braucht eine ausdrückliche Freigabe.
+**Git-Stand:** `main` bei `9a1208a`, **13 Commits vor `origin/main`** — **nicht gepusht**. Push ist nach CLAUDE.md eine externe Nebenwirkung und braucht eine ausdrückliche Freigabe.
+
+## Sitzung 15 — Task 129: Skills finden (SkillDiscoveryInventory)
+
+### Der Build war beim Start kaputt — nicht die Aufgabe
+
+Die vierzehnte Sitzung brach **mitten in 129** ab: eine Datei lag unversioniert im Arbeitsbaum, und `:app:compileDebugKotlin` schlug mit **18 Übersetzungsfehlern** fehl. Ursache war kein Tippfehler, sondern ein Gestaltungsfehler: `ContentInspection` war definiert, aber nirgends verdrahtet — die Datei referenzierte ein `ContentEvidence.VERIFIED`, das es nicht geben konnte. **Die angefangene Arbeit lief nicht.** Erst wurde der Build grün, dann wurde über Tests verhandelt.
+
+### Die tragende Trennung: Suchen ist nicht Installieren
+
+Der Schutz der Aufgabe lautet „Keine Installation während der Suche". Das ist hier nicht Dokumentation, sondern eine **strukturelle** Eigenschaft:
+
+- `SkillConsent` hat `internal` Konstruktoren. Der einzige öffentliche Weg zu einer Zustimmung ist `recordConsent`, und das verlangt zusätzlich den `InstallRequest`.
+- `decideInstall(outcome, consent)` nimmt **nie** einen `DiscoveredSkill` — die Signatur lässt eine Freigabe nicht zu, die ein Suchtreffer „mitbringt".
+- `recordConsent` macht aus einem fehlenden Anfragenden oder einer Zeitangabe `0` den Zustand `WITHDRAWN`. Consent kann nicht durch „mitgeschickt werden".
+- `installRequiresUserConsent()` ist konstant `true`.
+
+### Ein Name ist kein Nachweis
+
+`ContentEvidence` ist ein `sealed interface` statt eines `enum class` — aus genau einem Grund: Ein Enumwert `VERIFIED` wäre eine **Behauptung**. Es gibt stattdessen nur `ContentEvidence.Inspected`, das die gelesene `ContentInspection` **mitführen muss**. `isVerified` folgt aus zwei Bedingungen: mindestens ein *benannter* Befund und keine nachladende Wirkung.
+
+**Lesen und suchen sind keine Nachladwirkung.** `readsFiles` und `reachesNetwork` stehen bewusst nicht neben `executesCommands`/`installsOrDownloads` — ein Recherche-Skill darf lesen und suchen; er darf nur nichts nachladen und nichts starten.
+
+### Zwei echte Fehler, die die Tests aufgedeckt haben
+
+1. **Zwei Stellen widersprachen sich.** `searchOutcome` meldete `PARTIAL` für einen Treffer, der nicht zu seinem eigenen Suchbegriff passt, während `DiscoveryOutcome.isGap` denselben Fall als offen meldete. Jetzt gibt es `matchingSkills` als **eine** Regel — und die Freigabe-Verzweigungen benutzen sie ebenfalls. Vorher konnte ein einziger gut belegter Treffer sich selbst freigeben, während ein unpassender daneben stand.
+2. **Der Fehlgrund war nichtssagend.** `gapReason` lieferte den Platzhalter `"open"`, der „nicht gelesen" nicht von „gelesen, aber ausführend" unterscheidet — genau der Unterschied zwischen einer Recherchelücke und einem Befund **gegen** den Skill. Jeder offene Zustand nennt jetzt seinen eigenen Grund; die Platzhalter-Konstante ist ersatzlos entfallen.
+
+**Beides am Code behoben, nicht am Test.**
+
+### Teststand
+
+- `./gradlew :app:testDebugUnitTest`: **1855 Tests, 0 Fehler, 0 übersprungen** (vorher 1818, +37).
+- **Vier Mutationen geprüft, jede wird rot:** Nachladwirkung nicht mehr ausschließend → 2 rot; `installRequiresUserConsent()` auf `false` → 1 rot; entzogene Zustimmung gibt weiter frei → 2 rot; unbenannter Befund zählt als Beleg → 1 rot.
+- `:app:assembleDebug`: **BUILD SUCCESSFUL**, APK 20 396 805 Bytes.
+- Geheimnis-Scan über die neuen Dateien: ohne Treffer. Dateien 223 / 663 / 578 Zeilen (Grenze 800).
+
+### Skills
+
+- **`/swarm-planner`** — geladen und angewandt: Der Abhängigkeitsgraphen wurde neu ausgewertet statt aus dem Checkpoint übernommen. Ergebnis: 085, 095, 129, 130, 132, 134 haben erfüllte Abhängigkeiten, **alle sechs mit `gate: true`**. Die Recherche-Anweisung des Skills (Context7) war nicht erfüllbar und ist als offen dokumentiert.
+- **`android-permissions-security`** — dieselbe Regel wie in Abschnitt 5 dort: Ein Urteil darf sich nicht auf den eigenen Zuständigkeitsbereich erstrecken. Die Suche selbst erstreckt sich auf **keinen** Installationsschritt; genau das ist die Zusage der Aufgabe, hier als Typ durchgesetzt.
 
 ## Sitzung 14, neunter Teil — Task 127: Daten aufbewahren und löschen (DataRetentionPolicy)
 
