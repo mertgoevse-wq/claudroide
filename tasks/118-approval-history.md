@@ -5,9 +5,9 @@ wave: "W24"
 depends_on: [017, 045]
 files: [tasks/118-approval-history.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "bfda85fe5397b8b6"
 ---
 # Aufgabe 118 — Freigabeverlauf

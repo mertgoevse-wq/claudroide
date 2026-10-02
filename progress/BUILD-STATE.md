@@ -1,9 +1,34 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-02 (vierzehnte Sitzung — Tasks 083, 113 und 115 verifiziert)
-**Status:** **108 von 135 Aufgaben `done`**, 27 offen, davon **19 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-02 (vierzehnte Sitzung — Tasks 083, 113, 115 und 118 verifiziert)
+**Status:** **109 von 135 Aufgaben `done`**, 26 offen, davon **18 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand:** `./gradlew :app:testDebugUnitTest` → **1693 Tests, 0 Fehler, 0 übersprungen** (+23 in `PersistentFolderAccessTest`, +25 in `LongTaskNotificationPolicyTest`, +22 in `CommandAuditLogTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20.4 MB.
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1716 Tests, 0 Fehler, 0 übersprungen** (+23 `PersistentFolderAccessTest`, +25 `LongTaskNotificationPolicyTest`, +22 `CommandAuditLogTest`, +23 `ApprovalHistoryTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20.4 MB.
+
+## Sitzung 14, vierter Teil — Task 118: Freigabeverlauf (ApprovalHistory)
+
+### Was 118 von 117 trennt
+
+117 zeigt, was **jetzt** gilt; 118 zeigt, **wie** es dazu kam. Beide werden getrennt geführt: eine Änderung der Erlaubnis erzeugt einen neuen Verlaufseintrag, ersetzt aber nicht den Ereignisstrom, und ein Widerruf **löscht** den ursprünglichen Erteilungs-Eintrag nicht — er kommt hinzu. Getestet mit `der Widerruf loescht die urspruengliche Erteilung nicht`.
+
+- **Widerruf ist klar von einer Änderung unterschieden** (Kernzusage). `ApprovalEventKind` unterscheidet `GRANTED`, `SCOPE_CHANGED`, `REVOKED`, `EXPIRED`. `isWithdrawal` ist nur für Widerruf und Ablauf wahr. `withdrawals()` liefert genau diese — eine Umfangsverengung erscheint dort **nicht**, sonst wäre „widerrufen" und „eingeschränkt" nicht mehr zu unterscheiden. Ein Ablauf ist zwar eine Entziehung, trägt aber nie das Wort „widerrufen" (sonst passive Ablauf ≠ aktive Handlung des Nutzers).
+- **Keine unnötigen Chat-/Dateiinhalte.** `ApprovalEvent` hat **kein Feld** für Inhalt, Chattext oder Ausgabe — es kann keinen geben (Reflexionstest). Gespeichert werden Zeitpunkt, Projekt, Kategorie, Ziel, Ereignisart, Umfang und (beim Widerruf) der Grund. Maskierung passiert **vor** dem Speichern, wie in 115.
+- **Nicht als öffentliches Protokoll übertragen.** `ApprovalHistory` hat keine Methode, die teilt/hochlädt/sendet/synchronisiert (Reflexionstest; `export` erzeugt nur einen Wert und überträgt nichts). `HistoryExport` trägt **kein** Feld für Empfänger, Endpunkt oder URL (zweiter Reflexionstest).
+- **Lokal, datensparsam, mit Obergrenze.** Wie 115: harte Obergrenze (Vorgabe 1000),älteste Einträge werden verworfen, die Kürzung wird **gemeldet** — im Verlauf, in der Erklärung und im Export.
+
+**Die Erklärung stellt die Entziehungen voran** — das ist die Sicht, in der ein Nutzer sucht, wenn er wissen will, was ihm weggenommen wurde.
+
+### Teststand
+
+- `./gradlew :app:testDebugUnitTest`: **1716 Tests, 0 Fehler, 0 übersprungen** (vorher 1693, +23). Gezählt aus den JUnit-XML.
+- `:app:assembleDebug`: **BUILD SUCCESSFUL**, APK 20 396 805 Bytes.
+- Geheimnis-Scan über `app/src/main/`: ohne Treffer.
+- `python3 tools/sync_frontmatter.py --check`: OK (109 erledigt, 26 offen).
+
+### Skills
+
+- **`android-permissions-security`** — der Verlauf ist eine Speicherstelle wie jede andere: Schwärzung am Eingang, kein Empfänger-Feld, Obergrenze. Und die Unterscheidung aktive Entziehung vs. passive Änderung ist Teil der Nachvollziehbarkeit — sie zu verwischen wäre eine irreführende Darstellung.
+- **`testing-setup`** — die Grenzfälle einzeln: Entziehung vs. Änderung vs. Ablauf, fremdes Projekt, leerer Verlauf, Obergrenze, Widerruf erhält die Erstfreigabe. Reflexionstests für Abwesenheit von Feldern und Übertragungsmethoden.
 
 ## Sitzung 14, dritter Teil — Task 115: Aktionsverlauf (CommandAuditLog)
 
