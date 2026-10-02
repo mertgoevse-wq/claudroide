@@ -17,4 +17,15 @@
     <string name="empty_chat_desc">Start a new chat or open a local project to begin.</string>
     <string name="empty_project_title">No project open</string>
     <string name="empty_project_desc">Select a project directory on your device to inspect and edit code.</string>
+
+    <!-- Chat screen -->
+    <string name="chat_session_title">Build session</string>
+    <string name="chat_local_only">Local only</string>
+    <string name="chat_composer_hint">Ask about this project…</string>
+    <string name="chat_composer_helper">Enter sends · Shift+Enter newline</string>
+    <string name="chat_streaming">Streaming…</string>
+    <string name="chat_new_conversation">New conversation</string>
+    <string name="chat_send">Send</string>
+    <string name="chat_stop">Stop</string>
+    <string name="project_open_folder">Open project folder</string>
 </resources>

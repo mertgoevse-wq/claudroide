@@ -57,7 +57,7 @@ fun ProjectScreen(
                         contentColor = MaterialTheme.colorScheme.onPrimary
                     )
                 ) {
-                    Text("Projektordner öffnen (SAF)")
+                    Text(stringResource(R.string.project_open_folder))
                 }
             }
         }
