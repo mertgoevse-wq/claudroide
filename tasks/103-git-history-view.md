@@ -5,9 +5,9 @@ wave: "W20"
 depends_on: [017, 045, 059]
 files: [tasks/103-git-history-view.md]
 skills: [`/code-review`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "b00cdac1cc44ad4a"
 ---
 # Aufgabe 103 — Git-Verlauf

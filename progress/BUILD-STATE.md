@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (siebte Sitzung)
-**Status:** 90 von 135 Aufgaben verifiziert. Tasks 040, 072–082, 087, 089, 092, 093 und 098 abgeschlossen.
+**Status:** 91 von 135 Aufgaben verifiziert. Tasks 040, 072–082, 087, 089, 092, 093, 098 und 103 abgeschlossen.
 
 **Sprache (Nutzerwunsch vom 2026-10-02):** Englisch zuerst, Deutsch als Zweitwahl. `values/strings.xml` ist jetzt Englisch, `values-de/strings.xml` Deutsch. `CLAUDE.md` entsprechend geändert. Historische deutsche Bezeichner aus den ersten Aufgaben bleiben **unverändert** — sie rückwirkend umzubenennen würde hunderte Zusicherungen in 1108 Tests brechen. Neue Typen führen `label` (englisch).
 
@@ -433,7 +433,7 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Push erfolgt:** Am 2026-10-02 mit Nutzerfreigabe `cb88e3b..2aafa36` nach `origin/main` (privat) gepusht. Danach Aufgaben 080 und 081 committet.
 
-**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt, ohne Gate): 103, 105.
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt, ohne Gate): 105 — danach nur noch Gates.
 **Durch 082 neu freigegeben** (es hing an dieser Aufgabe): 083, 085, 086, 089, 090, 091, 094, 121.
 
 ## Task 082 erledigt — „Android-Ordner auswählen“
@@ -455,6 +455,22 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 **Teststand:** `./gradlew :app:testDebugUnitTest` → **1071 Tests, 0 Fehler, 0 übersprungen** (vorher 1042, +29).
 
 **Geladene Skills:** `android-permissions-security` (daraus die beiden Prüfungen über Reflexion: kein Berechtigungsfeld, keine anfordernde Methode — der Task verlangt „keine umfassende Speicherberechtigung“, und das wird am Typ geprüft, nicht in einem Kommentar behauptet) und `testing-setup` (der Abbruch-Fall steht mit Abspruch an erster Stelle, weil er der häufigste ist).
+
+## Task 103 erledigt — „Git-Verlauf“
+
+`GitHistoryPolicy.kt` (neu, `feature/project/`) + `GitHistoryPolicyTest.kt` (26 Tests).
+
+**Commit- und Uploadstatus getrennt:** `CommitUploadState` hat drei Werte (`UNCOMMITTED`, `COMMITTED_LOCALLY`, `COMMITTED_AND_PUSHED`) und `savedLine()` benennt, welcher gilt. Ein Wort wie „gespeichert“ wäre für zwei verschiedene Zustände gleichzeitig wahr und damit zur Unterscheidung unbrauchbar. Ein Test prüft, dass es im Typ **kein** zusammenfassendes `isSaved` gibt. `isInSyncWithRemote` ist bei leerem Verlauf `false` — ohne Commits ist nichts synchron.
+
+**Geheimnisse erscheinen nie unmaskiert:** Jede Zeile läuft **beim Anzeigen** durch `SecretMasker`, nicht beim Speichern — sonst verliert der Verlauf den wirklichen Inhalt alter Commits, und ohne Maskierung stünde ein Schlüssel, der seit hundert Commits im Repository liegt, offen auf dem Bildschirm. Der Rohtext bleibt darum unverändert erhalten; ein Test hält beides fest.
+
+**Verlauf bleibt im Projekt:** `GitHistory` trägt sein Projekt und hat **keine Methode** zum Teilen, Exportieren oder Übertragen, und **kein Feld** mit Empfänger oder Endpunkt. Zwei Tests prüfen die Oberfläche, weil „würden wir nur auf Wunsch teilen“ leichter gesagt als erzwungen ist.
+
+**Dritter Reflexionstest, der zu breit war:** Ich hatte `copy` unter den verbotenen Methodennamen — aber Kotlin erzeugt `copy`, `componentN` und `toString` für **jeden** Datentyp. Der Test prüfte damit den Compiler statt des Typs. Die erzeugten Methoden sind jetzt ausgenommen, `copy` wurde durch `clipboard` ersetzt. Das ist dasselbe Muster wie bei zwei früheren Tests; die Reflexionsprüfungen brauchen offenbar eine gemeinsame Hilfsfunktion statt einer eigenen Liste je Test.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1245 Tests, 0 Fehler, 0 übersprungen** (vorher 1219, +26).
+
+**Skills:** `requesting-code-review` (der Review hat die Richtung der Maskierung geprüft: beim Anzeigen, nicht beim Speichern — die andere Reihenfolge wäre zwar sicherer, verlöre aber den Inhalt alter Commits) und `android-permissions-security` (Projektbindung als Voraussetzung, nicht als Absichtserklärung).
 
 ## Task 098 erledigt — „Git-Änderungsliste“
 
@@ -546,6 +562,22 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 ## Task 081 erledigt — „Projektübersicht“
 **Gates mit offener Entscheidung** (Nutzerentscheidung nötig): 084, 095, 117, 118, 123, 125, 126, 127, 129, 130.
+
+## Task 103 erledigt — „Git-Verlauf“
+
+`GitHistoryPolicy.kt` (neu, `feature/project/`) + `GitHistoryPolicyTest.kt` (26 Tests).
+
+**Commit- und Uploadstatus getrennt:** `CommitUploadState` hat drei Werte (`UNCOMMITTED`, `COMMITTED_LOCALLY`, `COMMITTED_AND_PUSHED`) und `savedLine()` benennt, welcher gilt. Ein Wort wie „gespeichert“ wäre für zwei verschiedene Zustände gleichzeitig wahr und damit zur Unterscheidung unbrauchbar. Ein Test prüft, dass es im Typ **kein** zusammenfassendes `isSaved` gibt. `isInSyncWithRemote` ist bei leerem Verlauf `false` — ohne Commits ist nichts synchron.
+
+**Geheimnisse erscheinen nie unmaskiert:** Jede Zeile läuft **beim Anzeigen** durch `SecretMasker`, nicht beim Speichern — sonst verliert der Verlauf den wirklichen Inhalt alter Commits, und ohne Maskierung stünde ein Schlüssel, der seit hundert Commits im Repository liegt, offen auf dem Bildschirm. Der Rohtext bleibt darum unverändert erhalten; ein Test hält beides fest.
+
+**Verlauf bleibt im Projekt:** `GitHistory` trägt sein Projekt und hat **keine Methode** zum Teilen, Exportieren oder Übertragen, und **kein Feld** mit Empfänger oder Endpunkt. Zwei Tests prüfen die Oberfläche, weil „würden wir nur auf Wunsch teilen“ leichter gesagt als erzwungen ist.
+
+**Dritter Reflexionstest, der zu breit war:** Ich hatte `copy` unter den verbotenen Methodennamen — aber Kotlin erzeugt `copy`, `componentN` und `toString` für **jeden** Datentyp. Der Test prüfte damit den Compiler statt des Typs. Die erzeugten Methoden sind jetzt ausgenommen, `copy` wurde durch `clipboard` ersetzt. Das ist dasselbe Muster wie bei zwei früheren Tests; die Reflexionsprüfungen brauchen offenbar eine gemeinsame Hilfsfunktion statt einer eigenen Liste je Test.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1245 Tests, 0 Fehler, 0 übersprungen** (vorher 1219, +26).
+
+**Skills:** `requesting-code-review` (der Review hat die Richtung der Maskierung geprüft: beim Anzeigen, nicht beim Speichern — die andere Reihenfolge wäre zwar sicherer, verlöre aber den Inhalt alter Commits) und `android-permissions-security` (Projektbindung als Voraussetzung, nicht als Absichtserklärung).
 
 ## Task 098 erledigt — „Git-Änderungsliste“
 
