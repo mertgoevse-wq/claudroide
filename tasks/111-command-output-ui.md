@@ -5,9 +5,9 @@ wave: "W25"
 depends_on: [105, 119, 120]
 files: [tasks/111-command-output-ui.md]
 skills: [`adaptive`, `android-permissions-security`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "22fdd4a6356557ce"
 ---
 # Aufgabe 111 — Befehlsausgabe anzeigen

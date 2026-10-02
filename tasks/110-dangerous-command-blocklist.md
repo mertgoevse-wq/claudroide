@@ -5,9 +5,9 @@ wave: "W25"
 depends_on: [105, 119, 120]
 files: [tasks/110-dangerous-command-blocklist.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "b153964b32c9417b"
 ---
 # Aufgabe 110 — Gefährliche Befehle erkennen

@@ -5,9 +5,9 @@ wave: "W25"
 depends_on: [105, 119, 120]
 files: [tasks/114-task-cancel-and-cleanup.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "66c036df6ee744f9"
 ---
 # Aufgabe 114 — Abbrechen und aufräumen

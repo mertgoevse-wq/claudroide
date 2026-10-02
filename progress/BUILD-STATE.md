@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (achte Sitzung)
-**Status:** 94 von 135 Aufgaben verifiziert. Tasks 040, 072–082, 087, 089, 092, 093, 098, 103, 105, 106 und 107 abgeschlossen.
+**Status:** 97 von 135 Aufgaben verifiziert. Tasks 040, 072–082, 087, 089, 092, 093, 098, 103, 105, 106, 107, 110, 111 und 114 abgeschlossen.
 
 **Sprache (Nutzerwunsch vom 2026-10-02):** Englisch zuerst, Deutsch als Zweitwahl. `values/strings.xml` ist jetzt Englisch, `values-de/strings.xml` Deutsch. `CLAUDE.md` entsprechend geändert. Historische deutsche Bezeichner aus den ersten Aufgaben bleiben **unverändert** — sie rückwirkend umzubenennen würde hunderte Zusicherungen in 1108 Tests brechen. Neue Typen führen `label` (englisch).
 
@@ -752,6 +752,72 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 **Teststand:** `./gradlew :app:testDebugUnitTest` → **1001 Tests, 0 Fehler, 0 übersprungen** (vorher 969, +32 aus `ProviderCapabilityPolicyTest`). Die 1000er-Marke ist erreicht.
 
 **Geladene Skills:** als Ersatz für das nicht verfügbare `/claude-api` die **direkte Quellenprüfung** der Anbieterdokumentation (nicht geraten: die zitierten Sätze wurden von der Quelle geholt und das Abrufdatum steht im Code), und `testing-setup` (jede der fünf `AgentFeature` wird einzeln mit vollem und leerem Profil geprüft, damit eine neue Funktion nicht ungeprüft mitläuft).
+
+## Gate-Karte: 24 der 27 Gates haengen an drei Entscheidungen
+
+Eine vollstaendige Auszaehlung der offenen Aufgaben ergibt: **41 offen, davon 27 mit `gate: true`.** Die Gates sind nicht 27 unabhaengige Entscheidungen — **24 davon warten auf nur drei:**
+
+| Gate | Frage | loest auf |
+| :--- | :--- | :--- |
+| **095** Git-Zugang | welcher Git-Weg, wie weit reicht er | 096, 097, 099, 102, 104 (+ indirekt 100, 101, 116) |
+| **090** Änderungen freigeben | wie werden Dateiänderungen angenommen oder verworfen | 077, 128 (+ indirekt 101) |
+| **108** Freigabestufen | welche Stufen, welcher Standard, welcher Widerruf | 109, 128 (+ indirekt 104) |
+
+Der Rest (083, 084, 085, 113, 115, 117, 118, 121, 123, 125, 126, 127, 129, 130) sind eigenständige Gates zu Ordnerzugriff, ZIP-Import, USB, Benachrichtigung, Verlauf, Sonderdateien, Skill-Quellen, Datenschutz und Datenschutzverwaltung.
+
+**Ohne diese drei Entscheidungen bleiben genau 6 Aufgaben übrig**, und die sind inzwischen erledigt: 091, 094, 110, 111, 112, 114.
+
+## Task 114 erledigt — „Abbrechen und aufräumen“
+
+`CancellationPolicy.kt` (neu, `feature/agent/`) + `CancellationPolicyTest.kt` (25 Tests).
+
+**Die zwei Zusagen, die leicht falsch zu machen sind:**
+- **Der Nutzer erfährt, was bereits geschehen ist.** `SideEffectOutcome` trennt `IRREVERSIBLE` („bereits vom Gerät weg und nicht zurücknehmbar“) von allem anderen. `CancellationPlan.lines()` gibt die **unwiderruflichen Fakten zuerst** aus — sie unter eine Liste der Aufräumarbeiten zu begraben, wäre genau der Fall, in dem ein Nutzer die Meldung zu Ende liest und einen Upload für zurückgenommen hält.
+- **Temporäre Projektänderungen werden nicht still gelöscht.** `decide` entfernt **nur**, wenn alle drei Bedingungen zutreffen: die App hat die Datei erzeugt, sie enthält keine Nutzerarbeit, und sie ist reine Zwischenablage. Alles andere bleibt und wird **namentlich genannt**. Die Begründung steht im Code: Eine fehlende Datei ist nicht wiederherstellbar, eine übrig gebliebene Datei ist ein Ärgernis.
+
+**Wiederaufnahme wiederholt nie etwas Unklares.** `resumeHint` trennt „sicher fortsetzbar“ (nichts begonnen oder gestoppt) von „erst prüfen“ (unwiderruflich oder ungewiss). Ein ungewisser Schritt steht damit **nie** in der Fortsetzungsliste — sonst könnte derselbe Upload zweimal hinausgehen.
+
+**Ein Fehler, den der Test aufgedeckt hat:** Der Test „ein gewisser Schritt wird nicht zum Fortsetzen angeboten“ prüfte mit `substringAfter(...)` **ohne Ende** und erwischte damit auch den „Check first“-Absatz. Der **Code war richtig, der Test falsch** — er hätte einen echten Fehler als Fehler melden können. Der Test liest jetzt nur den Abschnitt zwischen „You can continue with:“ und „Check first:“ und prüft **zusätzlich**, dass der ungewisse Schritt unter der Warnung genannt wird.
+
+**Ein Tippfehler mit Folgen:** `decide` liegt auf `CancellationPolicy`, nicht auf `CancellationPlan` — der Kompilierer hat es gemerkt. Ebenfalls korrigiert: zwei Funktionen waren mit `val` statt `fun` deklariert.
+
+**Teststand:** siehe Gesamtzählung unten.
+
+**Geladene Skills:** `android-permissions-security` (daraus die Linie: Abbruch endet keine externe Nebenwirkung — das wird ausdrücklich **erklärt**, nicht verschwiegen) und `testing-setup` (der Reflexionstest auf „nur entscheidet, kein `delete()`“).
+
+## Task 111 erledigt — „Befehlsausgabe anzeigen“
+
+`CommandOutputPolicy.kt` (neu, `feature/agent/`) + `CommandOutputPolicyTest.kt` (22 Tests).
+
+**Fehlercode und Erfolg sind nicht zu verwechseln:** `CommandStatus` hat **keinen Standardwert**, und `CommandOutcome.fromExitCode(null)` liefert `UNKNOWN` — **nie** einen Erfolg. `isSuccess` ist nur für `SUCCEEDED` wahr. Ein Prozess, der vor dem Melden starb, oder eine Oberfläche, die den Code verlor, darf damit nicht als sauberer Lauf erscheinen. Ein Test prüft ausdrücklich, dass eine Ausgabe mit dem Wort „BUILD SUCCESSFUL“ einen **fehlgeschlagenen** Exit-Code nicht überschreibt: **der Code entscheidet, nicht die Formulierung.**
+
+**Lange Ausgaben überladen nichts:** Es gibt **zwei** Grenzen — Zeilen **und** Bytes — weil eine Zeilengrenze eine einzelne 5-MB-Zeile durchlässt. `truncated` und `totalLinesDropped` stammen aus einer echten Grenze, nicht aus einer Vermutung.
+
+**Schlüssel werden maskiert, bevor der Text gehalten wird — nicht beim Anzeigen.** Die Reihenfolge ist die ganze Aussage: erst `SecretMasker.redact`, **dann** kürzen. Maskieren nach dem Kürzen ließe einen unmaskierten Schlüssel im **verworfenen** Teil stehen, und der könnte noch in ein Protokoll geraten. Getestet mit einem Schlüssel in einer Zeile, die gerade **verworfen** wird.
+
+**Nichts wird von allein geteilt.** `mayShareAutomatically()` ist `false`; der Kopierpfad ist der einzige Weg hinaus, der Nutzer steht dazwischen.
+
+**Geladene Skills:** `adaptive` (Zusammenfassung mit fester Zeilenzahl und ausdrücklichem „mehr Zeilen vorhanden“ — die Oberfläche muss auf jedem Gerät dieselbe Aussage machen) und `android-permissions-security` (Maskierung **vor** dem Speichern statt bei der Anzeige).
+
+## Task 110 erledigt — „Gefährliche Befehle erkennen“
+
+`DangerousCommandPolicy.kt` (neu, `feature/agent/`) + `DangerousCommandPolicyTest.kt` (40 Tests).
+
+**Der wichtigste Satz in der Datei ist der, was sie _nicht_ ist.** Die Aufgabe sagt es ausdrücklich: die Liste darf nicht als alleinige Sicherheitsbarriere gelten, und **echte Rechtebegrenzung ist wichtiger als Mustererkennung**. Deshalb:
+- `IS_SOLE_BARRIER` ist `false`, und ein Test hält es so.
+- Ein **verschleierter** Löschbefehl (`bash -c "R=rm; $R -rf src"`) wird **verfehlt** — und dieser Test behauptet das ausdrücklich. Wer die Liste für eine Wand hält, hat die Lücke nicht bemerkt.
+- Die wirklichen Grenzen stehen als `actualLimits()` **daneben**: die Arbeitsordnergrenze (Aufgabe 106), die Bestätigungspflicht (Aufgabe 108) und was Android dem App überhaupt gibt.
+
+**Fünf Gruppen, wie in der Aufgabe genannt:** Löschen, Systemzugriff, Downloads, Schlüsselzugriff, Datenversand. Ein Test über das Enum schlägt fehl, sobald eine Gruppe ohne Regel hinzukommt — eine ungedeckte Gruppe darf nicht stillschweigend existieren.
+
+**Unbekannt heißt nie ungefährlich:** `NOT_LISTED` ist ausdrücklich **kein** `ORDINARY` und verlangt immer eine Bestätigung. Die Liste `ORDINARY` unterscheidet nur „bekannt und unauffällig“ von „nicht erkannt“ — damit die Meldung ehrlich ist, **nicht** damit unbekannte Befehfe laufen dürfen.
+
+**Drei echte Fehler, die die Tests aufgedeckt haben:**
+1. **`maxByOrNull { it.ordinal }` war die falsche Sortierung.** Die Enum-Reihenfolge ist eine Lesbarkeits-Konvention, keine Risikorangfolge. `curl x | sh` traf **zwei** Regeln („sendet Daten“ und „lädt herunter und führt aus“) — und gemeldet wurde die **mildere** der beiden, weil sie spaeter deklariert war. Ein destruktiver Befehl halb gelöscht. `outranks`/`mostSevereWith` vergleichen jetzt **explizit**, und `UNKNOWN` rangiert über allem: das ist der Fall, in dem die App am wenigsten zu sagen hat.
+2. **`docs/secrets.md` galt als Schlüsselzugriff.** Das Muster enthielt `secrets?\b` — jedes Dokument mit „secret“ im Namen wäre ein Treffer. Eine Liste, die bei normalen Dateinamen bellt, wird abgeschaltet. Jetzt sind es **konkrete** Schlüsseldateinamen (`.env`, `.pem`, `.key`, `.jks`, `id_rsa`, `.npmrc`, `.netrc` …).
+3. **`gradle test` und `git status` galten als unbekannt.** `git` war gar nicht in der Alltagsliste, und es gibt jetzt getrennt `ORDINARY_GIT` — **aber nur für lesende Unterbefehle** und nur, wenn **keine** gefährliche Regel greift. `git push` bleibt also gefährlich.
+
+**Geladene Skills:** `android-permissions-security` (Mustererkennung ersetzt keine Rechtebegrenzung — der Test, der die eigene Lücke festhält, ist genau diese Lehre) und `testing-setup` (jede Gruppe mit **harmlosen und gefährlichen** Beispielen; nur gefährliche Beispiele können die Kanten einer Regel nicht zeigen).
 
 ## Task 107 erledigt — „Befehl vorher zeigen“
 
