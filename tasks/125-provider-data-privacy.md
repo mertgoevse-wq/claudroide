@@ -5,9 +5,9 @@ wave: "W24"
 depends_on: [017, 045, 070]
 files: [tasks/125-provider-data-privacy.md]
 skills: [`/claude-api`, `android-permissions-security`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "a9994cfd34785229"
 ---
 # Aufgabe 125 — Datenschutz je Anbieter

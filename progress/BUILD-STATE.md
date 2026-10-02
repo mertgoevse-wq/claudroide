@@ -1,9 +1,34 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-02 (vierzehnte Sitzung — Tasks 083, 113, 115, 118 und 121 verifiziert)
-**Status:** **110 von 135 Aufgaben `done`**, 25 offen, davon **17 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-02 (vierzehnte Sitzung — Tasks 083, 113, 115, 118, 121 und 125 verifiziert)
+**Status:** **111 von 135 Aufgaben `done`**, 24 offen, davon **16 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand:** `./gradlew :app:testDebugUnitTest` → **1740 Tests, 0 Fehler, 0 übersprungen** (+23 `PersistentFolderAccessTest`, +25 `LongTaskNotificationPolicyTest`, +22 `CommandAuditLogTest`, +23 `ApprovalHistoryTest`, +24 `SpecialFilePolicyTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20.4 MB.
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1758 Tests, 0 Fehler, 0 übersprungen** (+23 `PersistentFolderAccessTest`, +25 `LongTaskNotificationPolicyTest`, +22 `CommandAuditLogTest`, +23 `ApprovalHistoryTest`, +24 `SpecialFilePolicyTest`, +18 `ProviderPrivacyProfileTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20.4 MB.
+
+## Sitzung 14, sechster Teil — Task 125: Datenschutz je Anbieter (ProviderPrivacyProfile)
+
+### Keine erfundenen Anbieterangaben
+
+Die Aufgabe verlangt ein Anbieterprofil mit **Datenschutzquelle**, möglicher Speicherung, Region **falls belegt** und Prüfdatum. Der Matrix-Skill `/claude-api` ist in dieser Sitzung **nicht verfügbar**; nach CLAUDE.md wurde deshalb **nichts behauptet**: Die Klasse liefert den **Bauplan** und die Regeln, aber **keine erfundenen Inhalte** über einen Anbieter. Ein Profil entsteht aus `PrivacyFact` (mit Quelle und Datum, beides per `require` erzwungen) und `UnknownFact` (wörtlich „offen"). Es gibt keinen Weg, eine unbelegte Vermutung als bekannte Tatsache einzutragen — das ist die Zusage „Unbekannte Angaben als offen markiert" als Eigenschaft des Typs.
+
+- **Jede belegte Angabe zeigt Quelle und Prüfdatum** in der Anzeige mit. `PrivacyFact` ohne Quelle oder ohne Datum ist unzulässig.
+- **Offen heißt offen, nicht „nein".** `UnknownFact.displayLine()` sagt „offen — …"; ein Test stellt sicher, dass sie nie „nicht gespeichert" behauptet.
+- **Der Vergleich ist nicht irreführend.** `compareProviders` weist jede fehlende Angabe als `ComparisonValue.OPEN` aus, nicht als leeres Feld — sonst sähen zwei Anbieter gleich aus, obwohl bei einem die Speicherung unbekannt ist. Eine **offene Frage schlägt eine vorhandene Angabe**: solange die Frage offen ist, ist der Vergleichswert „offen".
+- **Keine vertraulichen Daten ohne bekanntes Ziel und Umfang.** `PrivacyEnforcement.canSend` blockiert ohne Bestätigung, ohne benannten Umfang und bei offenen Fragen — auch bei sonst vollständig belegtem Profil. Die Anzeige gibt den **Umfang** zurück, damit der Nutzer sieht, was genau geht.
+
+**Ein Testfehler, nicht ein Codefehler:** `der Vergleich meldet offene Fragen` erwartete, dass ein Profil ohne *erklärte* offene Fragen auch keine offene *Zelle* im Vergleich hat. `vollstaendig` nennt aber nur 3 der 5 Themen — bei den anderen beiden ist „offen" die ehrliche Antwort. Der Test unterscheidet jetzt beides: „keine erklärten offenen Fragen" ≠ „zu jedem Thema belegt"; ein Profil mit Angaben zu **allen** Themen hat keine offene Zelle.
+
+### Teststand
+
+- `./gradlew :app:testDebugUnitTest`: **1758 Tests, 0 Fehler, 0 übersprungen** (vorher 1740, +18). Gezählt aus den JUnit-XML.
+- `:app:assembleDebug`: **BUILD SUCCESSFUL**, APK 20 396 805 Bytes.
+- Geheimnis-Scan über `app/src/main/`: ohne Treffer.
+- `python3 tools/sync_frontmatter.py --check`: OK (111 erledigt, 24 offen).
+
+### Skills
+
+- **`/claude-api`** — **in dieser Sitzung nicht verfügbar.** Nach CLAUDE.md wurde stattdessen **nichts behauptet**: Der Skill wird durch die Struktur ersetzt, die eine belegte Angabe von einer Vermutung trennt. Kein Anbieter wurde mit erfundenen Zahlen oder unbelegten Speicherfristen ausgestattet.
+- **`android-permissions-security`** — die Datenschutzregel als Grenze: nichts Vertrauliches verlässt das Gerät, bevor der Nutzer Ziel und Umfang kennt. Das ist Least Privilege auf dem Datenweg, und es sitzt am Aufruf (blockiert), nicht in einer Anzeige.
 
 ## Sitzung 14, fünfter Teil — Task 121: Links und Sonderdateien (SpecialFilePolicy)
 
