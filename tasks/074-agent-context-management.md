@@ -5,9 +5,9 @@ wave: "W16"
 depends_on: [067, 068, 070, 071]
 files: [tasks/074-agent-context-management.md]
 skills: [`/claude-api`, `android-permissions-security`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "065671d1fe314ae1"
 ---
 # Aufgabe 074 — Kontext verwalten

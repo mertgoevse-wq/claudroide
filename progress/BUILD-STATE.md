@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (siebte Sitzung)
-**Status:** 77 von 135 Aufgaben verifiziert. Tasks 040 (Chat und Projekt verbinden), 072 (Agentenwerkzeuge verbinden) und 073 (Agentenlauf speichern) abgeschlossen.
+**Status:** 78 von 135 Aufgaben verifiziert. Tasks 040 (Chat und Projekt verbinden), 072 (Agentenwerkzeuge verbinden), 073 (Agentenlauf speichern) und 074 (Kontext verwalten) abgeschlossen.
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -382,5 +382,32 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Geladene Skills:** `testing-setup` (der entscheidende Test ist der mit dem ausgelösten Exception- und Fehlerpfad: `anUncertainWriteCountsAsNotSaved`, `aFailedStepWithWrittenChangesNeedsReview`) und `android-permissions-security` (Least Privilege auch für *Metadaten*: der Laufstatus ist eine Speicherstelle wie jeder andere und darf nicht zum Ort für Schlüssel werden).
 
-**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 074, 075, 076, 078, 079, 080 (alle W16), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 075, 076, 078, 079, 080 (alle W16), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
+
+## Task 074 erledigt — „Kontext verwalten“
+
+`AgentContextManager.kt` (neu, `feature/agent/`) + `AgentContextManagerTest.kt` (27 Tests).
+
+**Rechenregel aus der Anbieterquelle statt aus dem Gedächtnis.** Der zugewiesene Skill `/claude-api` ist in dieser Sitzung nicht verfügbar; als Ersatz wurde die Provider-Dokumentation direkt gelesen: `https://platform.claude.com/docs/en/build-with-claude/context-windows`, abgerufen am 2026-10-02. Belegt daraus und im Code als `CONTEXT_DOC_URL`/`CONTEXT_DOC_VERIFIED` festgehalten:
+- Systemprompt, **alle** Nachrichten, Werkzeugdefinitionen, Bilder, Dokumente **und die erzeugte Antwort zählen in dasselbe Fenster.
+- Die Genauigkeit nimmt mit der Tokenzahl ab („mehr Kontext ist nicht automatisch besser“) — deshalb wird hier gekürzt statt gefüllt.
+- Für belegte Modelle bleibt Platz für die Antwort reserviert; die Fenstermitte kommt weiter aus `ContextSelectionPolicy.budgetFor` mit ihrer Quelle.
+
+**Vier Zusagen strukturell abgesichert:**
+- **Kürzung ist sichtbar.** Jeder Gesprächsteil ist entweder in `keptTurns` oder in `droppedTurns` mit deutschem Grund — es gibt keinen dritten Pfad, und `disclosureLines()` führt die ausgelassenen Teile unter der Überschrift „NICHT mehr berücksichtigt“. Ein Teil mit unbekannter Tokenzahl wird ausgelassen (`TOKEN_COUNT_UNKNOWN`), nicht geschätzt.
+- **Keine vertrauliche Datei über die Kürzung hinein.** Die Dateiliste stammt ausschließlich aus `ContextSelectionPolicy.select`, wird danach mit `findExcludedFiles` noch einmal gegen `ProjectExclusionPolicy` geprüft und blockiert den ganzen Plan, falls dort doch eine Geheimnisdatei steht. Der Typ `ContextPlan` führt Pfade, keinen Dateiinhalt.
+- **Vorschau vor jeder Anfrage.** Der Plan nennt Fenster, Belegung je Bestandteil, zugesagten Antwortplatz, berücksichtigte und ausgelassene Teile sowie die Dateiliste aus Aufgabe 068. `canSend` ist `false`, solange der Plan über dem Fenster liegt.
+- **Festgehaltenes bleibt.** `isPinned` wird nie gekürzt; passt die festgehaltene Menge allein nicht, ist das `OVER_LIMIT` mit Hinweis statt stiller Kürzung.
+
+**Zwei ehrliche Korrekturen nach den ersten roten Tests:**
+1. **Ein einzelner Teil, der allein nicht ins Fenster passt, wurde als „beendet“ gemeldet.** Der Plan war technisch passend (kein Teil drin), enthielt aber den ganzen Gesprächsverlust. Die Meldung stimmt zwar — der ausgelassene Teil wird mit Grund genannt —, der Test behauptete aber zu Unrecht `OVER_LIMIT`. Der Test wurde an das reale Verhalten angepasst („gekürzt, mit Grund“), und der echte `OVER_LIMIT`-Fall ist separat getestet: eine Systemanweisung allein über dem Fenster lässt sich durch kein Kürzen mehr retten.
+2. **`ContextUsage.fits` prüfte nur den Kontext, nicht den Platz für die Antwort.** Ein Plan, der das Fenster vollständig für den Kontext beanspruchte, wäre „passend“ gewesen und hätte die Antwort abgeschnitten. Jetzt gilt „passt“ als „bleibt auch Raum für die zugesagten Antwort“, mit sichtbarem Überhang.
+
+**Ehrlich benannt:** Der zweite Geheimnisdurchgang (`findExcludedFiles`) ist über `plan()` heute nicht erreichbar, weil Aufgabe 068 dieselbe Regel schon anwendet. Er ist trotzdem implementiert und öffentlich — und mit einer von Hand gebauten Auswahl getestet, die eine `.env` enthält. Sollte sich die Regel in 068 einmal lockern, ist die Stelle benannt, statt dass die Datei unbemerkt durchrutscht.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **803 Tests, 0 Fehler, 0 übersprungen** (vorher 776, +27 aus `AgentContextManagerTest`). Die Kürzungsrechnung ist absichtlich mit einem **nicht belegten** Modell geprüft (32 000 Tokens, keine reservierte Antwort aus `ModelContextLimits.UNKNOWN_WINDOW_TOKENS`) — mit kleinen Zahlen, ohne eine Fenstergröße zu erfinden.
+
+**Geladene Skills:** `android-permissions-security` (die Kürzung ist ein zweiter Weg in den Datenweg — sie bekommt dieselbe Geheimnisregel wie die Auswahl; zusätzlich wird ein Schlüssel im Gespräch vor dem Senden geschwärzt **und** als geschwärzt gemeldet) und als Ersatz für das nicht verfügbare `/claude-api` die direkte Quellenprüfung der Provider-Dokumentation.
+
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt): 075, 076, 078, 079, 080 (alle W16), dazu 081, 082, 084 (Gate), 087, 092, 093, 095 (Gate), 098, 103, 105, 117 (Gate), 118 (Gate), 123 (Gate), 125 (Gate), 126 (Gate), 127 (Gate), 129 (Gate), 130 (Gate).
 
