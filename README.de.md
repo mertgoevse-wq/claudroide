@@ -1,7 +1,7 @@
 # Claudroide
 
 <p align="center">
-  <img src="assets/claudroide-mascot-logo.jpg" alt="Claudroide Maskottchen" width="160" style="border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.35);" />
+  <img src="assets/claudroide-mascot-logo-small.png" alt="Claudroide Maskottchen" width="160" />
   <br>
   <b>Claudroide</b> — Eigenständiger mobiler KI-Coding-Assistent für Android
   <br>
@@ -167,8 +167,10 @@ flowchart LR
     D --> E[README & Tasks verweisen<br/>auf echte Datei]
 ```
 
-- **Maskottchen-Logo gerendert:** [`assets/claudroide-mascot-logo.jpg`](assets/claudroide-mascot-logo.jpg) (Grüner Android-Bot mit warm leuchtendem KI-Akzent).
-- **Banner gerendert:** [`assets/claudroide-banner.jpg`](assets/claudroide-banner.jpg) (Grüner Android-Bot, der spielerisch an einem warm leuchtenden Terrakotta-KI-Funken knabbert).
+- **Maskottchen-Logo gerendert:** [`assets/claudroide-mascot-logo.png`](assets/claudroide-mascot-logo.png) — 665x796 mit transparentem Hintergrund; im README wird die vorskalierte [`assets/claudroide-mascot-logo-small.png`](assets/claudroide-mascot-logo-small.png) (320x320) verwendet.
+- **Banner gerendert:** [`assets/claudroide-banner.jpg`](assets/claudroide-banner.jpg) — 1376x768, 16:9.
+- **Gestaltung:** Android-Grün `#3DDC84` mit `#2FA968` als Schattenseite. Der Claude-Stern ist als **eine** massiv eingelassene Intarsie in die Brustplatte **fusioniert** — nicht gehalten, nicht angefressen, kein schwebendes Einzelobjekt.
+- Gerendert mit Nano Banana 2 (`gemini-3.1-flash-image`) über die Claude Media Bridge des Nutzers.
 - Kein SVG als fertiges Logo oder Illustration. Fertige Grafiken liegen ausschließlich als PNG, WebP oder JPG vor (geprüft durch CI `.github/workflows/repo-health.yml`).
 
 ---

@@ -1,11 +1,11 @@
 # Claudroide-Bauzustand
 
-**Stand:** 2026-10-02 (siebte Sitzung)
-**Status:** 92 von 135 Aufgaben verifiziert. Tasks 040, 072–082, 087, 089, 092, 093, 098, 103 und 105 abgeschlossen. **Alle Aufgaben ohne Gate sind abgearbeitet.**
+**Stand:** 2026-10-02 (achte Sitzung)
+**Status:** 93 von 135 Aufgaben verifiziert. Tasks 040, 072–082, 087, 089, 092, 093, 098, 103, 105 und 106 abgeschlossen.
 
 **Sprache (Nutzerwunsch vom 2026-10-02):** Englisch zuerst, Deutsch als Zweitwahl. `values/strings.xml` ist jetzt Englisch, `values-de/strings.xml` Deutsch. `CLAUDE.md` entsprechend geändert. Historische deutsche Bezeichner aus den ersten Aufgaben bleiben **unverändert** — sie rückwirkend umzubenennen würde hunderte Zusicherungen in 1108 Tests brechen. Neue Typen führen `label` (englisch).
 
-**Bilder — blockiert, ehrlich dokumentiert:** Beide README-Bilder sollen neu erstellt werden. `~/claude-media-bridge` ist installiert, aber `claude-media-bridge status` meldet **„Not logged in“**; `generate --provider google` endet mit *„No Google credentials found“*. Der einzige konfigurierte Anbieter ist Pollinations — vom Nutzer ausdrücklich **nicht** gewünscht. `login` ist ein interaktiver Google-OAuth und kann nicht aus einer Agentensitzung laufen. **Es ist kein Bild erzeugt und kein Platzhalter eingesetzt worden.** Die neuen englischen Bildaufträge liegen in `assets/logo-brief.md` und sind ausführungsbereit.
+**Bilder — erledigt, nicht mehr blockiert:** Beide README-Bilder sind neu gerendert und liegen in `assets/`. Die Bridge hatte weiterhin kein Google-Konto, aber der Weg darum herum Existierte: Der laufende **OmniRoute**-Proxy auf `http://localhost:20128` war die ganze Zeit erreichbar — die frühere Prüfung hatte nur Ports abgetastet und war bei 20128 hängen geblieben. Nach dem Eintragen des vorhandenen OmniRoute-Schlüssels in `~/.config/mll/providers/omniroute.env` (Rechte 0600, Wert nirgends ausgegeben) meldet `status` **„Connected“** und `generateImageViaOmniRoute` rendert über `antigravity/gemini-3.1-flash-image` (Nano Banana 2). **Pollinations wurde für kein Bild verwendet.** Details im Abschnitt unten.
 
 ## Erledigt
 - `claudroide-spec.md` enthält Produktziele, Leitplanken, Prüfkriterien und 135 Aufgaben.
@@ -752,6 +752,48 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 **Teststand:** `./gradlew :app:testDebugUnitTest` → **1001 Tests, 0 Fehler, 0 übersprungen** (vorher 969, +32 aus `ProviderCapabilityPolicyTest`). Die 1000er-Marke ist erreicht.
 
 **Geladene Skills:** als Ersatz für das nicht verfügbare `/claude-api` die **direkte Quellenprüfung** der Anbieterdokumentation (nicht geraten: die zitierten Sätze wurden von der Quelle geholt und das Abrufdatum steht im Code), und `testing-setup` (jede der fünf `AgentFeature` wird einzeln mit vollem und leerem Profil geprüft, damit eine neue Funktion nicht ungeprüft mitläuft).
+
+## Task 106 erledigt — „Arbeitsordner begrenzen“
+
+`WorkingDirectoryPolicy.kt` (neu, `feature/project/`) + `WorkingDirectoryPolicyTest.kt` (21 Tests).
+
+**Die beiden Fertig-Kriterien strukturell abgesichert:**
+- **Relative und veränderte Pfade entkommen nicht.** `resolve` **normalisiert selbst** und entscheidet erst danach: `a/./b/../c` wird zu `a/c`, ein `..`, das über den Start hinausführt, ergibt `null` und damit `ESCAPES_WORKING_DIRECTORY`. Der Vergleich roher Zeichenketten wäre genau der Fehler, der `build/../..` durchlässt; deshalb gibt es kein „weiches“ Modell und **keinen Parameter, der die Prüfung abschaltet**.
+- **Root- und Systembereiche bleiben gesperrt.** `SYSTEM_PREFIXES` wird gegen den **aufgelösten** Pfad geprüft, also fängt auch `/system/../system`. Die Prüfung ist trennzeichenbewusst: `/system/framework` wird erkannt, ohne `/systematic-notes` mitzuerwischen.
+
+**Drei echte Fehler, die die Tests aufgedeckt haben:**
+1. **`../..` landete in `/storage/emulated/0`.** Zwei Ebenen aus dem Projektordner zeigen auf den gemeinsamen Android-Datenspeicher — ein Nutzer, der „ein Stück hoch“ tippt, wäre bei den Apps aller anderen gelandet. Urteil ist jetzt `BLOCKED`.
+2. **`../../../../..` war `SYSTEM_PATH_REFUSED`, obwohl der Pfad aus dem Arbeitsordner floh.** Die Systemprüfung lief vor der Grenzprüfung und benannte damit das falsche Problem. `ESCAPES_WORKING_DIRECTORY` ist jetzt die treffende Aussage.
+3. **`../../../../../..` war nur `BLOCKED`** — die Auflösung brach vorher ab, statt die Grenze als solche zu nennen.
+
+**Ehrlich bei Android-Dateianbietern:** `ProviderCapability` führt `canList`/`canRead`/`canWrite` getrennt; fehlt etwas, kommt `PROVIDER_NOT_USABLE` **mit Grund**. Nicht stillschweigend übersprungen — ein Build, der still keine Dateien sieht, sieht aus wie ein Build, der keine gefunden hat.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1297 Tests, 0 Fehler, 0 übersprungen** (vorher 1276, +21 aus `WorkingDirectoryPolicyTest`).
+
+**Geladene Skills:** `android-permissions-security` (daraus die Grenze als strukturelle Regel statt als Konvention: Pfade werden aufgelöst, nicht verglichen, und ein nicht nutzbarer Anbieter wird benannt statt übergangen) und `testing-setup` (die drei Fehler oben entstanden, weil die Tests an der Zusage „relative und veränderte Pfade entkommen nicht“ ansetzten, nicht an den Zeilen).
+
+## Bilder neu gerendert — Aufgabe 020 und der Nutzerwunsch vom 2026-10-02
+
+**Die Blockade war unvollständig analysiert.** `claude-media-bridge status` meldete zwar „Not logged in“, aber die frühere Prüfung hatte nur eine Handvoll Ports abgetastet und **20128 übersehen**. Der OmniRoute-Proxy lief die ganze Zeit; er antwortet mit HTTP 307 auf `/`, was ein blinder Verbindungsversuch als „nicht erreichbar“ missversteht. Nach dem Eintragen des vorhandenen OmniRoute-Schlüssels in `~/.config/mll/providers/omniroute.env` (Rechte 0600; der Wert wurde nirgends ausgegeben) meldet die Bridge **„Connected“**. `generateImageViaOmniRoute` rendert über `antigravity/gemini-3.1-flash-image` — **Nano Banana 2**, genau das gewünschte Modell. **Pollinations wurde für keines der Bilder verwendet.**
+
+| Datei | Maß | Verwendung |
+| :--- | :--- | :--- |
+| `assets/claudroide-mascot-logo.png` | 665x796, RGBA | Vollauflösung, transparenter Hintergrund |
+| `assets/claudroide-mascot-logo-small.png` | 320x320, RGBA | Ecken-Logo im README |
+| `assets/claudroide-banner.jpg` | 1376x768, 16:9 | Kopfband im README |
+
+**Der Stern ist fusioniert, nicht gefressen:** Er sitzt als **eine massive Intarsie in der Brustplatte**, seine Kurven laufen in den Konstruktionslinien des Roboters weiter. Vier Spitzen, konkav geschwungene Kanten, **ein** ungebrochener massiver Umriss — kein Kreis, kein Punkt, kein Loch in der Mitte.
+
+**Drei Renderdurchläufe für das Maskottchen, jeder geprüft vor dem nächsten — und jeder hat etwas Echtes gefunden:**
+1. **Durchlauf 1:** Der Stern bekam eine Scheibe in der Mitte und las sich als **Glühbirne**; das Grün war neonemerald statt `#3DDC84`. Die Bitte nach transparentem Hintergrund war ohnehin nicht erfüllbar — **JPEG kann keine Transparenz**, also malte das Modell ein **gefälschtes Schachbrett** in den Hintergrund.
+2. **Durchlauf 2:** Der Stern wurde massiv, aber die Beschreibung „dunkles Visier“ kostete das Modell die **Augen** — das Maskottchen las sich überhaupt nicht mehr als Android. Ein stillschweigend verschwundenes Merkmal ist schlimmer als die Kürnicklichkeit, die gerade behoben werden sollte.
+3. **Durchlauf 3:** Die Augen wurden als **wichtigstes Detail** benannt und kamen klar zurück. Ausgeliefert.
+
+Das Banner brauchte nur einen zweiten Durchlauf für den Randabstand: In Durchlauf 1 lag der rechte Arm des Maskottchens am Bildrand.
+
+**Transparenz ohne Löcher in den Highlights:** Der Roboter hat cremefarbene Highlights (`#F7F9F6`), nur wenige Stufen vom weißen Hintergrund entfernt. Ein globales „Alles Weiße wird durchsichtig“ hätte **Löcher in den Roboter selbst** geschlagen. `tools/make_mascot_transparent.py` läuft deshalb von der Bildkante nach innen: Gelöscht wird nur, was über hellere Nachbarn **von außen erreichbar** ist — ein von Grün umschlossenes Highlight wird nie erreicht. 731858 Pixel gelöscht, das Ergebnis auf den Inhalt beschnitten.
+
+**Eine falsche Behauptung im README korrigiert:** Dort stand „all graphics … under 50 KB ceiling“. Das stimmte für die alten Bilder und war für die neuen **falsch** (Mascot 341 KB). Die Prüfung, die tatsächlich existiert, ist die CI-Regel gegen SVG in `assets/`; eine Größenbegrenzung gab es nie. Der README sagt jetzt, was wahr ist: CI verbietet SVG, **Dateigrößen sind nicht gedeckelt**.
 
 ## Task 079 erledigt — „Wiederholungsregeln“
 

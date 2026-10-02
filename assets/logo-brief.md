@@ -1,33 +1,51 @@
 # Claudroide image brief — mascot + banner
 
-**Status:** briefs ready, **not yet rendered.** The Claude Media Bridge is installed
-at `~/claude-media-bridge` but has no Google account connected
-(`claude-media-bridge status` → "Not logged in"). The only configured provider
-right now is Pollinations, which is explicitly **not** wanted for these images.
-So: no image has been generated and no placeholder has been installed in its place.
+**Status: RENDERED AND SHIPPED (2026-10-02).**
 
-Provider wanted: **Google Antigravity / Nano Banana 2 (`gemini-3.1-flash-image`)**.
+The bridge could not reach Google directly — no Google account is connected, so
+`claude-media-bridge login` would have been needed and that is interactive. The
+way around it: the user's **OmniRoute** proxy was already running on
+`http://localhost:20128` and offers the same model. The bridge reads its key from
+`~/.config/mll/providers/omniroute.env`; once that file existed, `status` flipped
+from "Unreachable" to "Connected" and `generateImageViaOmniRoute` rendered
+through **`antigravity/gemini-3.1-flash-image`** (Nano Banana 2).
 
-To unblock: run `claude-media-bridge login` once, interactively. It is an OAuth
-flow against the user's own Google account and cannot be done from an agent
-session.
+Pollinations was not used for either image.
 
-Files to replace when the renders are approved:
-
-| File | Use | Ratio |
+| File | Size | Use |
 | :--- | :--- | :--- |
-| `assets/claudroide-mascot-logo.jpg` | README corner logo, 160 px | 1:1 |
-| `assets/claudroide-banner.jpg` | README header banner, full width | 16:9 |
+| `assets/claudroide-mascot-logo.png` | 665x796, transparent | full-resolution master |
+| `assets/claudroide-mascot-logo-small.png` | 320x320, transparent | README corner logo |
+| `assets/claudroide-banner.jpg` | 1376x768, 16:9 | README header banner |
 
-## What was wrong with the current images
+## What was wrong with the **previous** images
 
-- The bot reads as a generic green cartoon character rather than Android.
-- The Claude star is **consumed** — held like food and being eaten. That is the
-  single biggest problem: it looks like the mascot is destroying the thing it is
-  meant to represent.
-- The fusion is accidental rather than designed, so the two halves do not read as
-  one mark.
-- Low resolution; it falls apart when GitHub scales the banner up.
+- The bot read as a generic green cartoon character rather than Android.
+- The Claude star was **consumed** — held like food and being eaten. That was the
+  single biggest problem: it looked like the mascot was destroying the thing it
+  is meant to represent.
+- The fusion was accidental rather than designed, so the two halves did not read
+  as one mark.
+- Low resolution; it fell apart when GitHub scaled the banner up.
+
+## What the iteration loop actually fixed
+
+Three rounds for the mascot, two for the banner. Each round was inspected before
+the next was started, and each inspection found something real:
+
+1. **Round 1** — the star had a disc in its middle and read as a lightbulb; the
+   green was neon emerald rather than `#3DDC84`. Asking for a flat white
+   background was necessary because **JPEG cannot carry transparency**, so the
+   first attempt painted a fake checkerboard.
+2. **Round 2** — the star became solid, but the round instruction to describe the
+   "dark visor" cost the model the **eyes**, and the mascot stopped reading as
+   Android at all. Silently dropping a defining feature is worse than the
+   nitpick that was being fixed.
+3. **Round 3** — the eyes were named as *the most important detail* and came back
+   clearly. Shipped.
+
+The banner needed a second round only for margin: in round 1 the mascot's right
+arm ran into the frame edge.
 
 ## Brief 1 — mascot logo (1:1)
 

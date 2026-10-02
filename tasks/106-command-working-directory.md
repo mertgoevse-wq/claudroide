@@ -5,9 +5,9 @@ wave: "W25"
 depends_on: [105, 119, 120]
 files: [tasks/106-command-working-directory.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "04817033fe63018c"
 ---
 # Aufgabe 106 — Arbeitsordner begrenzen

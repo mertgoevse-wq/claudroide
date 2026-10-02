@@ -1,7 +1,7 @@
 # Claudroide
 
 <p align="center">
-  <img src="assets/claudroide-mascot-logo.jpg" alt="Claudroide Mascot" width="160" style="border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.35);" />
+  <img src="assets/claudroide-mascot-logo-small.png" alt="Claudroide Mascot" width="160" />
   <br>
   <b>Claudroide</b> — Autonomous Mobile AI Coding Assistant for Android
   <br>
@@ -165,9 +165,11 @@ flowchart LR
     D --> E[README & Tasks Reference<br/>Verified Binary Asset]
 ```
 
-- **Mascot Logo:** [`assets/claudroide-mascot-logo.jpg`](assets/claudroide-mascot-logo.jpg) (Friendly green Android robot with glowing terracotta AI spark).
-- **Header Banner:** [`assets/claudroide-banner.jpg`](assets/claudroide-banner.jpg) (Green Android bot playfully nibbling a glowing terracotta spark star).
-- Binary integrity enforced: all graphics are real PNG, WebP, or JPG files under 50 KB ceiling; no SVG placeholders permitted in `assets/`.
+- **Mascot Logo:** [`assets/claudroide-mascot-logo.png`](assets/claudroide-mascot-logo.png) — full-resolution 665x796 render with a transparent background. The README uses the pre-scaled [`assets/claudroide-mascot-logo-small.png`](assets/claudroide-mascot-logo-small.png) (320x320).
+- **Header Banner:** [`assets/claudroide-banner.jpg`](assets/claudroide-banner.jpg) — 1376x768, 16:9.
+- **Design:** Android green `#3DDC84` body with `#2FA968` shadow. The Claude sparkle is **fused** into the chest plate as a single solid inlay — not held, not eaten, not a separate floating object.
+- Rendered with Nano Banana 2 (`gemini-3.1-flash-image`) through the user's Claude Media Bridge.
+- Binary integrity enforced by CI: no SVG permitted in `assets/` (`.github/workflows/repo-health.yml`). File sizes are not capped — the full-resolution mascot is 341 KB on purpose.
 
 ---
 
