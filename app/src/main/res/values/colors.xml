@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Launcher icon placeholder colors (used by adaptive-icon XML) -->
-    <color name="launcher_bg">#1B2A1B</color>
+    <!--
+      Adaptive-icon background layer. The foreground and monochrome layers are
+      generated from the merged brand mark by tools/app_icon.py, not hand-drawn.
+      launcher_fg is kept because older launchers still ask for a solid colour;
+      it matches the mark's Android green.
+    -->
+    <color name="launcher_bg">#121413</color>
     <color name="launcher_fg">#3DDC84</color>
 </resources>

@@ -64,9 +64,18 @@ def mark(size=1024, pad=0.0):
     """
     S = size
     cx, cy = S * 0.500, S * 0.545
-    R_IN = S * 0.150        # burst starts behind the dome
-    R_OUT = S * 0.468       # burst reaches the canvas edge
     DOME_R = S * 0.268
+
+    # The rays must START INSIDE the dome silhouette, or the ones angled upward
+    # detach from it and float above the head with a visible gap. The dome's
+    # surface sits closest to the burst centre along the vertical; the upward
+    # antennae cross it at roughly 0.107*S. Starting at 0.150*S put them
+    # OUTSIDE it -- which the colour render hides, because the dome is drawn
+    # over the join, but which the monochrome launcher icon exposes: a
+    # silhouette has no colour to hide the gap with. 0.090*S is comfortably
+    # inside for every angle in the set, so the join is always buried.
+    R_IN = S * 0.090
+    R_OUT = S * 0.468       # burst reaches the canvas edge
 
     # Antennae are longer and thinner; flank rays are shorter and wider.
     rays = [

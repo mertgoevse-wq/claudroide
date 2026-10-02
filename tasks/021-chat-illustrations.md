@@ -5,10 +5,10 @@ wave: "W6"
 depends_on: [003, 019]
 files: [tasks/021-chat-illustrations.md]
 skills: [`adaptive`, `/code-review`]
-status: done
+status: in_progress
 gate: false
-done_since_last_edit: true
-content-hash: "4db7a9d5c17d25d9"
+done_since_last_edit: false
+content-hash: "b4683943b0514213"
 ---
 # Aufgabe 021 — Eigene App-Bilder
 
@@ -26,7 +26,7 @@ Katalog anwendungsinterner Zustandsgrafiken, Implementierungsregeln für Jetpack
 | **Kein Projekt geöffnet (`EmptyProject`)** | Roboter vor stilisiertem Code-Ordner | Erklärt SAF-Auswahl und leitet zum Datei-Browser weiter | `Icons.Default.FolderOpen` in `AndroidGreen` mit Button `Projekt öffnen` |
 | **Offline / Verbindungsabbruch** | Roboter mit Antennen-Signal und Pause-Symbol | Informiert ruhig über fehlendes Internet ohne Panikfarben | `Icons.Default.WifiOff` in `TextMuted` mit `Erneut verbinden`-Button |
 | **Freigabestufe / Bestätigung** | Roboter mit Schild und Vergrößerungsglas | Visualisiert Sicherheitsprüfung vor Ausführung von Befehlen | `Icons.Default.Security` in `TerracottaSpark` (`#E06D53`) |
-| **Ersteinrichtung (Welcome)** | Maskottchen-Rendering (`claudroide-mascot-logo.jpg`) | Freundliche Begrüßung und Einleitung | Hochauflösendes Bitmap-Asset mit abgerundeten Ecken |
+| **Ersteinrichtung (Welcome)** | Maskottchen-Rendering (`assets/brand/mark-1024.png`) | Freundliche Begrüßung und Einleitung | Hochauflösendes Bitmap-Asset mit abgerundeten Ecken |
 
 ### 2. Technische Richtlinien für mobile Darstellungen
 - **Vektor-Vorrang:** Für UI-Zustände werden in erster Linie skalierbare Compose Vector Assets (`ImageVector`) genutzt (extrem speichersparend, 0 ms Ladezeit, gestochen scharf auf FHD+ Displays wie dem A56).

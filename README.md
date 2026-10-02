@@ -1,7 +1,11 @@
 # Claudroide
 
 <p align="center">
-  <img src="assets/claudroide-mascot-logo-small.png" alt="Claudroide Mascot" width="160" />
+  <img src="assets/brand/banner.png" alt="Claudroide — an Android dome fused with a Claude burst" width="100%" style="border-radius: 12px;" />
+</p>
+
+<p align="center">
+  <img src="assets/brand/mark-256.png" alt="Claudroide mark" width="96" />
   <br>
   <b>Claudroide</b> — Autonomous Mobile AI Coding Assistant for Android
   <br>
@@ -15,14 +19,10 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Phase-Design%20%26%20Engineering-informational" alt="Phase" />
   <img src="https://img.shields.io/badge/Tasks-135%20Total-blue" alt="Tasks" />
-  <img src="https://img.shields.io/badge/App--Code-47%20%2F%20135%20done-yellow" alt="Status" />
-  <img src="https://img.shields.io/badge/Waves%200--10-completed-success" alt="W0-W10" />
+  <img src="https://img.shields.io/badge/Verified-103%20%2F%20135-yellow" alt="Status" />
+  <img src="https://img.shields.io/badge/Tests-1570%20passing-success" alt="Tests" />
   <img src="https://img.shields.io/badge/Target-Galaxy%20A56%205G-orange" alt="Device" />
   <img src="https://img.shields.io/badge/Repo-private-success" alt="Repo" />
-</p>
-
-<p align="center">
-  <img src="assets/claudroide-banner.jpg" alt="Claudroide Header Banner" width="100%" style="border-radius: 16px; margin: 16px 0;" />
 </p>
 
 Claudroide is an independent native Android application for AI-assisted software engineering and project management (inspired by the Claude Code CLI paradigm, but with an independent brand, clean-room architecture, and mobile-native Compose UI). Primary hardware benchmark: Samsung Galaxy A56 5G. This repository contains the complete specification, 135 machine-readable task briefs, and the deterministic autonomous engineering loop.
@@ -165,11 +165,11 @@ flowchart LR
     D --> E[README & Tasks Reference<br/>Verified Binary Asset]
 ```
 
-- **Mascot Logo:** [`assets/claudroide-mascot-logo.png`](assets/claudroide-mascot-logo.png) — full-resolution 665x796 render with a transparent background. The README uses the pre-scaled [`assets/claudroide-mascot-logo-small.png`](assets/claudroide-mascot-logo-small.png) (320x320).
-- **Header Banner:** [`assets/claudroide-banner.jpg`](assets/claudroide-banner.jpg) — 1376x768, 16:9.
-- **Design:** Android green `#3DDC84` body with `#2FA968` shadow. The Claude sparkle is **fused** into the chest plate as a single solid inlay — not held, not eaten, not a separate floating object.
-- Rendered with Nano Banana 2 (`gemini-3.1-flash-image`) through the user's Claude Media Bridge.
-- Binary integrity enforced by CI: no SVG permitted in `assets/` (`.github/workflows/repo-health.yml`). File sizes are not capped — the full-resolution mascot is 341 KB on purpose.
+- **Mark:** [`assets/brand/mark-1024.png`](assets/brand/mark-1024.png), with `-256` and `-96` variants. Also generated straight into the app as the adaptive launcher icon (`app/src/main/res/mipmap-*/ic_launcher_foreground.png`, plus a `monochrome` layer for Android 13+ themed icons).
+- **Banner:** [`assets/brand/banner.png`](assets/brand/banner.png) — 1376x768, 16:9. The wordmark is real Inter, so the product name is spelled correctly by construction.
+- **Design:** an Android dome in `#3DDC84` wearing a Claude-grammar burst as its crown. The two rays at ±26° are the droid's antennae **and** two rays of the burst — the same strokes serve both systems, so neither half can be deleted without breaking the other. That is the "no subordinate symbol" requirement expressed as geometry rather than as a caption.
+- Drawn as exact vector geometry by [`tools/brand.py`](tools/brand.py), not by an image model: the wordmark has to spell "Claudroide", and diffusion models misspell wordmarks. The banner and the launcher icon import the same geometry, so they cannot drift apart.
+- Binary integrity enforced by CI: no SVG permitted in `assets/` (`.github/workflows/repo-health.yml`). The SVGs under `assets/brand/.build/` are build input, not shipped assets. File sizes are not capped.
 
 ---
 

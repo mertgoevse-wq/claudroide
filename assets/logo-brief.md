@@ -1,105 +1,97 @@
-# Claudroide image brief — mascot + banner
+# Claudroide brand brief — the mark, the banner, the launcher icon
 
-**Status: RENDERED AND SHIPPED (2026-10-02).**
+**Status: shipped as vector geometry (2026-10-02).**
 
-The bridge could not reach Google directly — no Google account is connected, so
-`claude-media-bridge login` would have been needed and that is interactive. The
-way around it: the user's **OmniRoute** proxy was already running on
-`http://localhost:20128` and offers the same model. The bridge reads its key from
-`~/.config/mll/providers/omniroute.env`; once that file existed, `status` flipped
-from "Unreachable" to "Connected" and `generateImageViaOmniRoute` rendered
-through **`antigravity/gemini-3.1-flash-image`** (Nano Banana 2).
-
-Pollinations was not used for either image.
+## What ships
 
 | File | Size | Use |
 | :--- | :--- | :--- |
-| `assets/claudroide-mascot-logo.png` | 665x796, transparent | full-resolution master |
-| `assets/claudroide-mascot-logo-small.png` | 320x320, transparent | README corner logo |
-| `assets/claudroide-banner.jpg` | 1376x768, 16:9 | README header banner |
+| `assets/brand/mark-1024.png` | 1024x1024 | master mark |
+| `assets/brand/mark-256.png` | 256x256 | README corner mark |
+| `assets/brand/mark-96.png` | 96x96 | small use |
+| `assets/brand/banner.png` | 1376x768, 16:9 | README header |
+| `app/src/main/res/mipmap-*/ic_launcher_foreground.png` | 108dp per density | adaptive icon foreground |
+| `app/src/main/res/mipmap-*/ic_launcher_monochrome.png` | 108dp per density | themed icons, Android 13+ |
+| `app/src/main/res/mipmap-*/ic_launcher_round.png` | 108dp per density | legacy round icon |
 
-## What was wrong with the **previous** images
+## The design
+
+An Android dome in `#3DDC84`, wearing a Claude-grammar burst as its crown.
+
+The two rays at **±26°** are the droid's antennae **and** two rays of the burst.
+The same strokes serve both systems, so neither half can be deleted without
+breaking the other. That is the brief's real requirement — "neither symbol may
+read as subordinate" — expressed as geometry rather than as a caption. A caption
+can claim a fusion the drawing does not have; shared strokes cannot.
+
+The two lowest rays (at ±157°) are drawn **over** the dome rather than behind
+it. If the burst sat entirely behind, the droid would be carrying a decoration
+instead of being part of one.
+
+## Why geometry and not an image model
+
+The wordmark has to spell "Claudroide". Diffusion models misspell wordmarks — the
+earlier renders produced a mascot holding a spark, and before that a spark with
+a lightbulb disc in the middle. A misspelled product name on a 1376px banner is
+worse than no banner.
+
+So every glyph is real Inter, positioned by measured advance width, and the mark
+is exact path geometry. `tools/brand.py` owns the mark; `tools/banner.py` and
+`tools/app_icon.py` import it. One source, so the banner and the launcher icon
+cannot drift apart.
+
+## Palette
+
+| Token | Value | Use |
+| :--- | :--- | :--- |
+| Brand green | `#3DDC84` | the dome; Android green, already the app's primary |
+| Brand green deep | `#24B566` | the dome's shaded side |
+| Brand coral | `#E06D53` | the burst; the app's existing secondary |
+| Brand coral deep | `#C4553C` | the burst's lower half |
+| Visor | `#15201B` | near-black, not pure black (AMOLED smear) |
+| Ink | `#0C100E` | banner background |
+
+## Two geometry bugs found by inspecting the output
+
+Both were invisible in the colour render and obvious in the monochrome one,
+which is why generating the themed icon was worth doing at all.
+
+1. **The rays started outside the dome.** They began at radius `0.150·S` from
+   the burst centre, but the dome's surface crosses that radius only at about
+   `0.107·S`. The upward antennae therefore floated above the head with a visible
+   gap. The colour render hid it — the dome is painted over the join — but a
+   silhouette has no colour to hide it with. Fixed by starting the rays at
+   `0.090·S`, comfortably inside for every angle.
+
+2. **The monochrome layer was a black blob.** The first version rebuilt the
+   dome's arc parameters by hand and got them wrong. It is now a mask over the
+   *real* geometry: flatten every fill to white, cut the visor out, redraw the
+   eyes. Nothing is re-derived by hand, so a change to `brand.py` is picked up
+   automatically instead of silently diverging.
+
+## Regenerating
+
+```sh
+python3 tools/brand.py     # mark-1024 / -256 / -96
+python3 tools/banner.py    # banner.png
+python3 tools/app_icon.py  # all five mipmap densities
+```
+
+Requires `rsvg-convert` and the Inter family installed for fontconfig.
+
+## What the previous images got wrong
+
+Worth recording, because these are the failures the current design exists to
+avoid:
 
 - The bot read as a generic green cartoon character rather than Android.
-- The Claude star was **consumed** — held like food and being eaten. That was the
-  single biggest problem: it looked like the mascot was destroying the thing it
-  is meant to represent.
+- The Claude spark was **consumed** — held like food and being eaten. It looked
+  like the mascot was destroying the thing it is meant to represent.
 - The fusion was accidental rather than designed, so the two halves did not read
   as one mark.
 - Low resolution; it fell apart when GitHub scaled the banner up.
 
-## What the iteration loop actually fixed
+## Licence note
 
-Three rounds for the mascot, two for the banner. Each round was inspected before
-the next was started, and each inspection found something real:
-
-1. **Round 1** — the star had a disc in its middle and read as a lightbulb; the
-   green was neon emerald rather than `#3DDC84`. Asking for a flat white
-   background was necessary because **JPEG cannot carry transparency**, so the
-   first attempt painted a fake checkerboard.
-2. **Round 2** — the star became solid, but the round instruction to describe the
-   "dark visor" cost the model the **eyes**, and the mascot stopped reading as
-   Android at all. Silently dropping a defining feature is worse than the
-   nitpick that was being fixed.
-3. **Round 3** — the eyes were named as *the most important detail* and came back
-   clearly. Shipped.
-
-The banner needed a second round only for margin: in round 1 the mascot's right
-arm ran into the frame edge.
-
-## Brief 1 — mascot logo (1:1)
-
-> A friendly Android robot mascot, unmistakably Android: the canonical rounded
-> rectangular head with two circular white eyes on a dark visor, two short
-> antennae, the soft dome-and-bar silhouette of the standard Android system
-> character. Clean geometric construction, flat confident shapes, subtle
-> depth only where it earns its place. Modern Android green (#3DDC84) as the
-> body colour with a darker green shadow side, off-white highlights, a small
-> warm amber accent used once and sparingly.
->
-> Fused with the Claude sparkle mark — **integrated, not eaten.** The star is not
-> held, not bitten, not in a mouth, and not floating away as a separate object.
-> The star is set into the robot's chest plate as a single clean inlay, its
-> geometry continuing the robot's own construction lines, so the whole reads as
-> one designed mark rather than two stickers on top of each other. The star is
-> whole and uncropped. A faint warm amber glow radiates from the inlay and
-> lights the inside edges of the visor.
->
-> Strictly anti-slop: no lens flares, no neon rainbow gradients, no glossy plastic
-> 3D toy rendering, no floating UI panels, no circuit-board decoration, no lens
-> bloom haze, no six-pack-abs bodybuilder proportions, no text or letters
-> anywhere. Confident restraint. Flat vector-adjacent rendering with crisp
-> edges, designed to stay legible as an app icon at 48 px.
->
-> Transparent background, square 1:1, high resolution (at least 1024x1024).
-
-## Brief 2 — header banner (16:9)
-
-> The same mascot, identical construction, colours and star inlay, placed
-> off-centre to the right third of a wide frame. Generous negative space on the
-> left for a wordmark to be set later in post. Background: a deep, calm near-black
-> green-black with a very soft radial falloff behind the mascot only. No grid, no
-> particles, no data streams, no glowing edges.
-
-## Commands
-
-```bash
-cd ~/claude-media-bridge/claude-media-bridge
-
-# One-time, interactive, must be run by the user:
-node bin/cli.mjs login
-
-node bin/cli.mjs status          # confirm Google account is connected
-
-node bin/cli.mjs generate "<Brief 1>" --provider google --ratio 1:1
-node bin/cli.mjs generate "<Brief 2>" --provider google --ratio 16:9
-```
-
-## Acceptance before shipping
-
-1. Read the two generated images and check them against the brief above.
-2. The star must be **whole and fused**, not held or eaten.
-3. The character must read as Android at small size, not as a generic green bot.
-4. No text in either image.
-5. Only then copy into `assets/` and point the README at the real files.
-6. Never ship a placeholder, an AI-fill image, or an SVG as the finished logo.
+No image model produced any shipped asset. No AI-generated image is committed to
+this repository, so no third-party image licence applies.

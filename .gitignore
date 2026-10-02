@@ -35,3 +35,6 @@ local.properties
 
 # Kotlin build session data
 .kotlin/
+
+# Scratch: text-measurement probe from tools/banner.py, not a shipped asset
+assets/brand/.build/.measure/

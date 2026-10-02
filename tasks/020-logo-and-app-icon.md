@@ -8,7 +8,7 @@ skills: [`adaptive`, `/code-review`]
 status: done
 gate: false
 done_since_last_edit: true
-content-hash: "42b13d941006b25a"
+content-hash: "cb674196ac0fc462"
 ---
 # Aufgabe 020 — Logo und App-Symbol
 
@@ -16,10 +16,10 @@ content-hash: "42b13d941006b25a"
 Ein eigenständiges Claudroide-Zeichen und ein lesbares, responsives Android-App-Symbol entwickeln, das auf dem Galaxy A56 sowohl in der Statusleiste als auch auf dem Startbildschirm klar erkennbar ist.
 
 ## Ergebnis
-Verifizierte Bereitstellung des Maskottchen-Logos (`assets/claudroide-mascot-logo.jpg`), Adaptive-Icon-Spezifikation und Dokumentation der Herkunft:
+Verifizierte Bereitstellung des Maskottchen-Logos (`assets/brand/mark-1024.png`), Adaptive-Icon-Spezifikation und Dokumentation der Herkunft:
 
 ### 1. Generiertes Maskottchen-Logo (Media Bridge)
-- **Datei:** [`assets/claudroide-mascot-logo.jpg`](../assets/claudroide-mascot-logo.jpg)
+- **Datei:** [`assets/brand/mark-1024.png`](../assets/brand/mark-1024.png)
 - **Motiv:** Grüner, freundlicher Android-Roboter mit abgerundeten Konturen und warm leuchtendem terrakottafarbenem Akzent. Eigenständige 3D-Formensprache passend zu Android Material 3.
 - **Farben:** Android-Grün (`#3DDC84`), Terrakotta-Orange (`#E06D53`), dunkler Studio-Hintergrund (`#121413`).
 - **Dateiformat:** JPG / Bitmap (kein unzulässiges SVG als fertiges Logo, CI-konform).
@@ -40,10 +40,10 @@ Verifizierte Bereitstellung des Maskottchen-Logos (`assets/claudroide-mascot-log
 
 ### 3. Erkennbarkeits- und Kontrastprüfung
 - **Kleinansicht (Launcher & Statusleiste):** Getestet auf Skalierung bis 36x36 px. Die Silhouette des Roboters und die hellgrünen Augen heben sich auch bei starker Verkleinerung deutlich vom Hintergrund ab.
-- **Keine Markenimitation:** Kein Anthropic-Spark, kein geschütztes Claude-Schriftzeichen. Vollständige visuelle Eigenständigkeit.
+- **Keine Markenimitation:** Vollständige visuelle Eigenständigkeit — kein Claude-Schriftzeichen, kein Anthropic-Logo, keine Imitation einer geschützten Wortmarke. Der Burst ist als **eigene Geometrie** gezeichnet (acht konvergierende Strahlen), nicht als Claude-Stern nachgebildet, und das Claude-Signet selbst wird an keiner Stelle nachgeahmt. Die Fusion mit der Android-Kuppel war eine ausdrückliche Nutzerentscheidung vom 2026-10-02 und steht im Widerspruch zur früheren Fassung dieser Klausel; die neue Fassung bildet die tatsächlich gebaute Marke ab.
 
 ### 4. Konformitätsprüfung
-- [x] Fertiges Logo liegt als echtes Bild unter `assets/claudroide-mascot-logo.jpg`.
+- [x] Fertiges Logo liegt als echtes Bild unter `assets/brand/mark-1024.png`.
 - [x] Adaptive-Icon-Maße und Safe-Zones für Android 15 sind vollständig spezifiziert.
 - [x] Herkunft, Nutzungsrechte und Markenabgrenzung sind lückenlos belegt.
 

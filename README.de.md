@@ -1,7 +1,11 @@
 # Claudroide
 
 <p align="center">
-  <img src="assets/claudroide-mascot-logo-small.png" alt="Claudroide Maskottchen" width="160" />
+  <img src="assets/brand/banner.png" alt="Claudroide — eine Android-Kuppel, verschmolzen mit einem Claude-Funken" width="100%" style="border-radius: 12px;" />
+</p>
+
+<p align="center">
+  <img src="assets/brand/mark-256.png" alt="Claudroide-Signet" width="96" />
   <br>
   <b>Claudroide</b> — Eigenständiger mobiler KI-Coding-Assistent für Android
   <br>
@@ -15,14 +19,10 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Phase-Entwurfsplanung-informational" alt="Phase" />
   <img src="https://img.shields.io/badge/Bauaufgaben-135-blue" alt="Aufgaben" />
-  <img src="https://img.shields.io/badge/App--Code-47%20%2F%20135%20erledigt-yellow" alt="Status" />
-  <img src="https://img.shields.io/badge/Welle%200--10-abgeschlossen-success" alt="W0-W10" />
+  <img src="https://img.shields.io/badge/Verifiziert-103%20%2F%20135-yellow" alt="Status" />
+  <img src="https://img.shields.io/badge/Tests-1570%20bestanden-success" alt="Tests" />
   <img src="https://img.shields.io/badge/Zielger%C3%A4t-Galaxy%20A56%205G-orange" alt="Gerät" />
   <img src="https://img.shields.io/badge/Repo-privat-success" alt="Repo" />
-</p>
-
-<p align="center">
-  <img src="assets/claudroide-banner.jpg" alt="Claudroide Header Banner" width="100%" style="border-radius: 16px; margin: 16px 0;" />
 </p>
 
 Claudroide ist eine eigenständige Android-App für KI-gestützte Projektarbeit (Claude-Code-artig, aber eigene Marke und eigener Code). Erstes Zielgerät: Samsung Galaxy A56 5G. Dieses Repository enthält die Spezifikation, 135 maschinenlesbare Bauaufgaben und die autonome Bau-Schleife.
@@ -167,11 +167,11 @@ flowchart LR
     D --> E[README & Tasks verweisen<br/>auf echte Datei]
 ```
 
-- **Maskottchen-Logo gerendert:** [`assets/claudroide-mascot-logo.png`](assets/claudroide-mascot-logo.png) — 665x796 mit transparentem Hintergrund; im README wird die vorskalierte [`assets/claudroide-mascot-logo-small.png`](assets/claudroide-mascot-logo-small.png) (320x320) verwendet.
-- **Banner gerendert:** [`assets/claudroide-banner.jpg`](assets/claudroide-banner.jpg) — 1376x768, 16:9.
-- **Gestaltung:** Android-Grün `#3DDC84` mit `#2FA968` als Schattenseite. Der Claude-Stern ist als **eine** massiv eingelassene Intarsie in die Brustplatte **fusioniert** — nicht gehalten, nicht angefressen, kein schwebendes Einzelobjekt.
-- Gerendert mit Nano Banana 2 (`gemini-3.1-flash-image`) über die Claude Media Bridge des Nutzers.
-- Kein SVG als fertiges Logo oder Illustration. Fertige Grafiken liegen ausschließlich als PNG, WebP oder JPG vor (geprüft durch CI `.github/workflows/repo-health.yml`).
+- **Signet:** [`assets/brand/mark-1024.png`](assets/brand/mark-1024.png), dazu die Varianten `-256` und `-96`. Wird außerdem direkt als adaptives App-Symbol erzeugt (`app/src/main/res/mipmap-*/ic_launcher_foreground.png`, mit `monochrome`-Ebene für die thematisierten Symbole ab Android 13).
+- **Banner:** [`assets/brand/banner.png`](assets/brand/banner.png) — 1376x768, 16:9. Die Wortmarke ist echtes Inter, der Produktname ist deshalb konstruktionsbedingt richtig geschrieben.
+- **Gestaltung:** eine Android-Kuppel in `#3DDC84` mit einem Claude-Funken als Krone. Die beiden Strahlen bei ±26° sind zugleich die Antennen des Droiden **und** zwei Strahlen des Funkens — dieselben Striche tragen beide Systeme, sodass sich keine Hälfte löschen lässt, ohne die andere zu zerstören. Das ist die Vorgabe „kein untergeordnetes Symbol" als Geometrie, nicht als Bildunterschrift.
+- Als exakte Vektorgeometrie von [`tools/brand.py`](tools/brand.py) gezeichnet, nicht von einem Bildmodell: die Wortmarke muss „Claudroide" schreiben, und Diffusionsmodelle schreiben Wortmarken falsch. Banner und App-Symbol importieren dieselbe Geometrie und können deshalb nicht auseinanderlaufen.
+- Kein SVG als fertiges Logo oder Illustration. Fertige Grafiken liegen ausschließlich als PNG, WebP oder JPG vor (geprüft durch CI `.github/workflows/repo-health.yml`). Die SVGs unter `assets/brand/.build/` sind Build-Eingang, keine ausgelieferten Dateien.
 
 ---
 

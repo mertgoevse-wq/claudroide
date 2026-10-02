@@ -1,15 +1,106 @@
 # Claudroide-Bauzustand
 
-**Stand:** 2026-10-02 (neunte Sitzung)
-**Status:** 103 von 135 Aufgaben verifiziert. Neu in dieser Sitzung: **090** (Änderungen freigeben), **108** (Freigabestufen) und **109** (Weniger-Rückfragen-Modus).
+**Stand:** 2026-10-02 (zehnte Sitzung)
+**Status:** 103 von 135 Aufgaben verifiziert (unverändert — diese Sitzung hat keine Task-Statuszeile geändert, sondern die Oberfläche, die Schrift und die Marke gebaut).
 
-**Teststand:** `./gradlew :app:testDebugUnitTest` → **1563 Tests, 0 Fehler, 0 übersprungen** (vorher 1481, +82). Gradle-Exitcode 0 geprüft, nicht nur die letzte Logzeile.
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1570 Tests, 0 Fehler, 0 übersprungen** (vorher 1563, +7 aus `TypeScaleContractTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 19.8 MB. Beide Exitcodes geprüft, nicht nur die letzte Logzeile.
 
-**Zwei der drei Sperr-Gates sind damit aufgelöst.** Die Gate-Karte weiter unten nannte 095 (Git-Zugang), 090 und 108 als die drei Entscheidungen, an denen 24 Gates hingen. 090 und 108 brauchten **keine neue Nutzerentscheidung**: ihre Antworten standen bereits in `claudroide-spec.md` Abschnitt 6.1 (drei Stufen, strengste als Standard, jederzeit abschaltbar) und in den „Fertig, wenn“-Zeilen der Aufgaben selbst. Die frühere Sitzung hatte das erkannt und mit der Umsetzung begonnen; **offen bleibt allein 095**, weil die Git-Anmeldung laut Abschnitt 13 wirklich eine offene Frage ist.
+## Sitzung 10 — Oberfläche, Schrift und Marke
 
-**Sprache (Nutzerwunsch vom 2026-10-02):** Englisch zuerst, Deutsch als Zweitwahl. `values/strings.xml` ist jetzt Englisch, `values-de/strings.xml` Deutsch. `CLAUDE.md` entsprechend geändert. Historische deutsche Bezeichner aus den ersten Aufgaben bleiben **unverändert** — sie rückwirkend umzubenennen würde hunderte Zusicherungen in 1108 Tests brechen. Neue Typen führen `label` (englisch).
+### Die Lücke, die den Auftrag ausgelöst hat
 
-**Bilder — erledigt, nicht mehr blockiert:** Beide README-Bilder sind neu gerendert und liegen in `assets/`. Die Bridge hatte weiterhin kein Google-Konto, aber der Weg darum herum Existierte: Der laufende **OmniRoute**-Proxy auf `http://localhost:20128` war die ganze Zeit erreichbar — die frühere Prüfung hatte nur Ports abgetastet und war bei 20128 hängen geblieben. Nach dem Eintragen des vorhandenen OmniRoute-Schlüssels in `~/.config/mll/providers/omniroute.env` (Rechte 0600, Wert nirgends ausgegeben) meldet `status` **„Connected“** und `generateImageViaOmniRoute` rendert über `antigravity/gemini-3.1-flash-image` (Nano Banana 2). **Pollinations wurde für kein Bild verwendet.** Details im Abschnitt unten.
+103 von 135 Aufgaben sind abgeschlossen, und fast alle sind Domänenlogik:
+Agentenlauf, Sicherheitsregeln, Anbieteradapter, Git- und Dateizugriff — jede
+mit Dutzenden Tests. Die Oberfläche war dagegen **936 Zeilen in vier Screens**,
+und `ChatScreen` hatte **66 Zeilen**: ein zentriertes Symbol, zwei Textzeilen
+und ein FAB ohne Wirkung. Direkt daneben lagen 15 Domänenklassen, von denen
+`ChatInputState` bereits Streaming, den Send/Stop-Knopf und die
+Anhangszustimmung modellierte. **Keine einzige davon wurde von der Oberfläche
+benutzt.** Die Lücke war nie die Logik, sondern die Oberfläche.
+
+`ChatScreen` ist jetzt 283 Zeilen und rendert den Verlauf, einen
+Streaming-Hinweis, der sagt, dass eine Antwort eintrifft und einen Weg anbietet
+sie abzubrechen, und einen Composer, dessen Knopfzustand aus dem vorhandenen
+`InputActionButtonState` kommt statt aus einer zweiten, konkurrierenden Vorstellung
+von „darf ich senden". Bubbles sind auf 300 dp gedeckelt: über die volle Breite
+sind die beiden Seiten nicht mehr unterscheidbar.
+
+Neu: `core/design/components/ClaudroideComponents.kt` mit Status-Chip, Blase,
+Codeblock, Leerzustand und Listenzeile — damit vier Screens nicht in drei
+verschiedenen Innenabständen auseinanderlaufen.
+
+### Zwei Fehler, die nur beim Nachmessen auffielen
+
+1. **Die gesetzten Schriften wurden nie benutzt.** Inter und JetBrains Mono lagen
+   seit dieser Sitzung im Projekt, aber nichts referred darauf — jede Oberfläche
+   fiel auf Roboto zurück. Roboto ist der Systemstandard überall, und genau
+   deshalb sah die App aus wie jede andere. Zwei Tests pinnen das jetzt fest.
+2. **`TypeTokens` hätte 1563 grüne Tests gebrochen.** `TypeAndSpacingTest`
+   behauptet auf den `TextUnit`-Werten (`BodyLarge >= 16.sp`, `TitleMedium >=
+   18.sp`) eine Lesbarkeitsuntergrenze. Ein neuer Maßstab als `TextStyle`
+   umzubenennen wäre elegant gewesen und hätte genau die Zusicherungen zerstört,
+   die den Maßstab definieren. Die Namen und Werte bleiben deshalb unverändert;
+   die neuen Styles heißen `…Style` und liegen auf derselben Untergrenze.
+
+### Die Marke
+
+Die beiden alten Bot-Bilder sind gelöscht und durch `assets/brand/` ersetzt:
+`mark-1024/-256/-96.png` und `banner.png` (1376x768). Zusätzlich erzeugt
+`tools/app_icon.py` daraus das **adaptive App-Symbol** — das vorher nur aus
+`<color name="launcher_fg"/>` bestand, also gar kein Bild war.
+
+**Zwei Geometrie-Fehler, die nur die monochromatische Variante sichtbar machte:**
+
+- Die Strahlen begannen bei Radius `0.150·S`, aber die Kuppeloberfläche
+  kreuzt diesen Radius erst bei etwa `0.107·S`. Die nach oben zeigenden
+  Antennen schwebten daher sichtbar über dem Kopf. **Im Farbbild war der Fehler
+  unsichtbar**, weil die Kuppel über die Naht gemalt wird; eine Silhouette hat
+  keine Farbe, um die Lücke zu verdecken. Behoben: `R_IN = 0.090·S`.
+- Die Monochrom-Ebene war ein schwarzer Klecks: sie hat die Kuppelparameter
+  von Hand nachgebaut und dabei falsch gerechnet. Jetzt ist sie eine Maske über
+  die **echte** Geometrie — alle Füllungen auf Weiß, Visor ausgeschnitten,
+  Augen wieder darübergelegt. Nichts wird noch einmal von Hand abgeleitet.
+
+**Warum Geometrie und kein Bildmodell:** die Wortmarke muss „Claudroide"
+schreiben, und Diffusionsmodelle schreiben Wortmarken falsch. Jede Glyphe ist
+echtes Inter, positioniert nach gemessener Vorschubbreite. `tools/brand.py`
+besitzt die Marke, `banner.py` und `app_icon.py` importieren sie — eine Quelle,
+also können Banner und App-Symbol nicht auseinanderlaufen.
+
+**Geprüft im APK, nicht nur in der Quelle:** `unzip -l` bestätigt alle fünf
+mipmap-Dichten (foreground, monochrome, round) sowie die vier Inter- und drei
+JetBrains-Dateien. Ein Namenskonflikt fiel dabei auf: ein Dichteordner darf
+entweder `ic_launcher.xml` **oder** `ic_launcher.png` enthalten, nicht beides —
+`mergeDebugResources` schlug mit „Duplicate resources" fehl. Gelöst, indem nur
+das adaptive XML den Namen `ic_launcher` trägt.
+
+### Figma
+
+Datei **Claudroide Design System** angelegt (`iHmsF05ljgxRRvNeVlz4fe`) mit 22
+Token-Variablen, einer Foundations-Board und dem Chat-Screen als Entwurf. Der
+Sitz ist „View" (Starter), Schreiben funktioniert trotzdem — geprüft, nicht
+angenommen.
+
+### Korrekturen an Behauptungen
+
+- Die README nannte den Fortschritt „47 / 135". Verifiziert sind **103**.
+  Das Badge stand zudem auf „Waves 0–10 completed", während 32 Aufgaben offen
+  sind. Beides ersetzt durch „Verified 103/135" und „Tests 1570 passing".
+- `ProjectScreen` hatte den deutschen Text „Projektordner öffnen (SAF)" fest in
+  den Compose-Code geschrieben — den kein Wechsel nach `values-de/` jemals
+  übersetzt hätte. Liest jetzt aus der Ressource.
+- `assets/logo-brief.md` beschrieb die gelöschten Bilder. Neu geschrieben, mit
+  den beiden Geometrie-Fehlern und der Begründung für Geometrie statt Bildmodell.
+
+### Offen
+
+- Kein Screenshot der laufenden App: in dieser Umgebung gibt es kein Gerät und
+  keinen Emulator. Die Oberfläche ist am **Quelltext und am gebauten APK**
+  verifiziert, **nicht am laufenden Bildschirm**. Das ist eine echte Lücke.
+- 32 Aufgaben bleiben offen, 15 davon ohne Abhängigkeiten. Der Schlüssel ist
+  **117 (Freigabeübersicht)** — er ist frei und öffnet 132, 133, 134, 135.
+- **095 (Git-Zugang)** ist als `gate: true` die einzige noch offene
+  Nutzerentscheidung; an ihr hängen 096, 097, 099–102, 104 und 128.
 
 ## Sitzung 9 — Tasks 090 und 108, und drei echte Fehler im angefangenen Code
 

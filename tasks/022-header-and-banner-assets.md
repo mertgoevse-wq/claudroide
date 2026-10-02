@@ -5,10 +5,10 @@ wave: "W6"
 depends_on: [003, 019]
 files: [tasks/022-header-and-banner-assets.md]
 skills: [`adaptive`, `/code-review`]
-status: done
+status: in_progress
 gate: false
-done_since_last_edit: true
-content-hash: "3ae370309e56416b"
+done_since_last_edit: false
+content-hash: "3683b98c02449cac"
 ---
 # Aufgabe 022 — Kopf- und Bannerbilder
 
@@ -16,10 +16,10 @@ content-hash: "3ae370309e56416b"
 Eigenständige Kopf- und Bannerbilder für App, Dokumentation und Projektübersichten erstellen, die sich harmonisch an Smartphone-Displays anpassen und rechtlich einwandfrei sind.
 
 ## Ergebnis
-Bereitgestelltes Banner-Asset (`assets/claudroide-banner.jpg`), responsive Skalierungsregeln, Kompressionsstandards und Alternativtexte:
+Bereitgestelltes Banner-Asset (`assets/brand/banner.png`), responsive Skalierungsregeln, Kompressionsstandards und Alternativtexte:
 
 ### 1. Banner-Asset-Spezifikation (Media Bridge)
-- **Datei:** [`assets/claudroide-banner.jpg`](../assets/claudroide-banner.jpg)
+- **Datei:** [`assets/brand/banner.png`](../assets/brand/banner.png)
 - **Seitenverhältnis:** 16:9 Breitbild (optimiert für GitHub-Header, Repository-Social-Preview und In-App-Hero-Cards).
 - **Motiv:** Grüner Android-Roboter mit warmem Terrakotta-Akzent auf dunklem Studiohintergrund.
 - **Dateiformat & Dateigröße:** JPG, ca. 19 KB (hochoptimiert für schnelles Laden über mobile Datenverbindungen auf dem A56).
@@ -44,7 +44,7 @@ Bereitgestelltes Banner-Asset (`assets/claudroide-banner.jpg`), responsive Skali
 - **English:** *„Claudroide header banner: Green Android robot with a warm glowing AI spark on a dark studio background.“*
 
 ### 4. Konformitätsprüfung
-- [x] Bilddatei liegt als echtes Bitmap (`assets/claudroide-banner.jpg`) vor (kein SVG, CI-konform).
+- [x] Bilddatei liegt als echtes Bitmap (`assets/brand/banner.png`) vor (kein SVG, CI-konform).
 - [x] Responsive Skalierung und Safe-Zones für schmale Smartphone-Displays sind definiert.
 - [x] Keine geschützten Marken oder Urheberrechte von Anthropic verletzt.
 
