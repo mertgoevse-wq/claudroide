@@ -5,9 +5,9 @@ wave: "W19"
 depends_on: [082, 088]
 files: [tasks/089-file-diff-viewer.md]
 skills: [`/code-review`, `adaptive`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "51d1ad34d795c1d7"
 ---
 # Aufgabe 089 — Dateiänderungen vergleichen

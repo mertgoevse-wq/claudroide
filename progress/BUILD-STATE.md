@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (siebte Sitzung)
-**Status:** 86 von 135 Aufgaben verifiziert. Tasks 040, 072–082 und 087 abgeschlossen (W16 vollständig).
+**Status:** 87 von 135 Aufgaben verifiziert. Tasks 040, 072–082, 087 und 089 abgeschlossen (W16 vollständig).
 
 **Sprache (Nutzerwunsch vom 2026-10-02):** Englisch zuerst, Deutsch als Zweitwahl. `values/strings.xml` ist jetzt Englisch, `values-de/strings.xml` Deutsch. `CLAUDE.md` entsprechend geändert. Historische deutsche Bezeichner aus den ersten Aufgaben bleiben **unverändert** — sie rückwirkend umzubenennen würde hunderte Zusicherungen in 1108 Tests brechen. Neue Typen führen `label` (englisch).
 
@@ -433,7 +433,7 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Push erfolgt:** Am 2026-10-02 mit Nutzerfreigabe `cb88e3b..2aafa36` nach `origin/main` (privat) gepusht. Danach Aufgaben 080 und 081 committet.
 
-**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt, ohne Gate): 089, 092, 093, 098, 103, 105.
+**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt, ohne Gate): 092, 093, 098, 103, 105.
 **Durch 082 neu freigegeben** (es hing an dieser Aufgabe): 083, 085, 086, 089, 090, 091, 094, 121.
 
 ## Task 082 erledigt — „Android-Ordner auswählen“
@@ -456,6 +456,24 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Geladene Skills:** `android-permissions-security` (daraus die beiden Prüfungen über Reflexion: kein Berechtigungsfeld, keine anfordernde Methode — der Task verlangt „keine umfassende Speicherberechtigung“, und das wird am Typ geprüft, nicht in einem Kommentar behauptet) und `testing-setup` (der Abbruch-Fall steht mit Abspruch an erster Stelle, weil er der häufigste ist).
 
+## Task 089 erledigt — „Dateiänderungen vergleichen“
+
+`ChangeReview.kt` (neu, `feature/agent/`) + `ChangeReviewTest.kt` (28 Tests).
+
+**Schutz „Vergleichen ist nicht Speichern“ — durch Abwesenheit erfüllt:** `ChangeReview` hat **keine Methode**, die anwendet, schreibt, committet oder freigibt. Zwei Tests prüfen die Methodenliste und die Feldliste per Reflexion. Die stärkste Freigabe, die der Typ ausdrücken kann, ist eine *Beschreibung* dessen, was die Änderung bräuchte — er kann keine erteilen.
+
+**`requiredApproval` wird berechnet, nicht übergeben.** Eine Datei, die entfernt wird, setzt `IRREVERSIBLE_DELETE` — auch wenn dieselbe Änderung sonst nur eine Gewöhnliche wäre. Eine als normale Bearbeitung verkleidete Löschung ist genau der Fehler, den das verhindert. `isCoveredBy` vergleicht ehrlich: `FILE_CHANGE` deckt keine Löschung.
+
+**Neue und gelöschte Dateien getrennt:** `ChangeKind` unterscheidet `ADDED`/`DELETED`/`MODIFIED`/`RENAMED`, und `kind` ist ein Konstruktorargument — nicht aus Zeilenzahlen abgeleitet. Eine auf null umgeschriebene Datei ist eine Löschung, keine Bearbeitung, und beides darf nicht gleich aussehen.
+
+**Abschnitte entstehen nur an Blockgrenzen**, nie mitten in einem Block. Jede Abschnittsüberschrift nennt Position **und** die Gesamtgröße der Datei, damit jemand, der Teil 3 von 9 liest, weiß, worum es geht. Ein einzelner zu großer Block wird als *abgeschnitten* gemeldet — ihn stillschweigend zu zeigen wäre eine falsche Aussage über den Rest.
+
+**Ein Fehler, den der Test aufgedeckt hat:** Ohne gesetzte Abschnittsgrenze (`maxLinesPerSection = 0`) meldete **jede** Änderung `isTruncated = true`, weil gegen 0 verglichen wurde. Richtig ist: keine Grenze heißt keine angewandte Grenze, also nichts abgeschnitten. Behoben im Code, nicht im Test.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1136 Tests, 0 Fehler, 0 übersprungen** (vorher 1108, +28).
+
+**Skills:** `requesting-code-review` (der Review dieses Diffs ist der Grund, warum die Freigabestufe berechnet statt übergeben wird — sie stand vorher als Parameter im Entwurf) und `adaptive` (Abschnitte mit Positions- und Größenangabe, damit eine lange Änderung auf einem schmalen Display lesbar bleibt).
+
 ## Task 087 erledigt — „Dateien finden“
 
 `LocalFileSearch.kt` (neu, `feature/project/`) + `LocalFileSearchTest.kt` (37 Tests). Erster neuer Typ nach der Sprachumstellung, deshalb englisch.
@@ -477,6 +495,24 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 ## Task 081 erledigt — „Projektübersicht“
 **Gates mit offener Entscheidung** (Nutzerentscheidung nötig): 084, 095, 117, 118, 123, 125, 126, 127, 129, 130.
+
+## Task 089 erledigt — „Dateiänderungen vergleichen“
+
+`ChangeReview.kt` (neu, `feature/agent/`) + `ChangeReviewTest.kt` (28 Tests).
+
+**Schutz „Vergleichen ist nicht Speichern“ — durch Abwesenheit erfüllt:** `ChangeReview` hat **keine Methode**, die anwendet, schreibt, committet oder freigibt. Zwei Tests prüfen die Methodenliste und die Feldliste per Reflexion. Die stärkste Freigabe, die der Typ ausdrücken kann, ist eine *Beschreibung* dessen, was die Änderung bräuchte — er kann keine erteilen.
+
+**`requiredApproval` wird berechnet, nicht übergeben.** Eine Datei, die entfernt wird, setzt `IRREVERSIBLE_DELETE` — auch wenn dieselbe Änderung sonst nur eine Gewöhnliche wäre. Eine als normale Bearbeitung verkleidete Löschung ist genau der Fehler, den das verhindert. `isCoveredBy` vergleicht ehrlich: `FILE_CHANGE` deckt keine Löschung.
+
+**Neue und gelöschte Dateien getrennt:** `ChangeKind` unterscheidet `ADDED`/`DELETED`/`MODIFIED`/`RENAMED`, und `kind` ist ein Konstruktorargument — nicht aus Zeilenzahlen abgeleitet. Eine auf null umgeschriebene Datei ist eine Löschung, keine Bearbeitung, und beides darf nicht gleich aussehen.
+
+**Abschnitte entstehen nur an Blockgrenzen**, nie mitten in einem Block. Jede Abschnittsüberschrift nennt Position **und** die Gesamtgröße der Datei, damit jemand, der Teil 3 von 9 liest, weiß, worum es geht. Ein einzelner zu großer Block wird als *abgeschnitten* gemeldet — ihn stillschweigend zu zeigen wäre eine falsche Aussage über den Rest.
+
+**Ein Fehler, den der Test aufgedeckt hat:** Ohne gesetzte Abschnittsgrenze (`maxLinesPerSection = 0`) meldete **jede** Änderung `isTruncated = true`, weil gegen 0 verglichen wurde. Richtig ist: keine Grenze heißt keine angewandte Grenze, also nichts abgeschnitten. Behoben im Code, nicht im Test.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1136 Tests, 0 Fehler, 0 übersprungen** (vorher 1108, +28).
+
+**Skills:** `requesting-code-review` (der Review dieses Diffs ist der Grund, warum die Freigabestufe berechnet statt übergeben wird — sie stand vorher als Parameter im Entwurf) und `adaptive` (Abschnitte mit Positions- und Größenangabe, damit eine lange Änderung auf einem schmalen Display lesbar bleibt).
 
 ## Task 087 erledigt — „Dateien finden“
 
