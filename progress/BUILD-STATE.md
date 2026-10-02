@@ -440,7 +440,7 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 - **Abbrechen erzeugt keine Berechtigung.** `SelectionOutcome.CANCELLED` wird in `fold` **ganz zuerst** behandelt und liefert `Cancelled` — und zwar auch dann, wenn der Aufrufer trotzdem einen Namen und einen Pfad mitgibt. Sonst könnte man durch Mitgeben eines Pfades aus einem Abbruch doch noch eine Berechtigung bauen; genau das ist als Test festgehalten. Ein Abbruch wird nicht als Fehler behandelt, weil er der Normalfall des Dialogs ist.
 - **Nur der ausgewählte Bereich.** `covers()` prüft mit dem Trenner `"/"`: `/ab/main.kt` gehört **nicht** zu `/a`. Ohne diesen Trenner wäre das ein stiller Zugriff auf Nachbarordner mit ähnlichem Namen — der Test nennt genau diesen Fall.
 
-**Schutz: keine umfassende Speicherberechtigung.** Der Typ hat **kein Feld** und **keine Methode**, die eine Berechtigung anfordert; beide Zuspitschaften sind über Reflexion geprüft. Ergänzend steht im Manifest nur `INTERNET` und `ACCESS_NETWORK_STATE`.
+**Schutz: keine umfassende Speicherberechtigung.** Der Typ hat **kein Feld** und **keine Methode**, die eine Berechtigung anfordert; beide Zusicherungen sind über Reflexion geprüft. Ergänzend steht im Manifest nur `INTERNET` und `ACCESS_NETWORK_STATE`.
 
 **`fold` und `stateAfter` getrennt:** `fold` liefert nur das **Ergebnis**, `stateAfter` den neuen Stand. Wer den Stand braucht, muss ihn ausdrücklich schreiben — sonst könnte ein Aufrufer ein erfolgreiches Ergebnis sehen und einen veralteten Stand behalten. Bei Abbruch bleibt der Stand **unverändert** (statt stillschweigend zurückgesetzt).
 
