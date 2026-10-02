@@ -1,16 +1,52 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-02 (zwölfte Sitzung abgeschlossen — Task 117 verifiziert)
-**Status:** **104 von 135 Aufgaben `done`**, 31 offen, davon **23 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-02 (dreizehnte Sitzung abgeschlossen — Task 084 verifiziert)
+**Status:** **105 von 135 Aufgaben `done`**, 30 offen, davon **22 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand:** `./gradlew :app:testDebugUnitTest` → **1600 Tests, 0 Fehler, 0 übersprungen** (+23 Tests in `PermissionCenterTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20 MB.
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1623 Tests, 0 Fehler, 0 übersprungen** (+23 Tests in `ZipProjectImportTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20 MB.
 
-**Git-Stand:** 104 Aufgaben abgeschlossen, Task 117 implementiert und getestet. Push-Ziel ist das private Repository `mertgoevse-wq/claudroide`.
+**Git-Stand:** 105 Aufgaben abgeschlossen, Task 084 implementiert und getestet. Push-Ziel ist das private Repository `mertgoevse-wq/claudroide`.
 
 **Nächste freigegebene Aufgaben bei Wiederaufnahme (`/claudroide-resume`):**
-- **Task 132 / 134:** W28 (Agents/externe Tools: Spezialhelfer & Externe Werkzeuge verbinden) durch Abschluss von 117 nun entsperrt!
+- **Task 083:** „Ordnerzugriff merken" (W19, `gate: true`, Skills: `android-permissions-security` + `testing-setup`)
+- **Task 085:** „USB-Projektzugriff" (W19, `gate: true`, Skills: `android-permissions-security` + `android-profiler`)
+- **Task 095:** „Git-Zugang" (W20, `gate: true`, Skills: `android-permissions-security` + `testing-setup`)
 - **Task 118:** „Freigabeverlauf" (W24, `gate: true`, Skills: `android-permissions-security` + `testing-setup`)
-- **Task 083 / 084 / 085:** SAF- und Speicherpfade (W18/W19)
+- **Task 132 / 134:** W28 (Agents/externe Tools: Spezialhelfer & Externe Werkzeuge verbinden)
+
+## Sitzung 13 — Task 084: ZIP-Projekt öffnen (ZipProjectImportPolicy)
+
+### Was gebaut wurde
+
+- `ZipProjectImportPolicy.kt` in `app/src/main/java/org/claudroide/app/feature/project/`:
+  - **Sicherer Zweistufen-Workflow:**
+    1. `inspect(...)`: Liest Archiveinträge, zählt Dateien/Ordner, misst unkomprimierte und komprimierte Bytes und erstellt einen transparenten Prüfplan (`ZipInspectionPlan`) mit detaillierten `summaryLines` *vor* jeglichem Entpacken.
+    2. `extract(...)`: Entpackt das Archiv erst nach bestandener Prüfung gegen Zielordner und Sicherheitsregeln.
+  - **Zip-Slip-Schutz:** Strengste Prüfung über `PathBoundaryGuard.check(...)`. Pfade mit `../`, führendem Slash, Windows-Trennern `..\` oder Laufwerksbuchstaben (`C:\`) werden als `ZIP_SLIP_ATTEMPT` geblockt und können das Zielverzeichnis unter keinen Umständen verlassen.
+  - **Bösartige & reservierte Namen:** Abweisung von Pfaden mit NUL-Bytes (`\u0000`), Steuerzeichen (`MALFORMED_NAME`) und Windows-DOS-Gerätenamen (CON, PRN, AUX, NUL, COM1-9, LPT1-9).
+  - **Duplikat- und Kollisionserkennung:** Abfangen identischer Pfade (`DUPLICATE_ENTRY`) sowie Kollisionen bei Groß-/Kleinschreibung (`CASE_COLLISION`).
+  - **Schutz vor Ressourcenerschöpfung und Zip-Bomben:**
+    - Deckelung der unkomprimierten Gesamtgröße (`DEFAULT_MAX_UNCOMPRESSED_BYTES` = 500 MB).
+    - Deckelung der Eintragsanzahl (`DEFAULT_MAX_ENTRY_COUNT` = 10.000).
+    - Deckelung von Einzeldateien (`DEFAULT_MAX_SINGLE_FILE_BYTES` = 100 MB).
+    - Kompressionsfaktor-Heuristik (`DEFAULT_MAX_COMPRESSION_RATIO` = 100x bei > 10 MB) und dynamischer `CountingInputStream` während des Streamings gegen verschleierte Zip-Bomben.
+  - **Überschreibschutz:** Bestehende Zieldateien werden vorab erfasst (`existingCollisions`). Entpacken ist strikt blockiert, solange nicht ausdrücklich `overwriteConfirmed = true` vorliegt.
+  - **Fortschritt & Abbruch:** `ExtractionProgress` meldet Dateianzahl, Bytezahlen und Prozentwerte; `ExtractionCancellationToken` bricht den Lauf sofort ab und protokolliert alle bis dahin geschriebenen Teilpfade.
+  - **Plattformunabhängige Testbarkeit:** Entpacken abstrahiert über `ZipOutputSink` (produktiv auf Dateisystem, im Test über `InMemoryZipSink`).
+- `ZipProjectImportTest.kt` in `app/src/test/java/org/claudroide/app/`:
+  - **23 neue Tests**, die alle Sicherheitsaspekte, Limits, Zip-Slip-Angriffe, Kollisionen, Abbruchszenarien und dynamische Bytezähler abdecken.
+
+### Teststand
+
+- `./gradlew :app:testDebugUnitTest`: **1623 Tests, 0 Fehler, 0 übersprungen** (+23 neue Tests).
+- `./gradlew :app:assembleDebug`: **BUILD SUCCESSFUL**, APK 20 MB.
+- Geheimnis-Scan: Keine unmaskierten Geheimnisse oder Tokens.
+- `python3 tools/sync_frontmatter.py --check`: OK (105 erledigt, 30 offen).
+
+### Skills
+
+- **`android-permissions-security`** — Least Privilege, strikte Pfadbegrenzung innerhalb des Projektverzeichnisses, kein Überschreiben bestehender Dateien ohne Bestätigung, Abwehr von Path-Traversal.
+- **`testing-setup`** — Entwurf fahrbarer In-Memory-Fakes (`InMemoryZipSink`), Absicherung von Grenzwerten, Abbruchzuständen und Sicherheitsausnahmen auf der JVM.
 
 ## Sitzung 12 — Task 117: Freigabeübersicht (Permission Center)
 
