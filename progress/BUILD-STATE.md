@@ -1,16 +1,55 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-02 (elfte Sitzung abgeschlossen — Übergabepunkt für nächste Sitzung)
-**Status:** **103 von 135 Aufgaben `done`**, 32 offen, davon **24 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-02 (zwölfte Sitzung abgeschlossen — Task 117 verifiziert)
+**Status:** **104 von 135 Aufgaben `done`**, 31 offen, davon **23 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand:** `./gradlew :app:testDebugUnitTest` → **1577 Tests, 0 Fehler, 0 übersprungen** (+3 Tests in `BrandAssetContractTest`: Name-Guard `ClauDroide`, Alt-Text-Konsistenz, Banner/Mark-Geometrie). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 19 MB.
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1600 Tests, 0 Fehler, 0 übersprungen** (+23 Tests in `PermissionCenterTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20 MB.
 
-**Git-Stand:** Vollständig synchron mit `origin/main` (privates Repository `mertgoevse-wq/claudroide`). Letzter Stand inklusive Umbenennung auf ClauDroide, Zwei-Boten-Banner, Bild-Alt-Texte und Tests ist gepusht.
+**Git-Stand:** 104 Aufgaben abgeschlossen, Task 117 implementiert und getestet. Push-Ziel ist das private Repository `mertgoevse-wq/claudroide`.
 
-**Nächste freigegebene Aufgabe bei Wiederaufnahme (`/claudroide-resume`):**
-- **Task 117:** „Freigabeübersicht" (W24, `gate: true`, Skills: `adaptive` + `android-permissions-security`).
-- Nutzer hat volle Autonomie und Entscheidungsfreiheit erteilt.
-- Task 117 ist der Hebel, der die abhängigen Tasks 132–135 (Spezialhelfer, Helferrechte, Externe Werkzeuge) entsperrt.
+**Nächste freigegebene Aufgaben bei Wiederaufnahme (`/claudroide-resume`):**
+- **Task 132 / 134:** W28 (Agents/externe Tools: Spezialhelfer & Externe Werkzeuge verbinden) durch Abschluss von 117 nun entsperrt!
+- **Task 118:** „Freigabeverlauf" (W24, `gate: true`, Skills: `android-permissions-security` + `testing-setup`)
+- **Task 083 / 084 / 085:** SAF- und Speicherpfade (W18/W19)
+
+## Sitzung 12 — Task 117: Freigabeübersicht (Permission Center)
+
+### Was gebaut wurde
+
+- `PermissionCenter.kt` in `app/src/main/java/org/claudroide/app/core/security/`:
+  - **Fünf Pflicht-Kategorien** lückenlos abgedeckt:
+    1. `FILES`: SAF-Baum-URIs, Projektverzeichnisse, Datei-Lese- und Schreibrechte.
+    2. `PROVIDERS`: KI-Endpunkte (Claude API, OpenRouter, eigene Server), API-Schlüssel-Zugriffe (BYOK) und Tokenübertragung.
+    3. `COMMANDS`: Terminal- und Skriptausführung, Freigabestufen (Careful, Balanced, Reduced Prompts).
+    4. `SKILLS`: Projekt- und globale Automationsfähigkeiten.
+    5. `EXTERNAL_TOOLS`: MCP-Server (Model Context Protocol), Hilfsagenten und externe Werkzeugbrücken.
+  - **Projekt- und Zweckbindung als Invariante:** Jede Freigabe verlangt zwingend eine nicht-leere `projectId` und einen verständlichen `purpose`. Anonyme oder zwecklose Freigaben werden mit `IllegalArgumentException` abgewiesen.
+  - **Sofortige Widerrufswirkung:** Ein Aufruf von `revokeGrant(...)` schaltet den Status unmittelbar auf `REVOKED` und inkrementiert den generationsbasierten Zähler `generation`. `isGranted(...)` evaluiert dynamisch und liefert sofort `false`.
+  - **Widerrufs-Grenzen-Erklärung (`RevocationReport`):** Der Bericht nennt für jede Kategorie genau, was sofort gestoppt wird und was irreversibel ist:
+    - *Dateien:* SAF-Rechte und Dateizugriff sofort blockiert; bereits geschriebene Dateien verbleiben auf Disk und werden nicht gelöscht.
+    - *Anbieter:* Sitzungstrennung sofort wirksam; bereits über das Netz übertragene Daten/Tokens können nicht vom Server zurückgeholt werden.
+    - *Befehle:* Ausführung sofort gesperrt; Nebenwirkungen bereits vollendeter Befehle können nicht automatisch ungeschehen gemacht werden.
+    - *Skills / Externe Werkzeuge:* Aufrufe blockiert; bisher erzeugte Artefakte bleiben unberührt.
+  - **Schutz vor unbemerktem Wiederaufleben:** Ein widerrufener oder abgelaufener Grant kann durch **keine** andere Einstellung (wie ReducedPromptMode, Theme, Sprache oder AppSettings) reaktiviert oder stillschweigend verlängert werden (`attemptSilentExtension` blockiert dies strikt).
+  - **Stateless Zeit- und Sitzungsprüfung:** Gemäß `android-permissions-security` wird kein Freigabezustand im RAM zwischengespeichert. Ablaufzeiten und Sitzungsgrenzen werden bei jedem Aufruf frisch gegen Uhr und Sitzungs-ID gerechnet; Rückwärts-Uhrensprünge führen zum sicheren Zustand (`false`).
+- `PermissionCenterPresenter.kt` in `core/security/`:
+  - Adaptive Layout-Steuerung gemäß `adaptive`-Skill: Umschaltung zwischen `SINGLE_COLUMN_COMPACT` (< 600 dp, Galaxy A56 Einhand-Bedienung) und `TWO_PANE_EXPANDED` (>= 600 dp, Tablet/Foldable).
+  - Ergonomie-Prüfung: Mindest-Touch-Target von 48 dp (`MobileViewportTokens.MinimumTouchTarget`) und 16 dp Sicherheitsabstand für Widerrufsaktionen.
+  - Barrierefreie Aufbereitung für TalkBack (WCAG 2.2 Nicht-Allein-Farbe: Icon + Text + Status-Badge).
+- `PermissionCenterTest.kt` in `app/src/test/java/org/claudroide/app/`:
+  - **23 neue Tests**, die alle Invarianten, Kategorien, Grenzfälle, Fehlversuche, Widerrufsberichte und adaptiven Präsentationsmodi rigoros absichern.
+
+### Teststand
+
+- `./gradlew :app:testDebugUnitTest`: **1600 Tests, 0 Fehler, 0 übersprungen** (+23 neue Tests).
+- `./gradlew :app:assembleDebug`: **BUILD SUCCESSFUL**, APK 20 MB.
+- Geheimnis-Scan: Keine unmaskierten Geheimnisse oder Tokens.
+- `python3 tools/sync_frontmatter.py --check`: OK (104 erledigt, 31 offen).
+
+### Skills
+
+- **`adaptive`** — Viewport-Klassen (< 600 dp vs. >= 600 dp), 48 dp Touch-Targets für Widerruf-Buttons, zweispaltige Tablet-Aufteilung vs. Einspalten-Mobile.
+- **`android-permissions-security`** — Stateless-Prüfung, kein Caching von Berechtigungen im RAM, klare Widerrufsberichte und Erklärung irreversibler Grenzen.
 - Nachfolgende Themen laut `progress/TODO.md`: 4KB/16KB-Seitenkompatibilität, Abwärtskompatibilität/Lite-Profil, NPU-Fallback-Kette.
 - Hinweis zu Bild/Banner: Der Nutzer möchte das Banner später noch feinschleifen (Bild gefällt noch nicht ganz, ist aktuell aber zweitrangig).
 

@@ -5,9 +5,9 @@ wave: "W24"
 depends_on: [017, 045]
 files: [tasks/117-permission-center.md]
 skills: [`adaptive`, `android-permissions-security`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "7d38ec6770c03d0f"
 ---
 # Aufgabe 117 — Freigabeübersicht
