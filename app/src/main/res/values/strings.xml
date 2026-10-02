@@ -18,6 +18,10 @@
     <string name="empty_project_title">No project open</string>
     <string name="empty_project_desc">Select a project directory on your device to inspect and edit code.</string>
 
+    <!-- Brand imagery (accessibility text) -->
+    <string name="banner_alt_text">Claudroide banner: the green robot mark beside the product name.</string>
+    <string name="brand_mark_alt_text">Claudroide mark: a green robot with a glowing terracotta spark.</string>
+
     <!-- Chat screen -->
     <string name="chat_session_title">Build session</string>
     <string name="chat_local_only">Local only</string>

@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.claudroide.app.R
+import org.claudroide.app.core.design.components.BrandBanner
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,6 +34,11 @@ fun SettingsScreen() {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // The banner sits directly above the independence notice: the one
+            // claim this screen makes is "this is an independent project", and
+            // showing the product's own mark next to it is the point.
+            BrandBanner(contentDescription = stringResource(R.string.banner_alt_text))
+
             // Unabhängigkeitshinweis Card
             Card(
                 colors = CardDefaults.cardColors(

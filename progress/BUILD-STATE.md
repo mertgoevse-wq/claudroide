@@ -1,7 +1,94 @@
 # Claudroide-Bauzustand
 
-**Stand:** 2026-10-02 (zehnte Sitzung)
-**Status:** 103 von 135 Aufgaben verifiziert (unverändert — diese Sitzung hat keine Task-Statuszeile geändert, sondern die Oberfläche, die Schrift und die Marke gebaut).
+**Stand:** 2026-10-02 (elfte Sitzung) — Tasks 021 und 022 abgeschlossen
+**Status:** **103 von 135 Aufgaben `done`**, 32 offen, davon **24 mit `gate: true`**. Die Zahl stimmt diesmal aus dem Frontmatter, nicht aus einer Zählung im Protokoll: der vorige Checkpoint nannte 103, verzeichnete aber nur 101 `done` — 021 und 022 standen noch auf `in_progress`, obwohl ihre Bilder seit dem letzten Commit im Repo lagen.
+
+**Teststand (in dieser Sitzung gelaufen):** `./gradlew :app:testDebugUnitTest` → **1574 Tests, 0 Fehler, 0 übersprungen** (1570 vorher, +4 aus `BrandAssetContractTest`; aus den JUnit-XML gezählt, nicht aus der letzten Logzeile). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 19 MB. Beide Exitcodes geprüft.
+
+## Sitzung 11 — die Marke war im Repo, aber nicht in der App
+
+### Der Befund
+
+Die Markendateien lagen seit dem letzten Commit unter `assets/brand/`, und die Aufgabe
+022 beschrieb eine vollständige Umsetzung. Verifiziert war das nicht: im gesamten
+Quelltext gab es **kein `R.drawable`, keinen `banner_alt_text` und keinen einzigen
+`painterResource`-Aufruf**. Kein `drawable`-Ordner existierte. Die Bilder waren
+hochgeladen, aber nicht geladen — und das ist kein Fehler, den der Compiler findet.
+
+Drei Zahlen in den Aufgaben widersprachen den Dateien:
+
+1. 022 nannte „JPG, ca. 19 KB". Tatsächlich: **PNG, 112 KB**.
+2. 021 deckelt Bitmaps auf **50 KB**. `mark-1024.png` ist **56 KB** — über dem eigenen
+   Deckel, ungeprüft.
+3. 022 schrieb die mittleren 70 % als Safe-Content-Zone vor. Das Motiv ist aber
+   **links verankert** (Maske und Schrift sitzen links) und erfüllt die Regel nicht.
+
+Punkt 3 war der einzige mit echter Folge: Eine zentrierte Safe-Zone hätte genau den
+Produktnamen abgeschnitten, den das Banner zeigen soll. Die Regel wurde an die
+Wirklichkeit angepasst und die Anpassung begründet, statt die Wirkung zu behaupten.
+
+### Was gebaut wurde
+
+- `res/drawable-nodpi/claudroide_banner.webp` (15 KB) und `claudroide_mark.webp` (13 KB),
+  aus den PNG-Quellen mit `cwebp` abgeleitet. Das Banner schrumpft dadurch von 112 KB
+  auf 15 KB. Die Quell-PNGs bleiben im Repo, damit ohne Qualitätsverlust neu abgeleitet
+  werden kann; der Deckel gilt für das, was aufs Gerät geht.
+- `BrandBanner` und `BrandMark` in `core/design/components/ClaudroideComponents.kt`.
+  Beide sind Teil des Design-Systems, damit kein Bildschirm sich sein eigenes
+  Seitenverhältnis, `ContentScale` oder Alt-Text-Verhalten ausdenkt.
+- `banner_alt_text` und `brand_mark_alt_text` in `values/` **und** `values-de/`.
+  `BrandBanner` verlangt die Beschreibung als Parameter ohne Standardwert; `BrandMark`
+  lässt `null` zu, weil die Marke in Leerzuständen neben bereits vorhandenem Text
+  redundant ist und in der Ersteinrichtung allein steht.
+- `OnboardingScreen` zeigte `Icons.Default.SmartToy` — ein beliebiges Robotersymbol,
+  das nicht die Marke ist. Ersetzt durch `BrandMark`.
+- `SettingsScreen`: Banner direkt über dem Unabhängigkeitshinweis, weil genau das die
+  Aussage dieses Bildschirms ist.
+- `BrandAssetContractTest` (4 Tests) prüft die **ausgelieferten** Ressourcen, nicht
+  die Entwurfsdokumente: dass die Drawables existieren, unter dem Größendeckel liegen,
+  in beiden Sprachordnern beschrieben sind, und dass `values-de` keinen Schlüssel
+  gegenüber `values` fehlen lässt.
+
+### Wie die Tests geprüft wurden
+
+`noShippedBrandImageExceedsTheSizeCap` wurde **nicht** nur grün gesehen: `claudroide_banner.webp`
+wurde testweise aus `res/` entfernt, der Lauf schlug fehl (R.drawable nicht auflösbar),
+die Datei wurde zurückgelegt. Ein Test, der nie rot war, hätte hier nichts bewiesen.
+
+Zusätzlich im **gebauten APK** nachgesehen, nicht nur in der Quelle: beide WebP liegen
+als `res/drawable-nodpi-v4/…` im Paket, `banner_alt_text` und `brand_mark_alt_text`
+stehen in der kompilierten `resources.arsc`.
+
+### Skills
+
+- **`adaptive`** (Matrix für 021 und 022) — geladen. Sein Schritt 1 verlangt
+  Vorschauen und Screenshot-Tests für Formfaktoren; die gibt es hier nicht, und ohne
+  Gerät oder Emulator lässt sich das in dieser Umgebung nicht aufbauen.
+- **`/code-review`** (Matrix für 021 und 022) — geladen und auf den eigenen Diff
+  angewandt: keine Geheimnisse, keine Datei über 800 Zeilen, keine Funktion über
+  50 Zeilen, Wildcard-Import in `OnboardingScreen` ist durch die drei anderen
+  Schritte weiterhin berechtigt.
+
+### Was bewusst nicht angefasst wurde
+
+`OnboardingScreen` und `SettingsScreen` enthalten **fest verdrahtete deutsche
+Zeichenketten** im Compose-Code („Willkommen bei Claudroide", „Schritt 3 von 4",
+„Anbieter & API-Schlüssel (BYOK)"). Ein Sprachwechsel übersetzt diese nicht. Das ist
+ein echter Fehler, aber er gehört zu anderen Aufgaben; hier wurde er weder behoben
+noch stillschweigend umgangen.
+
+### Offen
+
+- **Kein Screenshot der laufenden App.** Es gibt hier kein Gerät und keinen Emulator.
+  Banner und Marke sind am Quelltext, am Test und am gebauten APK verifiziert —
+  **nicht am gerenderten Bildschirm**. Insbesondere ist ungeprüft, wie `Crop` das
+  Banner auf einem echten 19.5:9-Display tatsächlich beschneidet.
+- 32 Aufgaben offen, **24 davon `gate: true`**. Die Gates sind keine 24 unabhängigen
+  Entscheidungen: die meisten warten auf eine von dreien (Freigabeübersicht 117,
+  Git-Zugang 095, Skill-Quelle 123). **117** ist die Schließende — sie öffnet
+  132–135. Ohne eine dieser drei Entscheidungen ist kein weiterer nicht
+  entscheidungsrelevanter Strang vorhanden.
+- **Push ist weiterhin nicht freigegeben.** Commits in dieser Sitzung: siehe unten.
 
 **Teststand:** `./gradlew :app:testDebugUnitTest` → **1570 Tests, 0 Fehler, 0 übersprungen** (vorher 1563, +7 aus `TypeScaleContractTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 19.8 MB. Beide Exitcodes geprüft, nicht nur die letzte Logzeile.
 

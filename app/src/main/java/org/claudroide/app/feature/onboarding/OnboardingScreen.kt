@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.claudroide.app.R
+import org.claudroide.app.core.design.components.BrandMark
 
 enum class OnboardingStep {
     WELCOME,
@@ -124,11 +125,12 @@ private fun WelcomeStep() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Icon(
-            Icons.Default.SmartToy,
-            contentDescription = null,
-            modifier = Modifier.size(72.dp),
-            tint = MaterialTheme.colorScheme.primary
+        // The real mark rather than a generic robot glyph: this is the first
+        // thing a new user sees, and a stock material icon is not the brand.
+        // Described for screen readers, because here it stands alone.
+        BrandMark(
+            contentDescription = stringResource(R.string.brand_mark_alt_text),
+            size = 96.dp,
         )
         Text(
             text = "Willkommen bei Claudroide",

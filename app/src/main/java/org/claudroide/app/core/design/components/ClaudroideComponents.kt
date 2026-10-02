@@ -1,5 +1,6 @@
 package org.claudroide.app.core.design.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,11 +23,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import org.claudroide.app.R
 import org.claudroide.app.core.design.TypeTokens
 
 /**
@@ -256,3 +263,56 @@ fun ListRow(
 
 /** Content padding that respects both the scaffold inset and the 16dp gutter. */
 val ScreenPadding = PaddingValues(horizontal = TypeTokens.SpacingMedium)
+
+/**
+ * The brand banner.
+ *
+ * `ContentScale.Crop` rather than `Fit` on purpose: the artwork has its content
+ * inside the central band, so cropping the edges on a narrow phone trims
+ * background only. Fitting it instead would letterbox the banner and leave a
+ * visible gap on either side of the robot.
+ *
+ * The alt text is a required parameter rather than a default, because an image
+ * that carries the product name has to be described -- and the description is
+ * language specific, so it belongs in the string resources rather than here.
+ */
+@Composable
+fun BrandBanner(
+    contentDescription: String,
+    modifier: Modifier = Modifier,
+) {
+    Image(
+        painter = painterResource(R.drawable.claudroide_banner),
+        contentDescription = contentDescription,
+        contentScale = ContentScale.Crop,
+        modifier = modifier
+            .fillMaxWidth()
+            .aspectRatio(BannerAspectRatio)
+            .clip(RoundedCornerShape(20.dp)),
+    )
+}
+
+/**
+ * The standalone mark, for empty states and the onboarding header.
+ *
+ * `contentDescription` is nullable because the two uses differ: on its own the
+ * mark is decorative and must be silent, whereas beside text that already names
+ * the product it is redundant either way. Passing `null` is the honest choice
+ * for both, and this signature leaves the decision with the caller instead of
+ * hardcoding a description nobody chose.
+ */
+@Composable
+fun BrandMark(
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null,
+    size: Dp = 96.dp,
+) {
+    Image(
+        painter = painterResource(R.drawable.claudroide_mark),
+        contentDescription = contentDescription,
+        modifier = modifier.size(size),
+    )
+}
+
+/** 1376x768, the banner's real aspect ratio. Named so it cannot drift. */
+private const val BannerAspectRatio = 1376f / 768f

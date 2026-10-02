@@ -18,6 +18,10 @@
     <string name="empty_project_title">Kein Projekt geöffnet</string>
     <string name="empty_project_desc">Wähle einen Projektordner auf deinem Galaxy A56 aus, um Quellcode zu analysieren und zu bearbeiten.</string>
 
+    <!-- Brand imagery (accessibility text) -->
+    <string name="banner_alt_text">Claudroide-Banner: die grüne Robotermarke neben dem Produktnamen.</string>
+    <string name="brand_mark_alt_text">Claudroide-Marke: ein grüner Roboter mit leuchtendem Terrakotta-Funken.</string>
+
     <!-- Chat screen -->
     <string name="chat_session_title">Build-Sitzung</string>
     <string name="chat_local_only">Nur lokal</string>
