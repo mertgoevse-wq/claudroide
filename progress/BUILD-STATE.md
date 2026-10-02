@@ -1,9 +1,43 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-02 (vierzehnte Sitzung — Tasks 083 und 113 verifiziert)
-**Status:** **107 von 135 Aufgaben `done`**, 28 offen, davon **20 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-02 (vierzehnte Sitzung — Tasks 083, 113 und 115 verifiziert)
+**Status:** **108 von 135 Aufgaben `done`**, 27 offen, davon **19 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand:** `./gradlew :app:testDebugUnitTest` → **1671 Tests, 0 Fehler, 0 übersprungen** (+23 in `PersistentFolderAccessTest`, +25 in `LongTaskNotificationPolicyTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20.4 MB.
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1693 Tests, 0 Fehler, 0 übersprungen** (+23 in `PersistentFolderAccessTest`, +25 in `LongTaskNotificationPolicyTest`, +22 in `CommandAuditLogTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20.4 MB.
+
+## Sitzung 14, dritter Teil — Task 115: Aktionsverlauf (CommandAuditLog)
+
+### Was gebaut wurde
+
+`CommandAuditLog.kt` (`feature/agent/`) — ein **lokaler** Verlauf über ausgeführte Befehle und Werkzeugaktionen. Er protokolliert, **was** passiert ist und **ob es erlaubt war**, nicht das Material, das dabei durchging.
+
+- **Maskierung passiert vor dem Speichern, nicht bei der Anzeige.** `AuditRecord.create` führt Zweck und Ziel durch `SecretMasker.redact`, **bevor** der Eintrag entsteht. Bei der Anzeige wären die Werte längst im Speicher, im Protokoll und in einem Export, bevor jemand sie sieht — die Reihenfolge ist die Aussage. Der Eintrag meldet über `redactedFields`, **welche** Felder betroffen waren: ein still verschwundener Wert wäre ein Betrugsverdacht, kein Datenschutz.
+- **Datensparsamkeit ist eine Eigenschaft des Typs.** `AuditRecord` hat **kein Feld** für Ausgabe, Inhalt oder Rohtext — es kann keinen geben. Ein Reflexionstest prüft genau das. Gespeichert werden Zeitpunkt, Art, Zweck, Ziel, Ausgang und die **gewährte** Freigabestufe (nicht nur die benötigte — sonst wäre nicht erkennbar, ob eine Aktion mehr Rechte hatte als nötig).
+- **Kein Teilen von allein.** `CommandAuditLog` hat keine Methode namens `share`/`upload`/`send`/`sync`/`publish` (Reflexionstest), und `AuditExport` trägt **kein** Feld für Empfänger, Endpunkt oder URL (zweiter Reflexionstest). `AuditExport` ist ein reiner Wert: ihn weiterzugeben bleibt eine bewusste Nutzerhandlung.
+- **Obergrenze statt unbegrenztem Wachstum.** `retentionLimit` (Vorgabe 500) verwirft die ältesten Einträge, zählt die verworfenen (`droppedCount`) und **meldet die Kürzung** — im Verlaufstext, in der Erklärung und im Export. `retentionLimit = 0` ist per `require` unzulässig.
+- **Jeder Ausgang bleibt unterscheidbar.** `SUCCEEDED`, `FAILED`, `DENIED`, `UNCERTAIN`, `CANCELLED` — abgebrochen ist nicht erfolgreich, ungeklärt ist nicht erfolgreich. Nebenwirkungsarten sind als `SIDE_EFFECT_KINDS` am Typ ausgewiesen.
+
+### Ein Testerwartungsfehler, nicht ein Codefehler
+
+Der Test „ein Schlüssel im Ziel wird geschwärzt" schlug zunächst fehl: ich hatte einen nackten AWS-Schlüssel (`AKIAIOSFODNN7EXAMPLE`) als Beispiel gewählt. **Die App unterstützt Anthropic, OpenAI, OpenRouter, Bearer und PEM** — einen AWS-Schlüssel behandelt `SecretMasker` bewusst nicht, weil die App solche Zugangsdaten nicht verwendet. Der Code war richtig, das Beispiel war außerhalb der Zusage. Der Test prüft jetzt einen Schlüssel, der in das Muster dieser App fällt (PEM-Block), und benennt im Kommentar, warum. Das ist dasselbe Muster wie bei `android-source-search`: etwas für einen Zweck gewählt, für den es nicht taugt.
+
+### Teststand
+
+- `./gradlew :app:testDebugUnitTest`: **1693 Tests, 0 Fehler, 0 übersprungen** (vorher 1671, +22). Gezählt aus den JUnit-XML.
+- `:app:assembleDebug`: **BUILD SUCCESSFUL**, APK 20 396 805 Bytes.
+- Geheimnis-Scan über `app/src/main/`: ohne Treffer.
+- `python3 tools/sync_frontmatter.py --check`: OK (108 erledigt, 27 offen).
+
+### Skills
+
+- **`android-permissions-security`** — die Grundregel jeder Speicherstelle: nichts Geheimes hinein. Der Verlauf wird wie eine Datenbank behandelt, und die Schwärzung sitzt deshalb am **Eingang**, nicht am Ausgang.
+- **`testing-setup`** — Schritt 5 (Logikklassen testen) und die Grenzfälle: leerer Verlauf (exportiert und löscht ehrlich „nichts"), Obergrenze erreicht, Nebeneffektart, jeder Ausgang einzeln, Freigabestufe im Text. Die Reflexionstests prüfen Abwesenheit von Feldern und Methoden, damit eine spätere Erweiterung auffällt.
+
+### Offen
+
+- **085 bleibt offen** (Gerätetest ohne Gerät).
+- **Kein Gerätetest für 113 und 115** — Verlauf und Benachrichtigung sind am Quelltext und an den Tests verifiziert, nicht am Gerät.
+- 27 Aufgaben offen, 19 davon `gate: true`. Nächste freigegebene Aufgaben: **118 „Freigabeverlauf"**, **121 „Links und Sonderdateien"**, **123**, **125**, **126**, **127**, **129**, **130**, **132**, **134**. **095 „Git-Zugang"** bleibt die einzige mit echter Produktentscheidung (sie gibt acht Aufgaben frei).
 
 ## Sitzung 14, zweiter Teil — Task 113: Lange Aufgabe melden (LongTaskNotificationPolicy)
 

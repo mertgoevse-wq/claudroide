@@ -5,9 +5,9 @@ wave: "W26"
 depends_on: [017, 018, 105, 107]
 files: [tasks/115-command-audit-log.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "c4a8ee0f8da0ae74"
 ---
 # Aufgabe 115 — Aktionsverlauf
