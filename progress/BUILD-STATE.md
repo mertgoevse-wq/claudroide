@@ -1,9 +1,45 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-02 (vierzehnte Sitzung — Task 083 verifiziert)
-**Status:** **106 von 135 Aufgaben `done`**, 29 offen, davon **21 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-02 (vierzehnte Sitzung — Tasks 083 und 113 verifiziert)
+**Status:** **107 von 135 Aufgaben `done`**, 28 offen, davon **20 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand:** `./gradlew :app:testDebugUnitTest` → **1646 Tests, 0 Fehler, 0 übersprungen** (+23 Tests in `PersistentFolderAccessTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20 MB.
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1671 Tests, 0 Fehler, 0 übersprungen** (+23 in `PersistentFolderAccessTest`, +25 in `LongTaskNotificationPolicyTest`). `:app:assembleDebug` → **BUILD SUCCESSFUL**, APK 20.4 MB.
+
+## Sitzung 14, zweiter Teil — Task 113: Lange Aufgabe melden (LongTaskNotificationPolicy)
+
+### Ausgangslage und eine ehrliche Lücke
+
+Nach 083 blieb als nächstes **085 „USB-Projektzugriff"**. Diese Aufgabe ist **nicht** in dieser Umgebung erfüllbar, und der Grund ist kein Aufwand: Ihr Kern ist wörtlich ein **Gerätetest** („Gerätetest mit Ordnerwahl, Änderungsprobe"), und „Fertig, wenn" verlangt, **nur erfolgreich getestete** USB-Wege als verfügbar zu bezeichnen. Geprüft und nicht behauptet: `adb devices` ist vorhanden und antwortet, die Liste ist aber **leer** — kein Gerät, kein Emulator, und es existiert kein Emulator-Binary. 085 bleibt deshalb **offen** und wird **nicht** als erledigt markiert; genau so ist es in fünf früheren Sitzungen mit Gerätemessungen gehalten worden.
+
+### Was Task 113 baut
+
+`LongTaskNotificationPolicy.kt` (`feature/agent/`) — entscheidet, **ob** und **was** eine lange Aufgabe meldet. Sie postet nichts und startet keinen Dienst; das baut die Android-Seite.
+
+- **Zielversion, Berechtigung und Diensttyp werden geprüft, bevor irgendetwas entsteht.** `PlatformFacts` trägt targetSdk (35, aus dem Build), Geräte-SDK, ob Benachrichtigungen erlaubt sind, und ob ein Vordergrunddienst verlangt wird. `gate(...)` liefert `PermissionMissing` ab API 33 ohne Erlaubnis, `NoActiveMandate` ohne Nutzerauftrag, `NotLongEnough` unter der Schwelle, sonst `Allowed`. Die **Reihenfolge ist die Aussage**: erst Berechtigung, dann Auftrag, dann Schwelle — fehlt beides, wird die Berechtigung zuerst genannt, weil ohne sie ohnehin nichts angezeigt würde.
+- **Auf dem Sperrbildschirm steht nur Art + Zustand.** `lockScreenText` wird ausschließlich aus `safeLabel` und dem Zustand gebaut; die private Zeile (`privateDetail`) landet nur in `detailText` für den entsperrten Bildschirm. `NotificationPlan` hat **kein Feld für privaten Inhalt** und `mayIncludePrivateContent` ist strukturell `false` — der Geheimnis-Scan im Test prüft zusätzlich, dass selbst ein Schlüssel in `privateDetail` den Sperrbildschirm-Text nicht erreicht.
+- **Kein dauerhaftes Hintergrundarbeiten ohne aktiven Nutzerauftrag.** Die Meldung hängt an einem `UserMandate`. `isActiveAt(now, session)` rechnet bei jedem Aufruf neu: zurückgenommen, fremde Sitzung, abgelaufen — und eine **rückwärts gelaufene Uhr** (`now < startedAt`) gilt als abgelaufen, weil eine nicht belastbare Uhr der sichere Zweifel ist. Ohne Auftrag liefert `build(...)` **null**; es gibt keinen Weg, eine Benachrichtigung am Leben zu halten.
+- **Langsam oder unsicher wird erklärt, nicht beschönigt.** `uncertaintyNote` ist nur bei `PROVEN` leer. `UNCERTAIN` sagt, dass nicht feststeht, ob geschrieben wurde; `TOO_SLOW` sagt, dass die Aufgabe ihren Zustand vielleicht nicht rechtzeitig meldet.
+- **Stop-Aktion aus dem Zustand abgeleitet.** `showStopAction` ist `true` für `RUNNING` und `PAUSED`, `false` für eine beendete Aufgabe — nicht angegeben, sondern berechnet.
+
+**Die Schwelle ist als Projektvorgabe benannt, nicht als Messung:** `DEFAULT_LONG_TASK_MILLIS = 120_000` („ab zwei Minuten gilt eine Aufgabe als lang") steht als benannte Vorgabe im Code. Es liegen **keine A56-Messungen** vor und es wird keine behauptet.
+
+### Teststand
+
+- `./gradlew :app:testDebugUnitTest`: **1671 Tests, 0 Fehler, 0 übersprungen** (vorher 1646, +25). Gezählt aus den JUnit-XML.
+- `:app:assembleDebug`: **BUILD SUCCESSFUL**, APK 20 390 259 Bytes.
+- Geheimnis-Scan: Der einzige Treffer ist ein **synthetisches Test-Fixture** in `LongTaskNotificationPolicyTest` (`sk-ant-api03-AAAA…`) — es beweist, dass die Schwärzung greift. Kein Geheimnis in `app/src/main/`.
+- `python3 tools/sync_frontmatter.py --check`: OK (107 erledigt, 28 offen).
+
+### Skills
+
+- **`android-permissions-security`** — Abschnitt 6 (kein endloser Berechtigungsdialog) und die Pflicht, den Berechtigungsstand **dynamisch** zu prüfen: `notificationsAllowed` ist ein Faktenwert pro Aufruf, nie ein zwischengespeichertes „darf". Die Benachrichtigungs-Berechtigung wird ab API 33 erklärt, davor nicht erzwungen.
+- **`android-profiler`** — der Skill ist ein GeräteMessungs-Orchestrator; hier trägt die Disziplin „gemessen ≠ angenommen": die Langzeit-Schwelle ist als Projektvorgabe im Code benannt, die Zielversion als Build-Fakt gelesen (targetSdk 35), und es wird **keine** USB-/Akku-/Hintergrundmessung behauptet, die nicht stattgefunden hat.
+
+### Offen
+
+- **085 bleibt offen**, bis ein echtes Gerät zur Verfügung steht (Gerätetest mit Ordnerwahl und Änderungsprobe).
+- **Noch kein Gerätetest für 113 selbst**: die Benachrichtigung ist am Quelltext und an den Tests verifiziert, nicht am laufenden Sperrbildschirm.
+- 28 Aufgaben offen, 20 davon `gate: true`. Nächste freigegebene, vollständig entscheidbare Aufgaben: **115 „Aktionsverlauf"**, **118 „Freigabeverlauf"**, **121 „Links und Sonderdateien"**, **123**, **125**, **126**, **127**, **129**, **130**, **132**, **134**. **095 „Git-Zugang"** bleibt die einzige, die eine echte Produktentscheidung braucht und acht Aufgaben freigibt.
 
 ## Sitzung 14 — Task 083: Ordnerzugriff merken (PersistentFolderAccess)
 

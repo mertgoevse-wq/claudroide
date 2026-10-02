@@ -5,9 +5,9 @@ wave: "W26"
 depends_on: [017, 018, 105, 107]
 files: [tasks/113-long-task-notification.md]
 skills: [`android-permissions-security`, `android-profiler`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "5d23864d6c8d889a"
 ---
 # Aufgabe 113 — Lange Aufgabe melden
