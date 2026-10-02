@@ -1,7 +1,7 @@
 # Claudroide-Bauzustand
 
 **Stand:** 2026-10-02 (siebte Sitzung)
-**Status:** 91 von 135 Aufgaben verifiziert. Tasks 040, 072–082, 087, 089, 092, 093, 098 und 103 abgeschlossen.
+**Status:** 92 von 135 Aufgaben verifiziert. Tasks 040, 072–082, 087, 089, 092, 093, 098, 103 und 105 abgeschlossen. **Alle Aufgaben ohne Gate sind abgearbeitet.**
 
 **Sprache (Nutzerwunsch vom 2026-10-02):** Englisch zuerst, Deutsch als Zweitwahl. `values/strings.xml` ist jetzt Englisch, `values-de/strings.xml` Deutsch. `CLAUDE.md` entsprechend geändert. Historische deutsche Bezeichner aus den ersten Aufgaben bleiben **unverändert** — sie rückwirkend umzubenennen würde hunderte Zusicherungen in 1108 Tests brechen. Neue Typen führen `label` (englisch).
 
@@ -433,7 +433,7 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 **Push erfolgt:** Am 2026-10-02 mit Nutzerfreigabe `cb88e3b..2aafa36` nach `origin/main` (privat) gepusht. Danach Aufgaben 080 und 081 committet.
 
-**Nächste freigegebene Aufgaben** (alle Abhängigkeiten erfüllt, ohne Gate): 105 — danach nur noch Gates.
+**Alle Aufgaben ohne Gate sind abgearbeitet.** Es bleiben nur Gates, die laut `CLAUDE.md` eine Entscheidung des Nutzers verlangen: 083, 084, 085, 095, 117, 118, 121, 123, 125, 126, 127, 129, 130.
 **Durch 082 neu freigegeben** (es hing an dieser Aufgabe): 083, 085, 086, 089, 090, 091, 094, 121.
 
 ## Task 082 erledigt — „Android-Ordner auswählen“
@@ -455,6 +455,26 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 **Teststand:** `./gradlew :app:testDebugUnitTest` → **1071 Tests, 0 Fehler, 0 übersprungen** (vorher 1042, +29).
 
 **Geladene Skills:** `android-permissions-security` (daraus die beiden Prüfungen über Reflexion: kein Berechtigungsfeld, keine anfordernde Methode — der Task verlangt „keine umfassende Speicherberechtigung“, und das wird am Typ geprüft, nicht in einem Kommentar behauptet) und `testing-setup` (der Abbruch-Fall steht mit Abspruch an erster Stelle, weil er der häufigste ist).
+
+## Task 105 erledigt — „Befehle auf Android prüfen“
+
+`docs/on-device-commands-feasibility.md` (Bericht) + `OnDeviceCommandSupport.kt` (neu) + `OnDeviceCommandSupportTest.kt` (21 Tests).
+
+**Kurzantwort: Eine Drittanbieter-App kann auf dem Gerät keinen Gradle-Build ausführen.** Das ist kein Aufwands-, sondern ein Schnittstellenproblem, und es ist an der Primärquelle belegt:
+- **AVF** kompiliert auf Android tatsächlich — aber die Implementierung ist das **System-APEX `com.android.compos`**, optional und per Makefile einbezogen. Und die Java-API laut Quelle: *„optional and not part of the bootclasspath“*. Sie ist keine Schnittstelle, gegen die eine App kompilieren darf. AVF ist zudem *„supported only on ARM64 devices“* — das passt zum A56, entscheidend ist aber der andere Satz.
+- **Androids Linux-Entwicklungsumgebung** existiert und ist die richtige Richtung, aber: *„available on select devices“*, Developer-Optionen nötig, und es ist die **Terminal-App** — kein Dienst, den eine App ansteuert. Für „wie entwickeln Entwickler auf Android“ ist das die Antwort, nicht für „wie baut meine App“.
+- **proot/Termux** funktioniert, braucht aber genau die separate Terminal-App, die der Auftrag ausschließt.
+- **Entfernter Runner** wäre ein echter Build, verschiebt aber den Quellcode vom Gerät — das ist eine Produktentscheidung mit Datenschutz- und Kostenfolge und bleibt **offen**.
+
+**Was tatsächlich geht — und es ist brauchbar:** Die eigenen Logiktests **im Prozess** ausführen. Ohne Gradle, ohne JDK-Installation, ohne Terminal-App. Das geht nur, weil die Policy-Klassen von Anfang an **ohne Android-Importe** geschrieben wurden — dieselbe Entscheidung, die damals die Zusagen JVM-prüfbar machte, ermöglicht jetzt einen Testlauf auf dem Gerät. Die ehrliche Grenze steht im Bericht: Das prüft *die Regeln dieser App*, **nicht** ob ein fremdes Projekt baut.
+
+**Die Regel im Typ festgehalten:** `OnDeviceCommandKind.isRealBuild` unterscheidet einen echten Build von einem In-Prozess-Testlauf, und `reportLines` sagt bei jedem solchen Lauf den Satz *„It did not build anything and is not a build result“* — **auch bei einem perfekten Ergebnis**. `forbiddenClaim` ist eine Konstante, damit die verbotene Formulierung genau eine Schreibweise hat und ein Test sie in jeder Zeile suchen kann. `CAN_RUN_GRADLE_ON_DEVICE = false` steht als Konstante im Code.
+
+**Ein Fehler beim Kompilieren, behoben im Code:** `mayBeCalledABuild` griff auf `isRealBuild` statt auf `kind.isRealBuild` zu — die Eigenschaft liegt auf dem Enum, nicht auf dem Ergebnis.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1266 Tests, 0 Fehler, 0 übersprungen** (vorher 1245, +21).
+
+**Skills:** `android-profiler` (die Grenze zwischen „gemessen“ und „aus der Quelle belegt“ — der Bericht nennt beides getrennt) und `testing-setup` (der zentrale Satz „ein perfekter Lauf bleibt kein Build“ hat einen eigenen Test, weil genau dort die Versuchung entsteht, ihn wegzulassen).
 
 ## Task 103 erledigt — „Git-Verlauf“
 
@@ -562,6 +582,26 @@ Dazu **`local.properties` in `.gitignore` aufgenommen** (Zeile 34). Die Datei en
 
 ## Task 081 erledigt — „Projektübersicht“
 **Gates mit offener Entscheidung** (Nutzerentscheidung nötig): 084, 095, 117, 118, 123, 125, 126, 127, 129, 130.
+
+## Task 105 erledigt — „Befehle auf Android prüfen“
+
+`docs/on-device-commands-feasibility.md` (Bericht) + `OnDeviceCommandSupport.kt` (neu) + `OnDeviceCommandSupportTest.kt` (21 Tests).
+
+**Kurzantwort: Eine Drittanbieter-App kann auf dem Gerät keinen Gradle-Build ausführen.** Das ist kein Aufwands-, sondern ein Schnittstellenproblem, und es ist an der Primärquelle belegt:
+- **AVF** kompiliert auf Android tatsächlich — aber die Implementierung ist das **System-APEX `com.android.compos`**, optional und per Makefile einbezogen. Und die Java-API laut Quelle: *„optional and not part of the bootclasspath“*. Sie ist keine Schnittstelle, gegen die eine App kompilieren darf. AVF ist zudem *„supported only on ARM64 devices“* — das passt zum A56, entscheidend ist aber der andere Satz.
+- **Androids Linux-Entwicklungsumgebung** existiert und ist die richtige Richtung, aber: *„available on select devices“*, Developer-Optionen nötig, und es ist die **Terminal-App** — kein Dienst, den eine App ansteuert. Für „wie entwickeln Entwickler auf Android“ ist das die Antwort, nicht für „wie baut meine App“.
+- **proot/Termux** funktioniert, braucht aber genau die separate Terminal-App, die der Auftrag ausschließt.
+- **Entfernter Runner** wäre ein echter Build, verschiebt aber den Quellcode vom Gerät — das ist eine Produktentscheidung mit Datenschutz- und Kostenfolge und bleibt **offen**.
+
+**Was tatsächlich geht — und es ist brauchbar:** Die eigenen Logiktests **im Prozess** ausführen. Ohne Gradle, ohne JDK-Installation, ohne Terminal-App. Das geht nur, weil die Policy-Klassen von Anfang an **ohne Android-Importe** geschrieben wurden — dieselbe Entscheidung, die damals die Zusagen JVM-prüfbar machte, ermöglicht jetzt einen Testlauf auf dem Gerät. Die ehrliche Grenze steht im Bericht: Das prüft *die Regeln dieser App*, **nicht** ob ein fremdes Projekt baut.
+
+**Die Regel im Typ festgehalten:** `OnDeviceCommandKind.isRealBuild` unterscheidet einen echten Build von einem In-Prozess-Testlauf, und `reportLines` sagt bei jedem solchen Lauf den Satz *„It did not build anything and is not a build result“* — **auch bei einem perfekten Ergebnis**. `forbiddenClaim` ist eine Konstante, damit die verbotene Formulierung genau eine Schreibweise hat und ein Test sie in jeder Zeile suchen kann. `CAN_RUN_GRADLE_ON_DEVICE = false` steht als Konstante im Code.
+
+**Ein Fehler beim Kompilieren, behoben im Code:** `mayBeCalledABuild` griff auf `isRealBuild` statt auf `kind.isRealBuild` zu — die Eigenschaft liegt auf dem Enum, nicht auf dem Ergebnis.
+
+**Teststand:** `./gradlew :app:testDebugUnitTest` → **1266 Tests, 0 Fehler, 0 übersprungen** (vorher 1245, +21).
+
+**Skills:** `android-profiler` (die Grenze zwischen „gemessen“ und „aus der Quelle belegt“ — der Bericht nennt beides getrennt) und `testing-setup` (der zentrale Satz „ein perfekter Lauf bleibt kein Build“ hat einen eigenen Test, weil genau dort die Versuchung entsteht, ihn wegzulassen).
 
 ## Task 103 erledigt — „Git-Verlauf“
 

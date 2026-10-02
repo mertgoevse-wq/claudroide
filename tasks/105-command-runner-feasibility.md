@@ -5,9 +5,9 @@ wave: "W23"
 depends_on: [007, 008, 010, 017]
 files: [tasks/105-command-runner-feasibility.md]
 skills: [`android-permissions-security`, `android-profiler`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "e23d8668bfadcbaf"
 ---
 # Aufgabe 105 — Befehle auf Android prüfen
