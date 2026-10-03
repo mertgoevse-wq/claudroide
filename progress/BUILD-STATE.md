@@ -1,11 +1,54 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-03 (einundzwanzigste Sitzung — Task 096 abgeschlossen)
-**Status:** **124 von 135 Aufgaben `done`**, 11 offen, davon **5 mit `gate: true`** (085, 100, 101, 116, 128). Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-03 (zweiundzwanzigste Sitzung — Task 097 abgeschlossen)
+**Status:** **125 von 135 Aufgaben `done`**, 10 offen, davon **4 mit `gate: true`** (085, 100, 101, 116; 128 hat `gate: false`). Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest` → **BUILD SUCCESSFUL**, **2242 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2207 + 35 aus 096). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 109 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0.
+**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL**, **2269 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2242 + 27 aus 097). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 110 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `tools/secret_gate_fixtures` → 3 Treffer.
 
-**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`. Dieser Checkpoint war 277 KB groß und musste laut Resume-Skill *vollständig* gelesen werden — das kostete jede Sitzung rund 70 000 Token, bevor eine Zeile Arbeit begann. Inhalt unverändert ausgelagert, nichts gekürzt.
+**Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen):** SM-A566B, Termux/Debian/PRoot. **7 417 MB gesamt, 5 664 MB belegt, nur 1 752 MB verfügbar**, 2 779 MB von 12 287 MB Swap belegt. Der Single-Heap-Grund war also **nicht** kosmetisch. `adb devices` zeigt **kein** Gerät — das A56 ist nicht über adb erreichbar, und `/dev/bus/usb` ist für Termux nicht lesbar. **Das OnePlus 6T per USB und der WLAN-Debug-Pfad sind derzeit beide unbenutzbar**; es liegt weiterhin keine Messung auf einem echten Gerät vor. Task 085 (USB-Projektzugriff, `gate: true`) bleibt damit aus Device-Gründen blockiert.
+
+**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–21 weiter unten in dieser Datei.
+
+## Sitzung 22 — Task 097: Privates Projektziel
+
+### Die Bedingung im Aufgabentext war eine *Bedingung*, kein Auftrag
+
+Der Zieltext lautet „ein privates Projektziel einrichten, **sofern es noch nicht besteht**", und der Schutz sagt ausdrücklich „keine Repository-Erstellung durch dieses Aufgabenbriefing allein". Also **nichts angelegt** — stattdessen gemessen, ob es besteht:
+
+`gh api repos/mertgoevse-wq/claudroide` → `private: true`, `visibility: PRIVATE`, `owner: mertgoevse-wq`, `default_branch: main`, `license: NONE`, `archived: false`, `fork: false`, collaborators: genau einer (`mertgoevse-wq`, admin). Der „falls es noch nicht besteht"-Zweig ist damit durch Lesen beantwortet, nicht durch Fragen.
+
+Eine Nebenbeobachtung, die später zählt: **Branch-Protection ist auf dem privaten Free-Repo nicht verfügbar** — GitHub antwortet `403 Upgrade to GitHub Pro or make this repository public`. Das ist eine nutzerspezifische Eigenschaft des Kontos; ich habe **nichts** dafür bezahlt und nichts geändert. Aufgabe 101 (Push-Freigabe) darf sich darauf nicht verlassen.
+
+### Die zwei Fertig-Bedingungen als Eigenschaft
+
+- *„Nutzer bestätigt die tatsächliche Online-Erstellung ausdrücklich."* — `RemoteRepositoryPlan.creationConfirmedByUser`, Vorgabe `false`, gelesen von `RepositoryGate.mayProceed` **zuerst**. Aus nichts abgeleitet. Der zugehörige Test prüft ausdrücklich den Gegenfall: ein **vollständig** ausgestatteter Plan ohne Bestätigung bleibt `NotConfirmed`.
+- *„Privatheit vor dem ersten Upload sichtbar geprüft."* — `RepositoryGate.auditBeforeFirstUpload` liest das **von außen gemeldete** `visibilityVerifiedOnDevice`. `visibility = PRIVATE` ist eine Absicht und keine Messung; ohne Geräteprüfung bleibt der Audit `Pending` und `mayProceed` verweigert.
+
+Der Grund, warum das ein Typ und kein Kommentar ist: `RemoteRepository` hat **keinen Vorgabewert** für die Sichtbarkeit (es gibt kein `UNKNOWN`/`DEFAULT`), weil „ungeprüft" und „öffentlich" nicht dasselbe sind und genau dieser Unterschied über den ersten Upload entscheidet. Und es gibt **keinen dritten** Audit-Zustand — „vermutlich privat" ist nicht modelliert, weil es der Zustand wäre, der einen öffentlichen Upload wie einen geprüften aussehen ließe.
+
+### Drei Mutationen, jede wird rot
+
+| Mutation | Rote Tests |
+|---|---|
+| Bestätigungsprüfung im Gate entfernt | **4** |
+| Geräteprüfung der Sichtbarkeit entfernt | **2** |
+| `isPrivate` → immer `true` | **1** |
+
+Alle drei **am Code** zurückgenommen, `diff` gegen die Sicherung bestätigt die Datei als identisch. Nebenbei: der Compiler fand `isPrivate` als *ungelöst*, bevor die Property existierte — der Testlauf hat mich auf einen echten Fehler aufmerksam gemacht, nicht nur auf einen fehlgeschlagenen Test.
+
+### Ein Fehler beim Absichern, selbst gefunden
+
+`sealedSubclasses` braucht `kotlin-reflect`, das auf diesem Test-Classpath nicht liegt. Ersetzt durch reine Java-Reflection über `declaredClasses` — dieselbe Aussage, keine zusätzliche Abhängigkeit auf einem Gerät, auf dem jedes Byte zählt.
+
+### Skills
+
+`swarm-planner` und `android-permissions-security`, beide **von Platte gelesen** (`/home/mert/.claude/skills/`), nicht aus dem Gedächtnis zitiert. Aus `swarm-planner` die Wiederherstellung des **gerechneten** Abhängigkeitsgraphen statt eines abgelesenen: 125 done, 10 pending, **5 startbar** (085, 099, 100, 102, 104), 077 wartet auf 099, 086 auf 085, 101 auf 099+100, 116 auf 100, 128 auf 100+101. Aus `android-permissions-security` die Lesart, die in dieser Datei strukturell wird: **eine behauptete Absicht ist keine Prüfung, und ein Zustand darf nicht aus einem anderen abgeleitet werden** — dieselbe Trennung, die dort IPC-Identität von Intent-Extras trennt.
+
+### Was diese Sitzung ausdrücklich **nicht** belegt
+
+Es wurde **kein Repository angelegt** und **nichts gesendet** — die Datei kann es nicht. Die genannten Werte wurden live von GitHub gelesen, aber sie beschreiben den **Zustand heute**, nicht eine Zusage über später. Vor allem: es liegt **keine Gerätemessung** vor (siehe oben, adb sieht nichts).
+
+## Sitzung 21 — Task 096: Repository laden
 
 ## Sitzung 21 — Task 096: Repository laden
 
