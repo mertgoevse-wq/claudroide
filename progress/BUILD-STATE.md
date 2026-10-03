@@ -79,9 +79,43 @@ Beide Aufgaben verlangen (`gate: true`) zusätzlich, einen **globalen** Least-Pr
 
 **Entscheidung: nicht installiert.** Eine allgemeine Freigabe („du darfst alles") ist die Erlaubnis zur Handlung, aber kein Grund, sie zu nutzen. Ein Skill aus einem 1-Stern-Repo mit 6 Installationen in ein Projekt einzuhängen, dessen Aufgaben bereits vollständig erfüllt sind, hieße Vertrauen in fremden Text ohne Gegenwert einzuhängen. Der Befund ist hier dokumentiert, damit die Entscheidung später widerrufbar ist: Trägt der Nutzer die Installation ausdrücklich **für dieses konkrete** Skill an, ist sie in einem Schritt erledigt.
 
-### Nächste Arbeit
+### Der Bau stößt an die Wand — und **beide** offenen Ausgänge sind zu
 
-Neu aus `tasks/*.md` **gerechnet**: offen sind 077, 085, 086, 095–097, 099–102, 104, 116, 128. **085** (USB-Projektzugriff) braucht ein echtes Gerät, **095** (Git-Zugang) eine Produktentscheidung des Nutzers. **116** (Laufzeitabhängigkeiten) ist die einzige verbleibende Aufgabe, die ohne Gerät und ohne Entscheidung entscheidbar ist; **128** (Sicherheitstests) hängt an 100 und 101 und damit an 095.
+### Eine Korrektur an meiner eigenen Rechnung
+
+Der vorige Entwurf dieses Abschnitts behauptete, **116** (Laufzeitabhängigkeiten) sei „die einzige verbleibende Aufgabe, die ohne Gerät und ohne Entscheidung entscheidbar ist". **Das ist falsch.** Der Abhängigkeitsgraph wurde diesmal aus allen 135 Frontmattern **berechnet** statt gelesen:
+
+```
+077: blockiert durch ['099']      095: STARTBAR
+085: STARTBAR                    096: blockiert durch ['095']
+086: blockiert durch ['085']      097: blockiert durch ['095','096']
+                                 099: blockiert durch ['095','096']
+                                 100: blockiert durch ['095','096']
+                                 101: blockiert durch ['095','097','099','100']
+                                 102: blockiert durch ['095','096']
+                                 104: blockiert durch ['095','096']
+                                 116: blockiert durch ['100']
+                                 128: blockiert durch ['100','101']
+```
+
+**116 hängt an 100, und 100 hängt an 095.** Von 13 offenen Aufgaben sind damit **genau zwei** startbar: **085** und **095**. Die beiden Aufgaben, die seit Sitzung 16 als die einzigen Blocker gelten, sind es auch nach dem Rechnen — nur ist es diesmal eine Rechnung und keine Erinnerung.
+
+### Warum beide nicht weiterlaufen — geprüft, nicht behauptet
+
+**085 braucht das Gerät.** Die Aufgabe verlangt wörtlich einen *„Gerätetest mit Ordnerwahl, Änderungsprobe"* und Fertig, wenn *„nur erfolgreich getestete USB-Wege als verfügbar bezeichnet werden"*. Auf dieser Maschine geprüft:
+
+| prerequisite | Ergebnis |
+|---|---|
+| `adb devices` | **keine Geräte** (Daemon frisch gestartet, Liste leer) |
+| `~/Android/Sdk/emulator/emulator` | **nicht vorhanden** |
+| `~/Android/Sdk/system-images` | **nicht vorhanden** |
+| `avdmanager list avd` | **keine AVDs** |
+
+Ein Emulator hätte die Frage ohnehin nicht beantwortet: *„welche USB-Dateisysteme sind **am A56** lesbar und beschreibbar"* ist eine Eigenschaft der Hardware. Ein AVD würde hier eine Zahl erfinden — genau das, was die Aufgabe verbietet. **Ohne A56 wird 085 nicht als erledigt geführt.**
+
+**095 braucht eine Entscheidung des Nutzers.** Das Ergebnis ist ein *„Vergleich dokumentierter Zugangswege, Berechtigungsumfang und sichere Ablage"*, und Schutz verlangt: *„Keine privaten Schlüssel in Projektdateien oder Chats."* Welcher Weg gilt (Muster für Token, SSH, OAuth-Gerätefluss, GitHub-App) und **wie weit** er reicht, ist keine technische Frage, die sich aus dem Code heraus entscheidet — sie bestimmt, welche acht Aufgaben (096–104) überhaupt gebaut werden. Eine vorbereitete Entscheidungsvorlage mit Quellen, Berechtigungsumfang und Ablageort liegt der Nutzerin/dem Nutzer vor.
+
+**Was daraus folgt:** Der Build ist nicht an einer Schwierigkeit stehen geblieben, sondern an zwei Grenzen, die nur außerhalb dieses Rechners liegen. Es gibt keine weitere Aufgabe, die ohne Freigabe sinnvoll begonnen werden könnte — und eine zu beginnen hieße, entweder eine Gerätemessung oder eine Produktentscheidung zu erfinden.
 
 ## Sitzung 18 — Task 131: Globalen Skill installieren
 
