@@ -5,9 +5,9 @@ wave: "W21"
 depends_on: [095, 096]
 files: [tasks/097-create-private-project-repository.md]
 skills: [`/swarm-planner`, `android-permissions-security`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "413f8181f908ce01"
 ---
 # Aufgabe 097 — Privates GitHub-Projekt
