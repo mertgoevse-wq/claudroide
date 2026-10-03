@@ -5,9 +5,9 @@ wave: "W21"
 depends_on: [095, 096, 098]
 files: [tasks/102-git-merge-conflicts.md]
 skills: [`/code-review`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "01552192efba87e3"
 ---
 # Aufgabe 102 — Git-Konflikte
