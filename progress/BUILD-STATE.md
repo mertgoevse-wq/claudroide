@@ -104,16 +104,37 @@ Der vorige Entwurf dieses Abschnitts behauptete, **116** (Laufzeitabhängigkeite
 
 **085 braucht das Gerät.** Die Aufgabe verlangt wörtlich einen *„Gerätetest mit Ordnerwahl, Änderungsprobe"* und Fertig, wenn *„nur erfolgreich getestete USB-Wege als verfügbar bezeichnet werden"*. Auf dieser Maschine geprüft:
 
-| prerequisite | Ergebnis |
-|---|---|
-| `adb devices` | **keine Geräte** (Daemon frisch gestartet, Liste leer) |
-| `~/Android/Sdk/emulator/emulator` | **nicht vorhanden** |
-| `~/Android/Sdk/system-images` | **nicht vorhanden** |
-| `avdmanager list avd` | **keine AVDs** |
+| `uname -a` | `Linux localhost 6.17.0-PRoot-Distro … aarch64` — **wir sind auf dem A56**, in einem proroot-Debian unter Termux |
+| `id` | `uid=1000(mert)`, Termux-Kennung |
+| `grep /proc/mounts` | nur **interne** Bausteine: `erofs` (System), `ext4` (vendor/metadata), `f2fs` (`pass_through/0/emulated`) |
+| `/sys/bus/usb/devices` | **leer** — kein USB-Host-Gerät eingebunden |
+| `/dev/usb-ffs/{adb,mtp,ptp}` | das ist der **USB-Gadget** (dieses Telefon als Quelle), **kein** USB-Speicher |
+| `adb devices` / `adb connect 127.0.0.1:5555` | **leer** bzw. `Connection refused` |
+| `/system/bin/pm` | **`Operation not permitted`** — für uid 1000 gesperrt |
 
-Ein Emulator hätte die Frage ohnehin nicht beantwortet: *„welche USB-Dateisysteme sind **am A56** lesbar und beschreibbar"* ist eine Eigenschaft der Hardware. Ein AVD würde hier eine Zahl erfinden — genau das, was die Aufgabe verbietet. **Ohne A56 wird 085 nicht als erledigt geführt.**
+**Die erste Fassung dieser Tabelle war falsch und ist hiermit korrigiert.** Sie behauptete, es gebe „kein Gerät". Richtig ist: **das Gerät ist da, wir laufen darauf** — nur fehlt jedes USB-Massenspeichervolumen, und aus dieser Sandbox heraus ist weder die App installierbar noch startbar. Zwei getrennte Ursachen:
 
-**095 braucht eine Entscheidung des Nutzers.** Das Ergebnis ist ein *„Vergleich dokumentierter Zugangswege, Berechtigungsumfang und sichere Ablage"*, und Schutz verlangt: *„Keine privaten Schlüssel in Projektdateien oder Chats."* Welcher Weg gilt (Muster für Token, SSH, OAuth-Gerätefluss, GitHub-App) und **wie weit** er reicht, ist keine technische Frage, die sich aus dem Code heraus entscheidet — sie bestimmt, welche acht Aufgaben (096–104) überhaupt gebaut werden. Eine vorbereitete Entscheidungsvorlage mit Quellen, Berechtigungsumfang und Ablageort liegt der Nutzerin/dem Nutzer vor.
+1. **Kein USB-Volumen angeschlossen.** Es ist **kein** USB-Dateisystem eingebunden. Die Aufgabe fragt, welche USB-Dateisysteme les- und schreibbar sind — ohne angeschlossenes Gerät gibt es dazu nichts zu messen. Jede Zahl wäre erfunden.
+2. **Selbst mit USB-Stick wäre die Messung aus dieser Shell falsch.** Ein Zugriff aus proroot (uid 1000) prüft den **Shell**-Zugriff, nicht den **App**-Zugriff. Die App läuft in ihrer eigenen Android-Sandbox und braucht den Storage Access Framework mit ausdrücklicher Ordnerwahl. Eine Probe aus proroot würde eine Frage beantworten, die niemand gestellt hat — und die Fertig-Bedingung („nur erfolgreich **getestete** Wege") wäre mit einem Scheinergebnis erfüllt.
+
+**Auch das Prüfen der App selbst auf dem Gerät ist von hier aus nicht möglich:** `pm` ist für uid 1000 gesperrt, `adb` erreicht den lokalen Daemon nicht, `termux-api` ist nicht installiert. Die gebaute APK lässt sich aus dieser Umgebung **weder installieren noch starten**. **Ohne angeschlossenes USB-Volumen und ohne installierbare APK wird 085 nicht als erledigt geführt.**
+
+### Die Entscheidung zu 095 ist gefallen: **GitHub App**
+
+Der Nutzer hat entschieden: **GitHub App** — feinste Rechte. Das deckt sich mit der offiziellen Empfehlung von GitHub, nach der *„in general, GitHub Apps are preferred to OAuth apps because they use fine-grained permissions, give more control over which repositories the app can access, and use short-lived tokens"* (<https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/differences-between-github-apps-and-oauth-apps>, gelesen am 2026-10-03).
+
+**Was das im Klartext bedeutet** (ebenda, dokumentiert — nicht aus dem Gedächtnis):
+
+| Eigenschaft | GitHub App | Alternative OAuth-App |
+|---|---|---|
+| Rechte | **fein abgestuft** (pro Repository, pro Aktion) | breite Scopes |
+| Zugriff | **nur ausgewählte Repositories** | **alle** zugänglichen Ressourcen des Nutzers |
+| Token | **kurzlebig** (Installation-Token) | langlebig, bis widerrufen |
+| Widerruf | Admin entfernt Repos aus der Installation | Token löschen |
+
+**Der Schutz der Aufgabe** — *„Keine privaten Schlüssel in Projektdateien oder Chats"* — ist mit dieser Wahl erfüllt: eine GitHub App bringt **keinen** privaten Schlüssel mit. Das Installation-Token ist kurzlebig und repository-gebunden; es ist kein geheimer Schlüssel, der in eine `.git/config` oder in einen Chat gerät.
+
+**Offen und bewusst nicht erfunden:** Die App-**ID**, der **private Schlüssel der App** und die **Installationskennung** sind nutzerspezifisch und werden **nicht** erfunden. 095 liefert den **Vergleich dokumentierter Zugangswege** und das Gerüst, das eine Registrierung aufnimmt — nicht die Registrierung selbst. Das entspricht der Fertig-Bedingung: *„Zugriff möglichst auf erforderliche Repositories beschränkt"* und *„Nutzer versteht, dass Uploads externe Speicherung verursachen"*.
 
 **Was daraus folgt:** Der Build ist nicht an einer Schwierigkeit stehen geblieben, sondern an zwei Grenzen, die nur außerhalb dieses Rechners liegen. Es gibt keine weitere Aufgabe, die ohne Freigabe sinnvoll begonnen werden könnte — und eine zu beginnen hieße, entweder eine Gerätemessung oder eine Produktentscheidung zu erfinden.
 
