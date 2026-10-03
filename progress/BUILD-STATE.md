@@ -1,13 +1,58 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-03 (zweiundzwanzigste Sitzung — Task 097 abgeschlossen)
-**Status:** **125 von 135 Aufgaben `done`**, 10 offen, davon **4 mit `gate: true`** (085, 100, 101, 116; 128 hat `gate: false`). Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-03 (dreiundzwanzigste Sitzung — Task 099 abgeschlossen)
+**Status:** **126 von 135 Aufgaben `done`**, 9 offen, davon **4 mit `gate: true`** (085, 100, 101, 116). Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL**, **2269 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2242 + 27 aus 097). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 110 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `tools/secret_gate_fixtures` → 3 Treffer.
+**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL**, **2369 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2269 + 31 aus 099, davon 1 neu). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 113 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `tools/secret_gate_fixtures` → 3 Treffer.
 
-**Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen):** SM-A566B, Termux/Debian/PRoot. **7 417 MB gesamt, 5 664 MB belegt, nur 1 752 MB verfügbar**, 2 779 MB von 12 287 MB Swap belegt. Der Single-Heap-Grund war also **nicht** kosmetisch. `adb devices` zeigt **kein** Gerät — das A56 ist nicht über adb erreichbar, und `/dev/bus/usb` ist für Termux nicht lesbar. **Das OnePlus 6T per USB und der WLAN-Debug-Pfad sind derzeit beide unbenutzbar**; es liegt weiterhin keine Messung auf einem echten Gerät vor. Task 085 (USB-Projektzugriff, `gate: true`) bleibt damit aus Device-Gründen blockiert.
+**Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen — Angaben aus Sitzung 22):** SM-A566B, Termux/Debian/PRoot. `adb devices` zeigt **kein** Gerät; `/dev/bus/usb` ist für Termux nicht lesbar. **Das OnePlus 6T per USB und der WLAN-Debug-Pfad waren beide unbenutzbar**; es liegt weiterhin keine Messung auf einem echten Gerät vor. Task 085 (USB-Projektzugriff, `gate: true`) bleibt damit aus Device-Gründen blockiert. In dieser Sitzung **nicht** neu gemessen.
 
-**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–21 weiter unten in dieser Datei.
+**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–22 weiter unten in dieser Datei.
+
+## Sitzung 23 — Task 099: Aufgabenstand sichern
+
+### Die Arbeit lag als nicht committete Datei vor — und war **halb falsch**
+
+Der Absturz der Vorsitzung hatte `GitCommitProposal.kt` und `GitCommitProposalTest.kt` geschrieben, aber nicht festgeschrieben. Wie in Sitzung 21 also nicht *angenommen*, sondern **gemessen**: der erste Lauf war **rot, 5 von 30 Tests**.
+
+### Zwei echte Fehler im Produktionscode, beide vom Test gefunden
+
+**1. Die Torwache stand nicht dort, wo der Kommentar sagte.** Über `containsNoFileNameOnly()` existierte eine Prüfung gegen reine Dateilisten — aber sie wurde nur von `CommitProposal` aufgerufen, **nicht** von `CommitIntent`. Der Kommentar behauptete wörtlich, sie stehe „bewusst **vor** `CommitIntent`". Sie stand dahinter. Folge: `CommitIntent("main.kt build.gradle")` war **gültig**, obwohl der Konstruktor ausdrücklich Nachrichten ablehnen soll, die nur Dateinamen wiederholen.
+
+Das war kein Tippfehler, sondern die Lücke zwischen Behauptung und Verhalten — dieselbe Unterscheidung, an der 095 und 097 gescheitert sind. Behoben: der Aufruf steht jetzt in `CommitIntent.init`, und die **tote Zweitkopie** im `companion object` von `CommitProposal` ist ersatzlos entfallen.
+
+**2. Die Ablehnung nannte die Dateien nicht.** Bei unbenannten Dateien meldete das Tor nur „N Datei(en) wurden von niemandem benannt. … Nenne sie ausdrücklich oder entferne sie." — **ohne die Pfade**. Das widerspricht direkt der Fertig-Bedingung „Nutzer kann Änderungen **vor dem Speichern einsehen**": eine Regel, deren Gegenstand man nicht sieht, kann man nicht befolgen. Jetzt werden die Pfade einzeln genannt, mit einem eigenen Test darüber.
+
+### Drei falsche Test-Fixtures — der Code war richtig, der Test nicht
+
+`vorschlag()` hatte `benannt: Set<String> = emptySet()`. Der Standardvorschlag listete also eine Datei und **benannte sie nicht** — und das Tor verweigerte zu Recht. Zwei Tests (`bestaetigt wird gespeichert`, `die Bestaetigung wird aus nichts abgeleitet`) prüften damit den **falschen Zweig** und waren rot, ohne dass ein Fehler in der Logik vorlag. Der Vorgabewert ist jetzt `setOf(pfadA)`, mit einem Kommentar, der erklärt, warum: ein Standardvorschlag, der sich selbst unvollständig macht, prüft den Vollständigkeitszweig statt den Bestätigungszweig.
+
+Dabei ist mir **ein eigener Fehler** passiert, den ich benenne: mein Pauschal-Ersetzen von Pfadliteralien machte aus der Deklaration `private val pfadA = pfadA` — eine Selbstreferenz, die als Endlosschleife oder `null` endet. Ich habe es im Diff gesehen und an der Quelle behoben, statt den Testlauf zu beobachten und es als „grün" zu deuten.
+
+### Eine Mutation, die **nicht** rot wurde — und was das über meine Methode sagt
+
+Die dritte Mutation (Geheimnisprüfung **hinter** die Bestätigung statt davor) meldete zunächst `BUILD SUCCESSFUL`. Ich habe dem **nicht** geglaubt, sondern `diff` gegen die Sicherung laufen lassen: **die Datei war identisch** — mein Skript hatte die Mutation nie geschrieben, weil zwischen den beiden Blöcken ein dritter steht und mein Ersetzungsmuster den abschließenden Leerraum nicht traf. Ein grüner Lauf beweist nichts, wenn die Mutation gar nicht stattgefunden hat. Mit robusten Zeilenindizes erneut angewandt: **1 roter Test** (`der Geheimnisverdacht wird vor der Bestaetigung geprueft`).
+
+| Mutation | Rote Tests |
+|---|---|
+| Dateinamen-Wächter aus `CommitIntent` entfernt | **2** |
+| „Nichts, was niemand genannt hat" entfernt | **2** |
+| Geheimnisprüfung hinter die Bestätigung verschoben | **1** |
+| Pfade aus der Ablehnung entfernt | **1** (neuer Test) |
+
+Alle vier **am Code** zurückgenommen, `diff` bestätigt Identität, kein Mutationsrest im File.
+
+### Skills
+
+`/parallel-task` und `/code-review`, beide **von Platte gelesen** statt aus dem Gedächtnis zitiert. Aus `parallel-task` die Bindung, dass ein Task erst nach RED→GREEN-Nachweis abgeschlossen wird — deshalb habe ich die 5 roten Tests zuerst analysiert, statt sie grünzuschreiben. Aus `/code-review` die **Filterregel**, nicht das Verfahren: nur Befunde mit Score ≥ 80, keine Nitpicks, keine Compiler-Läufe. Das Verfahren selbst (5 parallele Agenten, `gh`-Kommentar auf einen PR) hätte der Nutzeranweisung „nicht mehr als einen Subagenten" widersprochen — deshalb **ein** Prüfer: ich selbst.
+
+### Was diese Sitzung ausdrücklich **nicht** belegt
+
+Es wurde **nichts committet und nichts gespeichert**. `GitCommitProposal.kt` führt keinen `git commit` aus, keine Dateioperation, keinen Prozess; ein Test prüft das strukturell über die verbotenen Typen `java.io.File`, `ProcessBuilder`, `OutputStream`. Dass ein echter Commit auf dem A56 durchläuft, ist damit **nicht** gezeigt — es liegt weiterhin keine Gerätemessung vor (adb sieht nichts).
+
+### Was der Abschluss von 099 freigibt
+
+**077** ist jetzt startbar (wartete auf 099). Neu berechnet mit `sync_frontmatter.py --ready`: **3 startbar** — 077, 085, 100. 085 bleibt aus Gerätegründen blockiert; 100 ist der nächste freigegebene Codeauftrag.
 
 ### Gerät gemessen, nicht behauptet (Sitzung 22)
 

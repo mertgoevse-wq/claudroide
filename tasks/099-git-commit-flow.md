@@ -5,9 +5,9 @@ wave: "W21"
 depends_on: [095, 096, 098]
 files: [tasks/099-git-commit-flow.md]
 skills: [`/parallel-task`, `/code-review`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "4976cc0dd9e87997"
 ---
 # Aufgabe 099 — Aufgabenstand sichern
