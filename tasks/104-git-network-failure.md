@@ -5,9 +5,9 @@ wave: "W21"
 depends_on: [095, 096]
 files: [tasks/104-git-network-failure.md]
 skills: [`testing-setup`, `android-permissions-security`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "f96e09b0067faa45"
 ---
 # Aufgabe 104 — Git-Netzwerkfehler
