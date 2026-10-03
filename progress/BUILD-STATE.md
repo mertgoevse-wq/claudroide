@@ -9,6 +9,24 @@
 
 **Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–22 weiter unten in dieser Datei.
 
+## Laufende Arbeit beim Unterbrechen — Task 100 (`gate: true`), nur Erkundung
+
+**Stand: nichts geschrieben, nichts committet.** Der Arbeitsbaum war beim Abbruch sauber; `git log` = `9c03007 Implement Task 099: commit proposal, named after its purpose`, **gepusht** an `mertgoevse-wq/claudroide` (`private: true`, vor dem Push live über `gh api` geprüft).
+
+**Bereits gelesen und damit entschieden:**
+
+- `tasks/100-git-secret-scan.md` — Ziel: unbeabsichtigte Zugangsdaten **vor Veröffentlichung** erkennen. Fertig, wenn: bekannte Muster **und** Fehlalarme testbar sind, und Treffer den Commit **standardmäßig blockieren**. Schutz: Treffer gehen an **keinen** Online-Scanner.
+- `tools/secret_gate.py` existiert bereits und ist **derselbe Gedanke in Python**: Zwei-Regel-Prinzip — der Wert muss *zufällig* sein (ein echter Schlüssel ist eine Zufallsfolge), und PEM-Material zählt erst mit Rumpf. Es hat `SKIP_DIRS` für die eigene Gegenprobe `tools/secret_gate_fixtures`, meldet **Fundstellen**, greift nie ein, sendet nie etwas.
+- Die Android-Seite hat bereits `feature/provider/SecretMasker.kt` und `ProjectExclusionPolicy.BLOCKED_SECRET` (aus 067), auf die `GitChangeList.blockedBySecretCheck` in 098/099 aufbaut. **Der Anschluss ist also vorhanden** — 100 muss nicht erfinden, nur verbinden und die beiden Regeln in Kotlin/Domänenlogik spiegeln.
+
+**Offen, als Erstes weiterarbeiten:**
+
+1. `app/src/main/java/org/claudroide/app/feature/provider/SecretMasker.kt` **erneut lesen** — der Leseversuch schlug in dieser Sitzung mit einem internen Fehler fehl, die Datei selbst ist nie angezeigt worden. Aus Sitzung 21 ist nur bekannt: `maskApiKey` gibt die **ersten und letzten vier Zeichen** zurück (bei einem PEM-Block wären das dessen Ränder, und der Maskierer erkennt die verkürzte Form `-----BEGIN …` dann nicht mehr); `SecretMasker.REDACTION_PLACEHOLDER` gibt **kein** Zeichen aus. Für 100 heißt das: der Scan darf **nicht** über den gekürzten Maskierer laufen.
+2. Die Skill-Zuordnung lautet `android-permissions-security` und `testing-setup` (beide global installiert, noch nicht für 100 gelesen).
+3. Der Skill-Suchauftrag der Aufgabe (globaler Git-Secret-Scan-Skill, Quelle/Lizenz prüfen, **vor Installation fragen**): ein Kandidat wurde gefunden — `ecc/skills/security-scan` unter `/home/mert/.claude/plugins/marketplaces/ecc/skills/`. **Noch nicht bewertet und nicht installiert**; das Auslesen wurde abgebrochen. Wie bei 095 gilt: bewerten, dokumentieren, und **nicht** ohne ausdrückliche Bestätigung installieren.
+
+**Nächste freigegebene Aufgabe nach 100:** 101 (Push-Freigabe), danach 116 und 128. 085 bleibt aus Gerätegründen blockiert, 077 ist parallel startbar.
+
 ## Sitzung 23 — Task 099: Aufgabenstand sichern
 
 ### Die Arbeit lag als nicht committete Datei vor — und war **halb falsch**
