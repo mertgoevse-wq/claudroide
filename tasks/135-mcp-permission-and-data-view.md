@@ -5,9 +5,9 @@ wave: "W28"
 depends_on: [070, 117, 119, 122, 134]
 files: [tasks/135-mcp-permission-and-data-view.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "76075be9d97b583d"
 ---
 # Aufgabe 135 — Werkzeugrechte und Daten

@@ -5,9 +5,9 @@ wave: "W28"
 depends_on: [070, 117, 119, 122, 132]
 files: [tasks/133-subagent-permissions.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "064e014de444c1ee"
 ---
 # Aufgabe 133 — Helferrechte

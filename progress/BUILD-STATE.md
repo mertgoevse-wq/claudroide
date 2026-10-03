@@ -1,11 +1,87 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-02 (achtzehnte Sitzung — **läuft**, Task 131 fertig)
-**Status:** **120 von 135 Aufgaben `done`**, 15 offen, davon **7 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-03 (neunzehnte Sitzung — Welle 133/135 abgeschlossen)
+**Status:** **122 von 135 Aufgaben `done`**, 13 offen, davon **5 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand (selbst gemessen, nicht aus dem Checkpoint übernommen):** `./gradlew :app:testDebugUnitTest :app:assembleDebug --rerun-tasks` → **BUILD SUCCESSFUL**, **2062 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2023 nach Aufgabe 124 + 39 aus Aufgabe 131). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml`, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. APK 20 010 115 Bytes. `python3 tools/secret_gate.py` → 0 Treffer, exit 0.
+**Teststand (selbst gemessen, nicht aus dem Checkpoint übernommen):** `./gradlew :app:testDebugUnitTest :app:assembleDebug --rerun-tasks` → **BUILD SUCCESSFUL**, **2165 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2062 + 103 aus der Welle 133/135). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 107 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE“ war. APK 20 042 883 Bytes. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `python3 tools/secret_gate.py tools/secret_gate_fixtures` → **3 Treffer**, exit 1.
 
-**Git-Stand:** `main` bei `0b57a34` (**1 Commit vor `origin/main`** — Task 131 ist noch nicht gepusht). Repository `mertgoevse-wq/claudroide`, per `gh` geprüft: **`isPrivate: true`**, Standardbranch `main`.
+**Git-Stand:** siehe unten bei der Welle 133/135. Repository `mertgoevse-wq/claudroide`, per `gh` geprüft: **`isPrivate: true`**, Standardbranch `main`.
+
+## Sitzung 19 — Welle 133/135: Helferrechte und Werkzeugrechte
+
+Beide Dateien lagen **geschlossen und unversioniert** im Arbeitsbaum (918 + 1124 Zeilen). Sie waren **nicht grün**: der erste Volltestlauf endete mit `BUILD FAILED` bei **11 Tests**. Die Welle ist damit nicht auf Anhieb gelaufen.
+
+### Der Absturz hat einen echten Fehler hinterlassen — und die Tests haben ihn gefunden
+
+**Die Bedingung in `McpPermissionDataView.rightsView` war invertiert.** In der Kette der Rechteansicht stand:
+
+```kotlin
+!isApprovalRevoked(approval.approvalId) -> … "Die Bestätigung wurde zurückgenommen."
+```
+
+Das `!` stand vor der **falschen** Seite: Danach bekam eine **gültige** Bestätigung den Text „wurde zurückgenommen“, und eine **tatsächlich zurückgenommene** durfte durch die Kette bis zu `FREED` laufen. Das ist keine Kosmetik — der sichtbare Rechtezustand stand für eine Freigabe, die der Nutzer gerade zurückgenommen hatte. **Behoben am Code, nicht am Test** (`isApprovalRevoked(...)` ohne Negation); die Kette in `blockingReasons` an Zeile 985 war richtig und blieb unverändert, sodass Urteil und Anzeicht jetzt dieselbe Quelle lesen.
+
+Nicht geraten, sondern **gemessen**: ein Wegwerf-Test hat `rightsView` mit einer wirksamen Bestätigung aufgerufen und die Zeilen gedruckt. Sie zeigten für **alle fünf** freigebbaren Rechte `OPEN : Die Bestätigung wurde zurückgenommen.` — bei einer Bestätigung, die der Filter selbst als wirksam ausgewiesen hatte (`covers=true`, `isActiveAt=true`, `state=GRANTED`, `revoked=false`).
+
+### Zehn Testfehler — alle am Test behoben, jeder einzeln belegt
+
+Die übrigen zehn Fehler waren **keine** Codefehler. Jeder wurde gegen den Code geprüft, nicht gegen die Erwartung:
+
+| # | Testfehler | Warum der Code richtig war |
+|---|---|---|
+| 2 | Zwei Tests bauen `approve()` mit `HelperRightScope.entries.toSet()` — das wirft `IllegalArgumentException` | Die Rolle deckt `WRITE` nicht ab, also ist die Zustimmung **absichtlich nicht baubar**. Der Test prüfte eine Anfrage, die nie entstehen kann; er nimmt jetzt `mayBeApproved(...)`-Bereiche. |
+| 3 | Der Sichtbarkeitstest prüft `Modifier.isPublic` am Konstruktor | `internal` ist **Kotlin**-Sichtbarkeit; im Bytecode steht der Konstruktor als `public`. Der Test prüft jetzt die tragende Eigenschaft: **kein** Konstruktor ohne `HelperRole`. |
+| 4 | Textprüfungen auf „nicht“, „hinaus senden“, „Zustimmung“ | Die Sätze sagen das Gleiche anders („weder vergeben“, „heraus senden“, „zugestimmt“). Die Zusagen — Freigabezentrum, Daten verlassen, Begrenzung durch Auftrag und Zustimmung — werden jetzt **inhaltlich** geprüft. |
+| 5 | Die Felder-Zulassungsliste des Formtests kennt die Felder der Ansicht selbst nicht | Sie enthält jetzt `eingeschaltet`, `verlauf`, `generation`, `request`, `permit`, `reasons` … **jedes einzeln benannt und begründet** (Schalter und Kennungen, kein Inhalt). |
+| 6 | Zwei `assertEquals` mit **widersprüchlicher** Erwartung (`2` und `1` für dieselbe Menge) | Die erste prüfte die **Ausgangsmenge**, die zweite die verkleinerte. Zwei verschiedene Aussagen, ein Tippfehler. |
+| 7 | Der Antrag-Aufnehmer-Test prüft `ToolApproval::class.java` | `record` und `revoke` liegen im **Begleitobjekt**. Er prüft jetzt getrennt: Erzeuger (`record`) und Abfragen (`covers`, `mismatchExplanation`) — eine Abfrage gibt nie eine Bestätigung zurück. |
+
+**Ein Test wurde mehrfach grün gegen einen echten Zustand** (`reasons`, `permit`, `request` standen nacheinander auf der Trefferliste). Das ist der übliche Fehler: eine Liste aus einer Aufzählung ergänzen, statt sie aus dem **Code** zu lesen. Erst der Wegwerf-Dump aller Felder machte die Liste vollständig — und zeigte dabei drei weitere Felder, die kein Test gestört hatte.
+
+### Vier Mutationen, jede wird rot
+
+| Mutation | Rote Tests |
+|---|---|
+| `isApprovalRevoked` wieder invertieren (der Ausgangsfehler) | **2** |
+| Verstecktes Feld `missbrauch` in `ToolApproval` | **1** |
+| Rollenobergrenze in `Approved.init` auf `true` abgeschaltet | **1** |
+| `REVIEW`/`WRITE` auf `ONLY_WITH_USER_CONSENT` geändert | **4** |
+
+Die vierte ist Zusage 1 der Aufgabe 133 — sie fällt an **vier** Stellen, darunter der korrigierte Test. Alle vier sind **am Code** zurückgenommen; beide Dateien sind per `diff` gegen die Sicherung als identisch bestätigt, und `grep` findet keinen Mutationsrest.
+
+### Erledigt in dieser Sitzung
+
+| Task | Titel | Dateien | Tests |
+|---|---|---|---|
+| 133 | Helferrechte | `feature/agent/SubagentPermissionMatrix.kt` (918) + Test | 54 |
+| 135 | Werkzeugrechte und Daten | `feature/mcp/McpPermissionDataView.kt` (1124) + Test | 49 (45 + 4 Form) |
+
+### Skills
+
+- **`android-permissions-security`** — Abschnitt 8 („never cache a permission state“): 133 rechnet in `right()` bei **jedem** Aufruf neu, 135 liest Freigabe- und Anschaltzustand in `authorize` ohne Zwischenfeld. Dazu die Datenregel: die Maskierung läuft am **Eingang**, ein still verschwundener Wert wäre ein Betrugsverdacht, kein Datenschutz.
+- **`testing-setup`** — Schritt 5: Logikklassen mit reinen JVM-Tests, kein Compose-Layouttest. Die Formtests prüfen über Reflexion, was statisch nicht sichtbar ist — mit der Grenze, dass `internal` im Bytecode `public` ist und deshalb **nicht** so geprüft werden kann (siehe oben).
+
+### Was diese Sitzung ausdrücklich **nicht** belegt
+
+- **Kein Gerätetest.** Es gibt hier kein Gerät und kein Emulator-Binary. Die Werkzeug- und Dateirechte sind als Entscheidungen modelliert, nicht als Nachweis, dass ein Aufruf auf einem Gerät gelenkt wird.
+- **Keine erfundene Anbieterangabe.** Die Verbindung in den Tests trägt `beispiel.invalid` — eine reservierte Domain, die als nicht existent erkennbar ist.
+
+### Gate-Pflicht: Skill gesucht und geprüft, Installation bewusst nicht erfolgt
+
+Beide Aufgaben verlangen (`gate: true`) zusätzlich, einen **globalen** Least-Privilege-Agent-Skill (133) bzw. MCP-Berechtigungs-Skill (135) zu suchen, Quelle/Lizenz/Sicherheitsrisiko zu prüfen und die Installation vorzulegen. Der Nutzer hat in dieser Sitzung **generell** freigegeben. Die Suche wurde trotzdem vollständig durchgeführt und der Befund geprüft:
+
+**Gesucht:** `npx skills find "least privilege agent permissions"` und `npx skills find "MCP tool permissions security"`. Der erste Lauf lieferte **kein** brauchbares Ergebnis (Treffer waren Feishu-/Azure-/Lark-Skills ohne Bezug zu Agentenrechten). Der zweite lieferte `frankxai/skills@mcp-least-privilege` (6 Installationen) sowie `yonatangross/orchestkit@mcp-security-hardening` (18).
+
+**Geprüft** (`frankxai/skills`, shallow clone):
+- Quelle: <https://github.com/frankxai/skills>, **MIT**, nicht archiviert, zuletzt gepusht 2026-10-02.
+- **Sicherheitsbefund:** Das Skill-Verzeichnis enthält **ausschließlich `SKILL.md`** (243 Zeilen) — keine Skripte, keine ausführbaren Dateien, kein `package.json`. Kein Netz- oder Installationsbefehl im Text; die Treffer auf „token/secret" stehen in Regeln **darüber**, nichts wird übertragen.
+- **Nachteil, der den Ausschlag gab:** Das Repository hat **1 Stern** und der Skill **6 Installationen**. Das ist keine Vertrauensbasis. Der Inhalt (Default-Deny, Confused Deputy, Audit-Pfad) ist fachlich richtig, aber für dieses Projekt **nicht nötig**: Beide **zugewiesenen** Skills waren verfügbar und wurden tatsächlich geladen, und `McpPermissionDataView` leitet seine Grenzen ohnehin aus `PathBoundaryGuard` und `ProjectExclusionPolicy` ab statt aus fremdem Text.
+
+**Entscheidung: nicht installiert.** Eine allgemeine Freigabe („du darfst alles") ist die Erlaubnis zur Handlung, aber kein Grund, sie zu nutzen. Ein Skill aus einem 1-Stern-Repo mit 6 Installationen in ein Projekt einzuhängen, dessen Aufgaben bereits vollständig erfüllt sind, hieße Vertrauen in fremden Text ohne Gegenwert einzuhängen. Der Befund ist hier dokumentiert, damit die Entscheidung später widerrufbar ist: Trägt der Nutzer die Installation ausdrücklich **für dieses konkrete** Skill an, ist sie in einem Schritt erledigt.
+
+### Nächste Arbeit
+
+Neu aus `tasks/*.md` **gerechnet**: offen sind 077, 085, 086, 095–097, 099–102, 104, 116, 128. **085** (USB-Projektzugriff) braucht ein echtes Gerät, **095** (Git-Zugang) eine Produktentscheidung des Nutzers. **116** (Laufzeitabhängigkeiten) ist die einzige verbleibende Aufgabe, die ohne Gerät und ohne Entscheidung entscheidbar ist; **128** (Sicherheitstests) hängt an 100 und 101 und damit an 095.
 
 ## Sitzung 18 — Task 131: Globalen Skill installieren
 
@@ -72,6 +148,15 @@ Neu aus `tasks/*.md` **gerechnet**, nicht aus dem Checkpoint übernommen:
 **085** (USB-Projektzugriff) und **095** (Git-Zugang) bleiben die beiden Blocker: 085 braucht ein echtes Gerät, 095 eine echte Produktentscheidung des Nutzers (welcher Git-Weg, wie weit er reicht) und gibt **acht** Aufgaben frei (096–104, 100, 101). Solange 085 und 095 offen sind, ist 128 „Sicherheitstests" nicht erreichbar — es hängt an 100 und 101.
 
 **Nächste Arbeit: 133 oder 135.** Beide sind vollständig entscheidbar, beide haben überschneidungsfreie Dateibereiche (`feature/agent/` bzw. `feature/mcp/`) und sind als Welle parallelisierbar.
+
+### Die Welle 133/135 — läuft
+
+| Task | Dateien | Skills |
+|---|---|---|
+| 133 Helferrechte | `feature/agent/SubagentPermissionMatrix.kt` + Test | `android-permissions-security`, `testing-setup` |
+| 135 Werkzeugrechte und Daten | `feature/mcp/McpPermissionDataView.kt` + Test | `android-permissions-security`, `testing-setup` |
+
+**Überschneidungsfrei, geprüft vor dem Start** (nicht behauptet): 133 schreibt **ausschließlich** in `feature/agent/`, 135 **ausschließlich** in `feature/mcp/`. Kein Agent committet oder pusht — die leitende Sitzung integriert, zählt die Tests selbst und aktualisiert den Checkpoint.
 
 **Git-Stand zu dieser Sitzung (historisch, von der Kopfzeile überholt):** `main`, Repository `mertgoevse-wq/claudroide`, per `gh` geprüft: **`isPrivate: true`**, Standardbranch `main`. Der Nutzer hat in Sitzung 16 Commits und Push ausdrücklich freigegeben und dem Projekt „vollständige Autonomie" übertragen.
 
