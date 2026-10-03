@@ -5,9 +5,9 @@ wave: "W21"
 depends_on: [095]
 files: [tasks/096-clone-repository.md]
 skills: [`testing-setup`, `android-permissions-security`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "60b6b7b3546a5845"
 ---
 # Aufgabe 096 — Repository laden
