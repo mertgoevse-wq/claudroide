@@ -5,9 +5,9 @@ wave: "W20"
 depends_on: [017, 045, 059]
 files: [tasks/095-git-provider-auth.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "ebbf91fa5f863335"
 ---
 # Aufgabe 095 — Git-Zugang

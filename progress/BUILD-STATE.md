@@ -1,7 +1,132 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-03 (neunzehnte Sitzung — Welle 133/135 abgeschlossen)
-**Status:** **122 von 135 Aufgaben `done`**, 13 offen, davon **5 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-03 (zwanzigste Sitzung — Task 095 abgeschlossen)
+**Status:** **123 von 135 Aufgaben `done`**, 12 offen, davon **5 mit `gate: true`**. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+
+**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest :app:assembleDebug --rerun-tasks` → **BUILD SUCCESSFUL**, **2207 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2165 + 42 aus 095). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 108 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. APK 20 075 710 Bytes. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `tools/secret_gate_fixtures` → exit 1.
+
+## Sitzung 20 — Task 095: Git-Zugang
+
+`feature/git/GitProviderAuth.kt` (759 Zeilen) + `GitProviderAuthTest.kt`, **42 Tests**.
+
+### Eine Korrektur an einer früheren Aussage — die wichtigste dieser Sitzung
+
+Der Checkpoint aus Sitzung 19 behauptete, eine **GitHub App bringe keinen privaten
+Schlüssel mit**, weshalb der Schutz der Aufgabe erfüllt sei. **Das ist falsch und
+hiermit zurückgenommen.** Ich habe es nicht geglaubt, sondern nachgelesen: die
+offizielle REST-Dokumentation weist für den Manifest-Flow ausdrücklich
+`pem (private key)` als Rückgabewert aus
+(<https://docs.github.com/en/rest/apps/apps>, gelesen 2026-10-03). Eine GitHub
+App authentifiziert sich über einen mit ihrem privaten Schlüssel signierten JWT.
+
+**Was davon bleibt und was nicht:** Die Wahl einer GitHub App ist trotzdem richtig
+— fein abgestufte Rechte, Repository-Bindung, kurzlebiges Token. Aber sie erfüllt
+den Schutz „Keine privaten Schlüssel in Projektdateien oder Chats" **nicht von
+selbst**. Erfüllt wird er nur, wenn der Schlüssel in den Schlüsselspeicher geht.
+Deshalb ist `CredentialSink` im Code nicht Beiwerk, sondern der Kern, und
+`GitAccessPath.requiresSecretOnDevice` ist bei der GitHub App `true`.
+
+Belegt und live gelesen (dieselbe Quelle, wörtlich): GitHub Apps seien „preferred
+to OAuth apps because they use fine-grained permissions, give more control over
+which repositories the app can access, and use short-lived tokens"; ein
+Installationstoken verliere den Zugriff, wenn ein Admin Repositories aus der
+Installation entfernt, und laufe nach **einer Stunde** ab; OAuth-Token seien
+standardmäßig langlebig. Die Stunde steht als **Text** im [DocumentedFact], nicht
+als Zahl im Code — eine Zahl wäre eine Behauptung, die still veralten könnte.
+
+### Zwei echte Fehler, die ich beim Schreiben gemacht habe — beide vom Test gefunden
+
+**1. Die Ablageprüfung war invertiert.** In `GitCredential.record` stand
+`require(!sink.isPermitted)`. Das hätte den **Schlüsselspeicher abgewiesen** und
+**Projektdatei und Chatverlauf zugelassen** — genau das Gegenteil des Schutzes.
+Immerhin: Ich hatte beim Formulieren gemerkt, dass die Bedingung „unlogisch"
+klang, und sie trotzdem geschrieben. Der Test `ein geheimer Wert wird in einer
+Projektdatei abgewiesen` fiel sofort rot.
+
+**2. `maskedFingerprint()` gab trotz Maskierung ein Stück des Geheimnisses aus.**
+Ich hatte zuerst `ProviderConfigValidator.maskApiKey` benutzt, mit der Begründung
+„bei einem PEM-Block wird er vollständig durch Punkte ersetzt". Das ist **falsch**:
+`maskApiKey` gibt die ersten und letzten vier Zeichen zurück — bei einem
+privaten Schlüssel wären das dessen Ränder, und der Maskierer erkennt die
+verkürzte Form `-----BEGIN …` gar nicht mehr. Jetzt gibt die Methode **kein**
+Zeichen aus (`SecretMasker.REDACTION_PLACEHOLDER`). Der Preis: zwei verschiedene
+Geheimnisse sind in der Anzeige nicht unterscheidbar — der richtige Preis, denn
+über `credentialId` weiß der Nutzer ohnehin, welches gemeint ist.
+
+**Drittens, beim Test:** Der Reflexionstest „`useSecret` ist der einzige
+String-Rückgeber" war **falsch formuliert** und schlug fehl: `toString` und der
+`getCredentialId`-Getter liefern ebenfalls `String`. Ich habe nicht die Liste
+erweitert, bis sie grün war, sondern die Prüfung auf die belastbare
+Nachbareigenschaft umgestellt: das Feld `secret` ist privat, und **jede**
+String-liefernde öffentliche Methode muss in einer Positivliste stehen — ein
+neu hinzukommender Getter fällt also rot auf, bis jemand ihn bewusst einträgt.
+
+### Vier Mutationen, jede wird rot
+
+| Mutation | Rote Tests |
+|---|---|
+| `require(sink.isPermitted)` → invertiert | **11** |
+| `isLeastPrivilege` → immer `true` | **3** |
+| `externalStorageAcknowledged`-Prüfung entfernt | **2** |
+| `isFullyDocumented`-Prüfung entfernt | **2** |
+
+Alle vier sind **am Code** zurückgenommen; `diff` gegen die Sicherung bestätigt
+die Datei als identisch, und `grep` findet keinen Mutationsrest.
+
+### Die zwei Fertig-Bedingungen als Eigenschaft, nicht als Absicht
+
+- *„Zugriff möglichst auf erforderliche Repositories beschränkt"*:
+  `RepositoryScope` hat keine stille Variante. `EverythingVisible` existiert, weil
+  GitHub es anbietet — es ist aber `isLeastPrivilege == false`, benennt das im
+  Klartext und wird von `GitAccessGate` abgelehnt. `Selected` verlangt im
+  Konstruktor mindestens einen Namen.
+- *„Nutzer versteht, dass Uploads externe Speicherung verursachen"*:
+  `externalStorageAcknowledged` wird **nirgends** aus einer anderen Eigenschaft
+  abgeleitet. Der Test dafür prüft ausdrücklich den Gegenfall: ein minimal
+  benannter Umfang ist **keine** Bestätigung.
+
+### Gate-Pflicht: Skill gesucht, Befund dokumentiert, Installation bewusst nicht erfolgt
+
+**Gesucht:** `npx skills find` mit drei verschiedenen Formulierungen
+(`git credential auth token storage`, `GitHub App fine-grained permissions token`,
+`android keystore secure credential storage`). **Ergebnis: Es existiert kein
+Git-Credential-Skill im Register.** Die Treffer waren Feishu-/Lark-Skills,
+Azure-Skills, `supabase`, `firebase`, `better-auth` — alle ohne Bezug zu
+Git-Zugangsrechten.
+
+Der einzige naheliegende Kandidat wurde **geprüft und verworfen**:
+`mattpocock/skills@git-guardrails-claude-code` (MIT, 423.9K Installationen).
+Zweck ist ein **Claude-Code-Hook**, der `git push`, `git reset --hard`,
+`git clean -f`, `git branch -D` blockiert — also eine Schutzschiene für den
+*Bau-Agenten*, nicht für die App. Er bringt ein ausführbares Bash-Skript mit
+(`scripts/block-dangerous-git.sh`, `chmod +x`) und kopiert es nach
+`~/.claude/hooks/`. Das ist eine **globale** Änderung der Arbeitsumgebung eines
+Fremd-Repos, und die Aufgabenstellung dieser Datei — Rechte einer GitHub App,
+Ablage eines privaten Schlüssels — wird sie nicht beantworten.
+
+**Entscheidung: nicht installiert.** Beide zugewiesenen Skills waren verfügbar
+und wurden geladen; `CredentialSink` verweist für die Gerätefassung ausdrücklich
+auf `AndroidKeystoreSecurityPolicy` aus Aufgabe 045 (AES-256-GCM, 256 Bit,
+hardwaregestützt, ausgeschlossen aus Sicherungen) — auf vorhandene, geprüfte
+Projektlogik statt auf fremden Text.
+
+### Was diese Sitzung ausdrücklich **nicht** belegt
+
+- **Kein Zugang wurde eingerichtet.** Keine GitHub App registriert, keine App-ID,
+  kein privater Schlüssel, kein Installationstoken: das sind nutzerspezifische
+  Werte und sie werden nicht erfunden. 095 liefert den dokumentierten Vergleich
+  und das Gerüst, das eine Registrierung aufnimmt.
+- **Kein Gerätetest.** Die Ablage im Keystore ist als Prüfung an `record` modelliert.
+  Ob `AndroidKeystoreSecurityPolicy` auf dem echten A56 greift, ist hier nicht
+  gemessen.
+
+### Was der Abschluss von 095 freigibt
+
+Der Graph wurde **neu berechnet**, nicht abgelesen: **096** ist jetzt startbar
+(`.unmet == []`). Damit ist die Kette zu 097, 099, 100, 101, 102, 104 offen und
+über 100 auch 116 und 128. Offen bleiben **085** und **086**, weil sie ein
+angebundenes USB-Volumen brauchen (Beleg unten in Sitzung 19).
+
 
 **Teststand (selbst gemessen, nicht aus dem Checkpoint übernommen):** `./gradlew :app:testDebugUnitTest :app:assembleDebug --rerun-tasks` → **BUILD SUCCESSFUL**, **2165 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2062 + 103 aus der Welle 133/135). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 107 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE“ war. APK 20 042 883 Bytes. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `python3 tools/secret_gate.py tools/secret_gate_fixtures` → **3 Treffer**, exit 1.
 
@@ -132,7 +257,7 @@ Der Nutzer hat entschieden: **GitHub App** — feinste Rechte. Das deckt sich mi
 | Token | **kurzlebig** (Installation-Token) | langlebig, bis widerrufen |
 | Widerruf | Admin entfernt Repos aus der Installation | Token löschen |
 
-**Der Schutz der Aufgabe** — *„Keine privaten Schlüssel in Projektdateien oder Chats"* — ist mit dieser Wahl erfüllt: eine GitHub App bringt **keinen** privaten Schlüssel mit. Das Installation-Token ist kurzlebig und repository-gebunden; es ist kein geheimer Schlüssel, der in eine `.git/config` oder in einen Chat gerät.
+**Der Schutz der Aufgabe** — *„Keine privaten Schlüssel in Projektdateien oder Chats"* — ~~ist mit dieser Wahl erfüllt: eine GitHub App bringt **keinen** privaten Schlüssel mit.~~ **Diese Aussage ist falsch und wurde in Sitzung 20 zurückgenommen:** Eine GitHub App bringt sehr wohl einen privaten Schlüssel mit (der Manifest-Flow liefert `pem (private key)`); sie authentifiziert sich über einen damit signierten JWT. Die Wahl bleibt richtig, erfüllt den Schutz aber nur zusammen mit der Ablage im Schlüsselspeicher. Beleg und Korrektur: siehe Sitzung 20.
 
 **Offen und bewusst nicht erfunden:** Die App-**ID**, der **private Schlüssel der App** und die **Installationskennung** sind nutzerspezifisch und werden **nicht** erfunden. 095 liefert den **Vergleich dokumentierter Zugangswege** und das Gerüst, das eine Registrierung aufnimmt — nicht die Registrierung selbst. Das entspricht der Fertig-Bedingung: *„Zugriff möglichst auf erforderliche Repositories beschränkt"* und *„Nutzer versteht, dass Uploads externe Speicherung verursachen"*.
 
