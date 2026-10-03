@@ -9,6 +9,20 @@
 
 **Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–21 weiter unten in dieser Datei.
 
+### Gerät gemessen, nicht behauptet (Sitzung 22)
+
+Direkt auf dem A56 ausgelesen, weil die NPU-Frage eine **Messfrage** ist und keine Meinung:
+
+| Angabe | Gemessen | Bedeutung |
+|---|---|---|
+| `CPU part` in `/proc/cpuinfo` | `0xd80` | ARM-Kern-ID; zusammen mit `s5e8855` (Vendor-HAL-Tag) und dem 8-Kern-/`energy_aware`-Bild konsistent mit Exynos 1580 |
+| Kerne / RAM | **8** / `MemTotal: 7 595 020 kB` (≈7,25 GiB) | passt zu A56 (8 Kerne, 8 GB) |
+| Max-Frequenz `cpu0..cpu2` | `1950000` kHz | **Dieser Kern läuft nicht auf 2,8 GHz.** Die A56-Spec nennt 2,8 GHz für die Prime-Cores; auf diesem Gerät sind alle gemessenen Policies 1,95 GHz. Vor jeder Aussage über Rechenleistung zu prüfen, nicht aus dem Datenblatt zu übernehmen |
+| `/dev/npu*` | **nicht lesbar** (Permission denied) | Die NPU-Knoten existieren, sind aus Termux aber nicht erreichbar |
+| NNAPI-HAL in `/vendor/lib64/hw` | **nicht vorhanden** (16 HALs, keiner `neuralnetworks`) | Deckt sich mit dem Urteil aus Aufgabe 007: keine öffentliche NPU-Schnittstelle für fremde Apps |
+
+**Konsequenz für den NPU-Wunsch des Nutzers:** Er ist damit nicht widerlegt, aber **nicht durch dieses Gerät belegbar**. `/dev/npu0_throughput` existiert, ist aber für eine App ohne Root nicht lesbar; es gibt keinen NNAPI-HAL. Aufgabe 007 sagt für diesen Fall ausdrücklich: „**Keine NPU-Nutzung versprechen!**" — das gilt unverändert, und ich habe nichts überschrieben. Was gebaut werden kann, ist die in 007 beschriebene **Rückfallkette** (GPU via Vulkan → CPU via NEON) und ein *Nachweis*, dass ein Gerät überhaupt einen Beschleuniger anbietet, statt einer Annahme.
+
 ## Sitzung 22 — Task 097: Privates Projektziel
 
 ### Die Bedingung im Aufgabentext war eine *Bedingung*, kein Auftrag
