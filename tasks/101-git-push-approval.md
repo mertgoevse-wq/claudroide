@@ -5,9 +5,9 @@ wave: "W22"
 depends_on: [095, 097, 098, 099, 100]
 files: [tasks/101-git-push-approval.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "fc1f9d594575d3b1"
 ---
 # Aufgabe 101 — Git-Upload freigeben

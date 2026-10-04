@@ -1,13 +1,78 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-04 (vierundzwanzigste Sitzung — Task 100 abgeschlossen)
-**Status:** **127 von 135 Aufgaben `done`**, 8 offen, davon **3 mit `gate: true`** (085, 101, 116). Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-04 (fünfundzwanzigste Sitzung — Task 101 als Gerüst abgeschlossen)
+**Status:** **128 von 135 Aufgaben `done`**, 7 offen, davon **2 mit `gate: true`** (085, 116). Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL**, **2399 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2369 + 30 aus 100). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 115 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `tools/secret_gate_fixtures` → 3 Treffer.
+**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL**, **2425 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2399 + 26 aus 101). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 117 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `tools/secret_gate_fixtures` → 3 Treffer.
 
 **Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen — Angaben aus Sitzung 22):** SM-A566B, Termux/Debian/PRoot. `adb devices` zeigt **kein** Gerät; `/dev/bus/usb` ist für Termux nicht lesbar. **Das OnePlus 6T per USB und der WLAN-Debug-Pfad waren beide unbenutzbar**; es liegt weiterhin keine Messung auf einem echten Gerät vor. Task 085 (USB-Projektzugriff, `gate: true`) bleibt damit aus Device-Gründen blockiert. In dieser Sitzung **nicht** neu gemessen.
 
-**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–23 weiter unten in dieser Datei.
+**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–24 weiter unten in dieser Datei.
+
+## Sitzung 25 — Task 101: Git-Upload freigeben (Gerüst, Gerätebedingung offen)
+
+### Die Bedingung, die **nicht** erfüllt ist — und wo sie steht
+
+Die erste Fertig-Bedingung lautet wörtlich: „Upload an privates, eingerichtetes Ziel **geht**." Das verlangt einen echten Push auf dem Gerät. `adb devices` zeigt nichts, es liegt also keine Messung vor. Der Nutzer hat deshalb am 2026-10-04 ausdrücklich entschieden: **als Gerüst bauen, Bedingung offenlassen.**
+
+Der entscheidende Punkt: die Lücke ist **kein Satz im Dokument**, sondern ein Wert im Programm. `DeviceUploadEvidence.PUSH_OBSERVED_ON_DEVICE` ist ein `const val = false` mit `statementLines()`, die beides trennen. Ein `var`, den ein Aufrufer setzen könnte, wäre eine Erfindung mit einem Kästchen — deshalb `const`. Und `PushOutcome` hat **kein** `PUSHED`: kein Lauf dieses Projekts hat einen erzeugt, also gibt es den Wert nicht.
+
+### Ein echter Fehler, den ein Test fand — und der ist unbequem
+
+`GitPushGate.mayPush` las am Anfang `request.repository.visibility` — die **Absicht** des Nutzers. Nicht die **Messung**. Ein Nutzer, der „privat" beabsichtigt, während der Server „public" meldet, wäre durchgegangen.
+
+Das ist exakt die Verwechslung, die dieses Projekt in 067, 097 und 100 jeweils einzeln abgelehnt hat. Sie stand hier erneut — und der Test `ein oeffentliches Ziel wird abgewiesen` hat sie **nicht** gefunden, weil mein Fixture auf **beiden** Seiten PUBLIC setzte. Ein Test, der denselben Wert auf Absicht und Messung legt, kann den Unterschied nicht sehen. Der Test wurde umgebaut: Absicht `PRIVATE`, Messung `PUBLIC`.
+
+**Der eigentliche Fund aber war ein anderer.** Selbst mit dem neuen Test blieb die Mutation grün. Der Grund: der **Wächter direkt darüber** (`geprueftesZiel != request.repository`) lehnt jede Abweichung ab, also *kann* die Zeile mit `request.repository.visibility` nie eine andere sehen. Zwei Prüfungen, von denen eine die andere verdeckt. Die Zeile liest jetzt `geprueftesZiel.visibility` — die Messung — und der Kommentar sagt, warum.
+
+### Eine Mutation, die grün blieb — und was ich daraus gelernt habe
+
+Erster Mutationsversuch: `geprueftesZiel.visibility` → `request.repository.visibility`. Ergebnis: **BUILD SUCCESSFUL**, 0 rot. Nach der Lehre aus Sitzung 23 habe ich dem **nicht** geglaubt, sondern `diff` gegen die Sicherung laufen lassen: die Mutation **war** geschrieben. Sie war also echt — und die Tests konnten sie einfach nicht sehen, weil ein anderer Wächter darüberlag.
+
+Erst danach habe ich die Mutation gewählt, die wirklich trägt (Wächter entfernen), und die wurde rot. Die Reihenfolge war falsch, nicht das Werkzeug.
+
+| Mutation | Rote Tests |
+|---|---|
+| Zielgleichheits-Wächter entfernt | **1** |
+| Freigabeprüfung entfernt | **3** |
+| Geheimnisprüfung entkräftet (`findings.filter { false }`) | **1** |
+| *(erster Versuch)* Absicht statt Messung gelesen | **0** — vom Wächter verdeckt |
+
+Alle **am Code** zurückgenommen; `diff` gegen die Sicherung bestätigt die Datei als **byte-identisch**, `grep` findet keinen Mutationsrest.
+
+### Vier eigene Compile-Fehler, alle von mir, alle vom Compiler gefunden
+
+Der erste Versuch von 101 hat **nicht übersetzt**: 17 Auflösungsfehler. Ursache war eine Dummheit von mir — ich hatte die Fixture-Objekte im Paket `feature.git` importiert, obwohl sie in derselben Datei im Paket `org.claudroide.app` stehen. Beim Rettungsversuch mit einem Skript habe ich es **verschlimmert**: Präfix entfernt, wodurch die Namen unauflösbar wurden, und eine Funktion ohne Klammern aufgerufen. Vier Runden, bis es übersetzte.
+
+Bemerkenswert: `FAILURE: Build failed` meldete Gradle auch dann, als mein `grep`-Filter die Fehlerzeilen weggeworfen hatte. **Ein gefilterter Fehlerbericht ist kein Fehlerbericht** — die `^e:`-Zeilen erst im zweiten Lauf sichtbar geworden.
+
+### Die zwei Fertig-Bedingungen als Eigenschaft
+
+- *„Upload an privates, eingerichtetes Ziel geht."* — `mayPush` prüft **zuerst** `audit.foundOnServer`, dann die **gemessene** Sichtbarkeit, dann `visibilityVerifiedOnDevice`. Ein Wert kann nicht durch, nur weil er `PRIVATE` behauptet.
+- *„Fehler und Teilübertragung klar erkennbar."* — `PushOutcome` hat **vier** Werte, **drei davon sind kein Erfolg**. `PARTIAL` ist ein eigener Wert: gesendet, nicht quittiert — weder Erfolg noch Fehler, denn niemand weiß es. `mayAlreadyHaveArrived` ist eine Eigenschaft, nicht aus dem Zustand geraten, und `displayLines()` **nennt** die unbestätigten Kennungen einzeln. „Vielleicht teilweise übertragen" ist nicht handhabbar; `b`, `c` sind es.
+
+Der Schutz: `userReleasedUpload` mit Vorgabewert `false`, an **letzter** Stelle geprüft — weil es die einzige Eingabe ist, die der Nutzer durch ein Ja ändern kann, und ein Ja darf die anderen Prüfungen nicht mitnehmen. Zwei Tests halten das fest; einer davon prüft den Gegenfall: ein **fertiger** Plan ist keine Freigabe.
+
+`PushDecision.Cancelled` ist ein eigener Antworttyp, weil „abgebrochen" und „noch nicht freigegeben" im Boolean gleich aussehen und für den Klickenden verschiedenes bedeuten. Das fand ein Test: er erwartete „abgebrochen" und bekam „nicht gesendet".
+
+### Gate-Pflicht: Skill gesucht, **nicht** installiert
+
+**Gesucht:** `push|git|github|release|publish` → zwei Kandidaten, beide **verworfen**:
+
+- `ecc/skills/github-ops` — GitHub-Betrieb über die `gh`-CLI: Issues, PRs, CI, Releases. Beschreibt die **Agenten**-Arbeit am Repository, nicht eine Freigabe-Vorsicht in der App.
+- `ecc/skills/git-workflow` — Branching-Strategien, Commit-Konventionen, Rebase-vs-Merge. Ebenfalls/git-Praxis des **Bau-Agenten**.
+
+Kein Skill zum Schutz eines Uploads aus einer App heraus. **Nichts installiert.** 101 hängt stattdessen an den bereits geprüften Typen: `RepositoryGate` (097) für die Privatheit, `GitSecretGate` (100) für den Verdacht, `RetryGate` (104) für den erneuten Versuch.
+
+### Was diese Sitzung ausdrücklich **nicht** belegt
+
+- **Es wurde nichts gesendet.** Kein Upload, kein Commit, kein Netz. `GitPushApproval.kt` öffnet keine Datei und ruft keinen Prozess; ein Test prüft die kompilierte Klasse gegen zehn verbotene Typen.
+- **Die erste Fertig-Bedingung ist offen** und bleibt es, bis ein Gerätelauf vorliegt. Das ist der Grund für `DeviceUploadEvidence`, nicht eine Formulierungshöflichkeit.
+- **Keine Gerätemessung**, unverändert seit Sitzung 22.
+
+### Was der Abschluss von 101 freigibt
+
+Neu berechnet: **4 startbar** — 077, 085 (Device-blockiert), 116, **128** (Sicherheitstests, W29; wartete laut `depends_on` auf 101). Damit ist 128 als Nächstes dran.
 
 ## Sitzung 24 — Task 100: Geheimnisse vor Git finden
 
