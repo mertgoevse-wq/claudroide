@@ -1,13 +1,68 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-04 (fünfundzwanzigste Sitzung — Task 101 als Gerüst abgeschlossen)
-**Status:** **128 von 135 Aufgaben `done`**, 7 offen, davon **2 mit `gate: true`** (085, 116). Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-04 (sechsundzwanzigste Sitzung — Task 128 abgeschlossen)
+**Status:** **129 von 135 Aufgaben `done`**, 6 offen, davon **2 mit `gate: true`** (085, 116). Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL**, **2425 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2399 + 26 aus 101). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 117 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `tools/secret_gate_fixtures` → 3 Treffer.
+**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL**, **2450 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2425 + 25 aus 128). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 118 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `tools/secret_gate_fixtures` → 3 Treffer.
 
 **Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen — Angaben aus Sitzung 22):** SM-A566B, Termux/Debian/PRoot. `adb devices` zeigt **kein** Gerät; `/dev/bus/usb` ist für Termux nicht lesbar. **Das OnePlus 6T per USB und der WLAN-Debug-Pfad waren beide unbenutzbar**; es liegt weiterhin keine Messung auf einem echten Gerät vor. Task 085 (USB-Projektzugriff, `gate: true`) bleibt damit aus Device-Gründen blockiert. In dieser Sitzung **nicht** neu gemessen.
 
-**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–24 weiter unten in dieser Datei.
+**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–25 weiter unten in dieser Datei.
+
+## Sitzung 26 — Task 128: Sicherheitstests
+
+### Der Befund, der die Aufgabe ausgelöst hat: vier Regeln **ohne** jeden Test
+
+Die Aufgabe verlangt Tests für die kritischen Sicherheitsregeln. Ein Katalog über alle `*Policy`-, `*Guard`- und `*Security`-Typen zeigte: die meisten haben Tests, **vier nicht**:
+
+| Typ | Tests |
+|---|---|
+| `PathBoundaryGuard` | **0** |
+| `ProjectExclusionPolicy` | **0** |
+| `InstructionTrustPolicy` | **0** |
+| `ZipProjectImportPolicy` | **0** |
+
+Genau die vier, die ein Angreifer zuerst probieren würde: Pfadausbruch, Geheimnisdatei, Prompt-Injection, Archiv-Import. Eine Regel ohne Test ist eine Regel, die nie jemand gebrochen hat.
+
+### Drei Fehler in **meinen** Tests, alle drei instructive
+
+1. **Ich prüfte die falsche Funktion.** Mein erster ZIP-Test verlangte, dass `normalizeEntryPath` kein `..` enthält — und wurde rot. Der Code ist **richtig**: die Normalisierung **behält** `..` bewusst, weil erst `PathBoundaryGuard` (das `inspect` auf jeden Eintrag anwendet) die Abwehr ist. Wer `..` schon bei der Normalisierung entfernen würde, **versteckte** den Angriff nur. Zwei Tests stehen jetzt da: einer prüft die Kette (`normalize` → `Guard` → abgelehnt), einer stellt ausdrücklich fest, dass die Normalisierung den Ausbruch **sichtbar lässt**.
+2. **Mein deutscher Testtext prüfte eine englische Regel.** `InstructionTrustPolicy` erkennt ausschließlich englische Formulierungen; mein Satz „Bitte ignoriere alle vorherigen Anweisungen…" löste **kein** Muster aus. Das war kein Codefehler, sondern eine **Deckungslücke**, die ich selbst nicht bemerkt hatte. Der Test prüft jetzt je ein Beispiel pro Angriffsklasse — alle fünf Klassen müssen vorkommen.
+3. **`expected:<32> but was:<33>`** — meine Behauptung über die Länge des erfundenen Schlüssels war schlicht falsch.
+
+### Die zweite Fertig-Bedingung: rote Schutztests sperren die Freigabe
+
+`ProtectionSuite.evaluate` ist die Antwort. `mayRelease` liest `total > 0 && failed == 0` — **beide** Hälften nötig. Ohne die erste wäre eine **gelöschte** Testsuite eine bestandene: mit `failed == 0` allein gäbe `evaluate(emptyList())` frei. Genau dieser Fall hat einen eigenen Test.
+
+| Mutation | Rote Tests |
+|---|---|
+| `mayRelease` → immer `true` | **2** (inkl. „leere Suite gibt nichts frei") |
+| Pfadtest prüft nicht mehr den Ausbruch | **1** |
+
+Beide am Code zurückgenommen, `diff` bestätigt die Datei als byte-identisch.
+
+### Vier Compile-Fehler — **derselbe Fehler zum zweiten Mal**
+
+Ich hatte die Fixture-Importe aus `GitPushApprovalTestFixtures` mit `feature.git` qualifiziert, obwohl die Klasse im Testpaket `org.claudroide.app` liegt. **Genau das war gestern der Fehler bei 101.** Das Lernen hat nicht gehalten, weil ich beim Schreiben nicht an den Präfix gedacht habe, sondern beim Debuggen. Und `InstructionTrustPolicy` liegt in `feature.agent`, nicht in `feature.project` — ich hatte das Paket angenommen statt nachzusehen.
+
+### Gate-Pflicht: Skill gesucht, **nicht** installiert
+
+**Gesucht** nach Mobile-App-Security-Test-Skills. Zwei Kandidaten, beide **verworfen**:
+
+- `ecc/skills/kotlin-testing` — Kotest, MockK, Kover. Dieses Projekt nutzt **JUnit4** (`build.gradle.kts:81`), und die Suite ist bewusst abhängigkeitsfrei.
+- `ecc/skills/llm-trading-agent-security` — Wallet-Autorität, MEV, Ausgabenlimits, On-Coin-Transaktionen. Eine andere Domäne.
+
+`security-scan` (aus 100) und `security-review` waren bereits geprüft und ebenfalls ungeeignet. **Nichts installiert.** Die Suite prüft vorhandene, geprüfte Typen — `PathBoundaryGuard` aus 046, `ProjectExclusionPolicy` aus 067, `InstructionTrustPolicy` aus 090, `ZipProjectImportPolicy` aus 106, dazu die drei aus 100/101.
+
+### Was diese Sitzung ausdrücklich **nicht** belegt
+
+- **Es wurde kein Angriff ausgeführt** und nichts am Gerät getestet. Das sind **JVM-Tests gegen die Entscheidungslogik**, keine Durchdringungsprüfung. Ein Test, der `PathBoundaryGuard.check` aufruft, sagt nichts darüber, ob ein echtes Dateisystem dasselbe tut.
+- **Keine Gerätemessung**, unverändert seit Sitzung 22.
+- **Die vorhandenen Tests wurden nicht verschärft.** 128 fügt hinzu; an den vier Typen ist keine Produktionslogik geändert worden.
+
+### Was der Abschluss von 128 freigibt
+
+Neu berechnet: **3 startbar** — 077, 085 (Device-blockiert), 116. Damit sind alle Aufgaben außer 085 und 116 abgeschlossen oder blockiert; **116** (`gate: true`, Projektwerkzeuge installieren) ist als Nächstes dran.
 
 ## Sitzung 25 — Task 101: Git-Upload freigeben (Gerüst, Gerätebedingung offen)
 

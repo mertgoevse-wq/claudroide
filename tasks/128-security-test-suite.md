@@ -5,9 +5,9 @@ wave: "W29"
 depends_on: [045, 046, 059, 067, 090, 100, 101, 106, 108, 119, 120, 122, 127, 134, 135]
 files: [tasks/128-security-test-suite.md]
 skills: [`testing-setup`, `android-permissions-security`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "50bfefcd5a59e8d6"
 ---
 # Aufgabe 128 — Sicherheitstests
