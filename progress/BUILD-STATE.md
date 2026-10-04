@@ -1,31 +1,71 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-03 (dreiundzwanzigste Sitzung — Task 099 abgeschlossen)
-**Status:** **126 von 135 Aufgaben `done`**, 9 offen, davon **4 mit `gate: true`** (085, 100, 101, 116). Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-04 (vierundzwanzigste Sitzung — Task 100 abgeschlossen)
+**Status:** **127 von 135 Aufgaben `done`**, 8 offen, davon **3 mit `gate: true`** (085, 101, 116). Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL**, **2369 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2269 + 31 aus 099, davon 1 neu). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 113 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `tools/secret_gate_fixtures` → 3 Treffer.
+**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL**, **2399 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2369 + 30 aus 100). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 115 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `tools/secret_gate_fixtures` → 3 Treffer.
 
 **Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen — Angaben aus Sitzung 22):** SM-A566B, Termux/Debian/PRoot. `adb devices` zeigt **kein** Gerät; `/dev/bus/usb` ist für Termux nicht lesbar. **Das OnePlus 6T per USB und der WLAN-Debug-Pfad waren beide unbenutzbar**; es liegt weiterhin keine Messung auf einem echten Gerät vor. Task 085 (USB-Projektzugriff, `gate: true`) bleibt damit aus Device-Gründen blockiert. In dieser Sitzung **nicht** neu gemessen.
 
-**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–22 weiter unten in dieser Datei.
+**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–23 weiter unten in dieser Datei.
 
-## Laufende Arbeit beim Unterbrechen — Task 100 (`gate: true`), nur Erkundung
+## Sitzung 24 — Task 100: Geheimnisse vor Git finden
 
-**Stand: nichts geschrieben, nichts committet.** Der Arbeitsbaum war beim Abbruch sauber; `git log` = `9c03007 Implement Task 099: commit proposal, named after its purpose`, **gepusht** an `mertgoevse-wq/claudroide` (`private: true`, vor dem Push live über `gh api` geprüft).
+### Der Checkpoint war veraltet — und das ist die eigentliche Beobachtung
 
-**Bereits gelesen und damit entschieden:**
+Der alte Stand behauptete wörtlich: „**Stand: nichts geschrieben, nichts committet.** Der Arbeitsbaum war beim Abbruch sauber; `git log` = `9c03007`". Beides war falsch: es lagen **zwei untracked Dateien** im Baum (858 Zeilen zusammen) und `HEAD` war `e6fe905`. Wäre ich dem Checkpoint gefolgt, hätte ich 100 als „noch nicht begonnen" behandelt und die vorhandene Arbeit überschrieben. **Ein Checkpoint ist eine Behauptung, kein Beweis** — dieselbe Unterscheidung, an der 095, 097 und 099 gescheitert sind, diesmal am eigenen Vermerk.
 
-- `tasks/100-git-secret-scan.md` — Ziel: unbeabsichtigte Zugangsdaten **vor Veröffentlichung** erkennen. Fertig, wenn: bekannte Muster **und** Fehlalarme testbar sind, und Treffer den Commit **standardmäßig blockieren**. Schutz: Treffer gehen an **keinen** Online-Scanner.
-- `tools/secret_gate.py` existiert bereits und ist **derselbe Gedanke in Python**: Zwei-Regel-Prinzip — der Wert muss *zufällig* sein (ein echter Schlüssel ist eine Zufallsfolge), und PEM-Material zählt erst mit Rumpf. Es hat `SKIP_DIRS` für die eigene Gegenprobe `tools/secret_gate_fixtures`, meldet **Fundstellen**, greift nie ein, sendet nie etwas.
-- Die Android-Seite hat bereits `feature/provider/SecretMasker.kt` und `ProjectExclusionPolicy.BLOCKED_SECRET` (aus 067), auf die `GitChangeList.blockedBySecretCheck` in 098/099 aufbaut. **Der Anschluss ist also vorhanden** — 100 muss nicht erfinden, nur verbinden und die beiden Regeln in Kotlin/Domänenlogik spiegeln.
+### Ein echter Fehler im vorgefundenen Code, vom Test gefunden
 
-**Offen, als Erstes weiterarbeiten:**
+`PEM_LOOKAHEAD_LINES` stand auf **0**. Das heißt: nach einer PEM-Kopfzeile wurde **nur die Kopfzeile selbst** noch einmal gelesen — der base64-Rumpf steht aber in der **Folgezeile**. Die Regel „PEM-Material zählt erst mit Rumpf" war damit **dokumentiert und unerreichbar zugleich**: der Kommentar über `scanFile` versprach „The body sits in the following lines", und die Konstante las keine Folgezeile.
 
-1. `app/src/main/java/org/claudroide/app/feature/provider/SecretMasker.kt` **erneut lesen** — der Leseversuch schlug in dieser Sitzung mit einem internen Fehler fehl, die Datei selbst ist nie angezeigt worden. Aus Sitzung 21 ist nur bekannt: `maskApiKey` gibt die **ersten und letzten vier Zeichen** zurück (bei einem PEM-Block wären das dessen Ränder, und der Maskierer erkennt die verkürzte Form `-----BEGIN …` dann nicht mehr); `SecretMasker.REDACTION_PLACEHOLDER` gibt **kein** Zeichen aus. Für 100 heißt das: der Scan darf **nicht** über den gekürzten Maskierer laufen.
-2. Die Skill-Zuordnung lautet `android-permissions-security` und `testing-setup` (beide global installiert, noch nicht für 100 gelesen).
-3. Der Skill-Suchauftrag der Aufgabe (globaler Git-Secret-Scan-Skill, Quelle/Lizenz prüfen, **vor Installation fragen**): ein Kandidat wurde gefunden — `ecc/skills/security-scan` unter `/home/mert/.claude/plugins/marketplaces/ecc/skills/`. **Noch nicht bewertet und nicht installiert**; das Auslesen wurde abgebrochen. Wie bei 095 gilt: bewerten, dokumentieren, und **nicht** ohne ausdrückliche Bestätigung installieren.
+Gemessen, nicht vermutet: der erste Lauf nach `/claudroide-resume` war **rot, 1 von 30** (`PEM-Material im Rumpf wird gefunden`). Behoben auf `3`, womit das Fenster vier Zeilen umfasst (`index..index+3`) — **genau** das Fenster, das `tools/secret_gate.py:95` mit `range(i, min(i + 4, len(lines)))` benutzt. Dass beide denselben Wert haben, ist jetzt beabsichtigt und im Kommentar begründet statt zufällig.
 
-**Nächste freigegebene Aufgabe nach 100:** 101 (Push-Freigabe), danach 116 und 128. 085 bleibt aus Gerätegründen blockiert, 077 ist parallel startbar.
+### Drei Mutationen, jede wird rot
+
+| Mutation | Rote Tests |
+|---|---|
+| `blockingFindings` → **alle** Treffer (auch synthetische blockieren) | **6** |
+| `blocksCommit` → immer `false` (Treffer blockieren nicht) | **3** |
+| `PEM_LOOKAHEAD_LINES` zurück auf `0` (der ursprüngliche Fehler) | **1** |
+
+Alle drei **am Code** zurückgenommen; `diff` gegen die Sicherung bestätigt die Datei als **byte-identisch**, und `grep` findet keinen Mutationsrest. Die dritte Mutation ist die wichtigste: sie ist **derselbe Zustand, den die Vorsitzung hinterlassen hat** — und genau dafür wurde ein Test rot. Das ist der direkte Beweis, dass die Korrektur etwas bewirkt und nicht bloß eine grüne Zahl erzeugt.
+
+### Die zwei Fertig-Bedingungen als Eigenschaft
+
+- *„Bekannte Muster und Fehlalarme testbar."* — `SecretVerdict` ist Teil **jedes** Treffers, ein selbstbenannter Wert ist also **sichtbar, aber nicht blockierend**: sichtbar, damit sich kein echter Schlüssel hinter einem Kommentarwort verstecken kann; nicht blockierend, weil `app/src/test/` genau solche Werte trägt. Beide Hälften sind Eigenschaften, keine Prosa. Der Test deckt ausdrücklich den **Gegenfall** ab — synthetisch **und** daneben ein echter Schlüssel: 2 Funde, davon 1 blockierend.
+- *„Treffer blockieren den Commit standardmäßig."* — `blocksCommit` liest **ausschließlich** `blockingFindings`; `GitSecretGate.canOverride` gibt es und gibt **immer `false`** zurück. Das ist strenger als `ProjectExclusionPolicy.BLOCKED_HEAVY`, das der Nutzer aufheben darf: ein großer Ordner kostet Speicher, ein committeter Schlüssel das Konto. **„Standardmäßig" heißt hier: ganz ohne Aufhebung.**
+
+### Schutz: ein Fund trägt keinen Wert — und das wird überprüft
+
+`SecretFinding` hat **kein** Feld für den Treffertext; der Nutzer wird auf `path:line` verwiesen. Zwei Tests sichern das strukturell ab: einer sucht den vollständigen Schlüssel **und** ein Fragment davon in allen Ausgaben des Berichts, der andere prüft die kompilierte Klasse gegen zwölf verbotene Typen (`java.io.File`, `java.net.`, `okhttp3`, `ProcessBuilder`, `android.util.Log`, …). Damit ist die Aussage „wird nicht an einen Online-Scanner gesendet" nicht behauptet, sondern **am Objektcode** nachgewiesen: es gibt keinen Pfad von einem Fund zu einem Netzwerk, weil keiner existiert.
+
+### Gate-Pflicht: Skill gesucht, **nicht** installiert
+
+**Gesucht** (lokal, alle installierten Marktplätze): `ls` nach `secret|git|cred|leak|scan` → vier Treffer, alle ungeeignet:
+
+- `ecc/skills/security-scan` — der einzige naheliegende Kandidat (der Checkpoint notierte ihn). **Gelesen und verworfen**: er prüft die **Claude-Code-Konfiguration** (`.claude/`: `settings.json`, `mcp.json`, Hooks), nicht Zugangsdaten im Code, und verlangt `npm install -g ecc-agentshield` — eine **globale** Installation eines fremden Pakets ohne aktuelle Freigabe.
+- `ecc/skills/repo-scan` — Quellcode-**Bestandsaufnahme** („wie viel Code ist deiner"), kein Geheimnis-Scan.
+- `ecc/skills/security-review/cloud-infrastructure-security.md` — Cloud-Härtung; `gitleaks` kommt dort **nicht** vor.
+- `ecc/skills/django-verification/SKILL.md:132` — erwähnt `gitleaks detect` als **Befehl in einem Bash-Beispiel**, kein Skill mit Regeln.
+
+**Entscheidung: nichts installiert.** Es existiert kein Git-Secret-Scanning-Skill im Register, und `gitleaks` ist ein Programm, dessen Installation denselben Freigabevorbehalt hätte. 100 spiegelt stattdessen die bereits geprüften Regeln aus `tools/secret_gate.py` in Kotlin — beide Regeln und **beide** gemessenen Fehlversuche sind im Klassenkommentar festgehalten.
+
+### Eine bewusste Auslegungsentscheidung: **nicht** verdrahten
+
+`GitSecretScanner` hat im `main`-Quellbaum **keinen Aufrufer** (per `grep` geprüft). Das ist Absicht, kein Versehen: `GitChangeListPolicy.blockedBySecretCheck` (aus 098/099) arbeitet **pfadbasiert** (`ProjectExclusionPolicy.classify`), der neue Scanner **inhaltsbasiert**. Sie zu verdrahten hieße, die abgeschlossene Datei `GitCommitProposal.kt` aus 099 zu ändern — außerhalb des Auftrags von 100 und ein Eingriff in eine als `done` verifizierte Einheit. Die Verbindung entsteht dort, wo sie hingehört: **101** (Push-Freigabe) hängt laut `depends_on` bereits an 100. Das ist hier als offener Übergabepunkt notiert, nicht stillschweigend erledigt.
+
+### Was diese Sitzung ausdrücklich **nicht** belegt
+
+- **Es wurde kein Geheimnis gescannt und nichts gespeichert.** `GitSecretScan.kt` öffnet keine Datei, sendet nichts, ruft keinen Prozess; es bekommt Text als Wert und gibt Funde zurück. Ob ein echter Schlüssel auf dem A56 erkannt würde, ist damit **nicht** gezeigt.
+- **Kein Gerätetest.** Es liegt weiterhin **keine** Messung auf einem echten Gerät vor (`adb devices` zeigt nichts).
+- **Ein Testfehler, kein Zulassungsfehler:** Der erste Filterversuch `--tests org.claudroide.app.GitSecretScanTest` schlug mit `No tests found` fehl, weil die Datei `package org.claudroide.app.feature.git` deklariert, im Verzeichnis aber unter `app/` liegt — anders als ihre Nachbarn (`GitCommitProposalTest.kt`, `package org.claudroide.app`). Der grüne Lauf wäre mit dem richtigen Namen entstanden; der falsche Name hätte **0 Tests** gelaufen und wäre trotzdem als Erfolg durchgegangen.
+
+### Was der Abschluss von 100 freigibt
+
+Neu berechnet mit `sync_frontmatter.py --ready`: **4 startbar** — 077 (W17), 085 (W19, weiter aus Device-Gründen blockiert), 101 (W22), 116 (W26). 128 bleibt zu, weil es zusätzlich 101 braucht.
+
+## Sitzung 23 — Task 099: Aufgabenstand sichern
 
 ## Sitzung 23 — Task 099: Aufgabenstand sichern
 

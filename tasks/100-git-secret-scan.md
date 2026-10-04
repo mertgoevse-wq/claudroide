@@ -5,9 +5,9 @@ wave: "W21"
 depends_on: [045, 095, 096]
 files: [tasks/100-git-secret-scan.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "29a051245a871e11"
 ---
 # Aufgabe 100 — Geheimnisse vor Git finden
