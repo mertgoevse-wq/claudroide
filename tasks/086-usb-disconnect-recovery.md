@@ -5,9 +5,9 @@ wave: "W19"
 depends_on: [082, 085]
 files: [tasks/086-usb-disconnect-recovery.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "3752af011d13fcf3"
 ---
 # Aufgabe 086 — USB-Verlust abfangen

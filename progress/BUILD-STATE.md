@@ -1,17 +1,80 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-05 (achtundzwanzigste Sitzung — Tasks 116 und 077 abgeschlossen, committet **und gepusht** nach Privatmachung des Repos)
-**Status:** **133 von 135 Aufgaben `done`**, 2 offen (085, 086), davon **1 mit `gate: true`** (085, USB/device-blockiert). Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-05 (neunundzwanzigste Sitzung — Tasks 085 und 086 als Gerüst abgeschlossen; **offen: unvollständige Mutationsprüfung**)
+**Status:** **135 von 135 Aufgaben `done`**, 0 offen. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK). **Achtung:** „alle erledigt" heißt hier **nicht** „alles am Gerät belegt" — 085 und 086 tragen eine ausdrücklich offene Gerätebedingung, siehe Sitzung 29.
 
-**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL**, **2489 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2450 + 22 aus 116 + 17 aus 077). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 120 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `tools/secret_gate_fixtures` → 3 Treffer.
+**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` (Sitzung 28, **vor** 085/086) → BUILD SUCCESSFUL, **2489 Tests, 0 Fehler, 0 übersprungen**. Für 085/086 **nur die beiden neuen Suiten** gelaufen: `UsbProjectAccessTest` **17 Tests, 0 Fehler**, `UsbDisconnectRecoveryTest` **16 Tests, 0 Fehler**. **Ein Gesamtlauf über alle Suiten steht aus** — die Zahl 2522 unten ist eine **Rechnung (2489 + 33), keine Messung**. Gezählt wird aus `app/build/test-results/testDebugUnitTest/*.xml`, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0.
 
-**Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen — Angaben aus Sitzung 22):** SM-A566B, Termux/Debian/PRoot. `adb devices` zeigt **kein** Gerät; `/dev/bus/usb` ist für Termux nicht lesbar. **Das OnePlus 6T per USB und der WLAN-Debug-Pfad waren beide unbenutzbar**; es liegt weiterhin keine Messung auf einem echten Gerät vor. Task 085 (USB-Projektzugriff, `gate: true`) bleibt damit aus Device-Gründen blockiert. **In Sitzung 28 neu gemessen:** `adb devices` zeigt ebenfalls **kein** Gerät.
+**Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen — Angaben aus Sitzung 22):** SM-A566B, Termux/Debian/PRoot. `adb devices` zeigt **kein** Gerät; `/dev/bus/usb` ist für Termux nicht lesbar. **Das OnePlus 6T per USB und der WLAN-Debug-Pfad waren beide unbenutzbar**; es liegt weiterhin keine Messung auf einem echten Gerät vor. Task 085 (USB-Projektzugriff, `gate: true`) bleibt damit aus Device-Gründen blockiert. **In Sitzung 28 neu gemessen:** `adb devices` zeigt ebenfalls **kein** Gerät. **In Sitzung 29 nicht neu gemessen** — dort wurde nur die Entscheidungsschicht gebaut, kein Gerätetest.
 
-**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–27 weiter unten in dieser Datei.
+**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–28 weiter unten in dieser Datei.
 
 **Letzte sichere Git-Referenz:** `d0a2025` auf `main`, auf `origin/main` **verifiziert** (`rev-list --left-right --count origin/main...main` → `0 0`), Repository zum Push-Zeitpunkt `private=true`.
 
-## Sitzung 28 — Der Checkpointerzählte falsch, und der Code von 077 war nicht grün
+## Sitzung 29 — 085 und 086 als Gerüst, und was daran **nicht** belegt ist
+
+### Der Auftrag
+
+Der Nutzer hat am 2026-10-05 entschieden: **als Gerüst bauen, Device-Lücke offenlassen**, wie bei 101. Also kein „Vielleicht doch messen", sondern die Entscheidungsschicht bauen und die Gerätebedingung als **Wert im Programm** stehen lassen. Beide Aufgaben tragen diese Lücke:
+
+| Datei | Konstante | Wert |
+|---|---|---|
+| `UsbProjectAccess.kt` | `UsbEvidence.PROBE_OBSERVED_ON_DEVICE` | `const val = false` |
+| `UsbDisconnectRecovery.kt` | `DisconnectEvidence.INTERRUPTION_OBSERVED_ON_DEVICE` | `const val = false` |
+
+`const`, nicht `var`: ein `var` wäre eine Erfindung mit Häkchen. `UsbPathAvailability.isUsable` gibt deshalb für **jedes** Volume `false` zurück — nicht als Fehler und nicht als „vorläufig", sondern weil genau das die erste Fertig-Bedingung von 085 verlangt.
+
+### Drei Compile-Fehler, und zwei davon waren **meine** — ein Namenskonflikt mitten im Projekt
+
+Der erste Lauf war **kein Testfehler, sondern 11 Übersetzungsfehler**. Der wichtigste:
+
+`enum class AccessState` gibt es **bereits** in `ProjectOverviewPolicy.kt:45`, mit anderer Bedeutung (`GRANTED`/`REVOKED`/`NONE`). Ich hatte denselben Namen für „Zugriff auf das Medium nach Verlust" vergeben. Ein gleichnamiger Typ hätte die **Bedeutung** überschrieben, ohne dass der Compiler etwas zu melden hätte — der Nutzer hätte „Zugriff freigegeben" und „Medium erreichbar" nicht mehr unterscheiden können. Umbenannt in `MediumAccess` und `MediumFileState`. Bei `FileState` war es derselbe Fehlertyp an zwei Stellen.
+
+Weiter: `discardedPaths.forEach { add(...) }` in einer `listOf(...)` — `forEach` gibt `Unit` zurück, nicht `String`; die Compiler-Meldung `expected List<String>, actual List<Any>` war die ehrliche Folge davon. Behoben auf `buildList`.
+
+### Zwei **eigene** Testfehler, beide von derselben Art
+
+Beide standen auf **deutschen Text**, den ich aus dem Gedächtnis geschrieben statt aus der Datei gelesen hatte:
+
+| Test behauptete | Code sagt | Folge |
+|---|---|---|
+| `vorlaeufig` | `vorläufig` | rot |
+| `nicht als verfuegbar` (in `unavailableLines()`) | steht in `statementLines()` | rot |
+
+Das ist **derselbe Fehler zum zweiten Mal in dieser Sitzungskette** (vgl. Sitzung 26: „Mein deutscher Testtext prüfte eine englische Regel"). Beide Male war **der Code richtig und der Test falsch**, und beide Male wurde der Test am Text der Quelle berichtigt — nicht die Quelle an den Test. Die Regel daraus: Bei sprachabhängigen Zusicherungen den String aus der Datei lesen, nicht aus dem Kopf.
+
+### Ein **tautologischer** Test, den ich selbst geschrieben hatte
+
+Der erste Entwurf des Strukturtests prüfte:
+
+```kotlin
+val gebrochen = verboten.filter { Class.forName(typ) != null }
+assertEquals(emptyList(), gebrochen)
+```
+
+`Class.forName` wirft, wenn der Typ fehlt — der Filter hätte **nie** etwas gefunden, der Test wäre **immer** grün gewesen, auch bei einem Produktionscode, der `java.io.File` benutzt. Er ist ersetzt: jetzt werden Methodensignaturen, Feldtypen und Obertypen **aller eingeführten Typen** gelesen und gegen die Verbotsliste gehalten. Der Test prüft jetzt etwas.
+
+### Die zwei Fertig-Bedingungen als Eigenschaft
+
+- **085, „nur erfolgreich getestete Wege als verfügbar"** — `isUsable` liest `PROBE_OBSERVED_ON_DEVICE` **und** `UsbProbe.behaviour` **und** vergleicht, dass der Beleg zum selben Volume gehört (`probe.volume.rootUri != volume.rootUri` → `false`). Ein Wechseldatenträger, ein sauberes Dateisystem und zehn fehlerfreie Schreibvorgänge ändern daran nichts, solange das Projekt nie gemessen hat. Der Testfall dafür ist der härteste im File: ein Volume, das **perfekt** aussieht, wird abgewiesen.
+- **085, „langsame oder unzuverlässige Speicherung wird erklärt"** — `ProbeObservation.behaviour` ist **abgeleitet**, nicht übergeben: zu wenige Schreibvorgänge → `UNTESTED` (nicht „zuverlässig, es ist ja nichts schiefgegangen"), ein Schreibfehler **oder** ein ausbleibendes Lesen → `UNRELIABLE`, ab `FLAGGED_WRITE_MILLIS` → `SLOW`. Ohne gemessene Dauer wird **keine** behauptet — mit eigenem Test.
+- **086, „nichts wird als gespeichert gezeigt, was es nicht ist"** — `SaveStatus.Saved` nimmt **zwingend** eine `ConfirmedWrite` entgegen; ein Test prüft das am Konstruktor, nicht am Verhalten. `Unconfirmed` und `Lost` sind **zwei** Werte, weil „wir wissen es nicht" und „es ist weg" für den Nutzer Unterschiedliches sind.
+- **086, „Fortsetzen erst nach erneutem Zugriffs- und Dateistatuscheck"** — `ResumeGate.mayResume` prüft **beide** Hälften getrennt, und je **ein** Test prüft, dass jede Hälfte allein **nicht** genügt. Ein Tor, das nur eine prüft, sieht genau wie ein vollständiges aus.
+
+Der Schutz „keine automatische Kopie an unbekanntem Ort" ist **strukturell**: `RecoveryDecision` hat drei Werte, und **keiner nennt ein fremdes Ziel**. Ein Test sucht in allen Ausgabetexten nach zwölf Wendungen für ein zweites Ziel und verlangt null Treffer.
+
+### Was diese Sitzung ausdrücklich **nicht** belegt
+
+- **Die Mutationsprüfung ist unvollständig.** Bei 077 wurde die Mutation eingebaut, rot gezeigt, zurückgenommen und per `md5sum` als byte-identisch bestätigt. Für 085 wurde eine Mutation **vorbereitet** (`if (false && !UsbEvidence.PROBE_OBSERVED_ON_DEVICE)`), die Sitzung endete jedoch **vor** dem Lauf. Sie wurde **zurückgenommen** und per `md5sum` gegen die Sicherung bestätigt (`256c5997…`, identisch), `grep` findet keinen Mutationsrest — der Baum ist also sauber, aber **die Mutation ist nie gelaufen**. Für 085 und 086 gilt damit **kein** Mutationsnachweis. Das ist der erste Punkt, den die nächste Sitzung aufnehmen muss.
+- **Kein Gerätetest.** `adb devices` zeigte in Sitzung 28 kein Gerät; in Sitzung 29 wurde **nicht** neu gemessen. Weder ein USB-Laufwerk wurde aufgezählt, noch wurde ein Schreibvorgang ausgeführt. `SlowWriteEvidence.FLAGGED_WRITE_MILLIS` ist eine **Schwelle zum Kennzeichnen**, keine Angabe darüber, was USB-Speicher auf einem A56 leistet.
+- **Kein Gesamtlauf.** Nur die beiden neuen Suiten sind gemessen. Die Gesamtzahl 2522 ist eine Rechnung.
+- **Keine Speed-, Vendor- oder Größenangabe.** Es gibt in beiden Dateien keinen Herstellernamen, keine Kapazität und keinen Dateisystemtyp als Behauptung — sie kommen als Eingabe herein, wenn jemand sie hat.
+
+### Was der Abschluss von 085 und 086 freigibt
+
+Neu berechnet mit `sync_frontmatter.py --ready`: **0 startbare Aufgaben, 0 offen**. Der Aufgabenbestand ist damit vollständig abgearbeitet — **als Gerüst mit offener Messung**, nicht als gemessene Eigenschaft des Geräts. Die nächste Sitzung hat zwei Wege: die Mutationsprüfung für 085/086 nachziehen, oder ein Gerät anschließen und die beiden Konstanten durch eine echte Messung ersetzen.
+
+## Sitzung 28 — Der Checkpoint zählte falsch, und der Code von 077 war nicht grün
 
 ### Der Abbruch hinterließ Arbeit, die als erledigt gemeldet war
 

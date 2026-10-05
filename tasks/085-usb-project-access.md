@@ -5,9 +5,9 @@ wave: "W19"
 depends_on: [082]
 files: [tasks/085-usb-project-access.md]
 skills: [`android-permissions-security`, `android-profiler`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "67d75a83e3f34727"
 ---
 # Aufgabe 085 — USB-Projektzugriff
