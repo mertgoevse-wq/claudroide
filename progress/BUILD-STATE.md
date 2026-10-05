@@ -1,13 +1,71 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-04 (sechsundzwanzigste Sitzung — Task 128 abgeschlossen)
-**Status:** **129 von 135 Aufgaben `done`**, 6 offen, davon **2 mit `gate: true`** (085, 116). Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
+**Stand:** 2026-10-05 (achtundzwanzigste Sitzung — Tasks 116 und 077 abgeschlossen und committet)
+**Status:** **133 von 135 Aufgaben `done`**, 2 offen (085, 086), davon **1 mit `gate: true`** (085, USB/device-blockiert). Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
-**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL**, **2450 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2425 + 25 aus 128). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 118 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `tools/secret_gate_fixtures` → 3 Treffer.
+**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL**, **2489 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2450 + 22 aus 116 + 17 aus 077). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 120 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `tools/secret_gate_fixtures` → 3 Treffer.
 
 **Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen — Angaben aus Sitzung 22):** SM-A566B, Termux/Debian/PRoot. `adb devices` zeigt **kein** Gerät; `/dev/bus/usb` ist für Termux nicht lesbar. **Das OnePlus 6T per USB und der WLAN-Debug-Pfad waren beide unbenutzbar**; es liegt weiterhin keine Messung auf einem echten Gerät vor. Task 085 (USB-Projektzugriff, `gate: true`) bleibt damit aus Device-Gründen blockiert. In dieser Sitzung **nicht** neu gemessen.
 
-**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–25 weiter unten in dieser Datei.
+**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–27 weiter unten in dieser Datei.
+
+## Sitzung 28 — Der Checkpointerzählte falsch, und der Code von 077 war nicht grün
+
+### Der Abbruch hinterließ Arbeit, die als erledigt gemeldet war
+
+`git status` zeigte **vier untracked Dateien** (1447 Zeilen) und `HEAD` auf `904660c`. Der Header behauptete „Sitzung 27 — Task 116 abgeschlossen" und zählte **130 von 135 erledigt**. Die Zählung über die 135 Frontmatter-Dateien ergab **132 erledigt, 3 offen**. Die Differenz war kein Rundungsfehler: die abgeschlossene **Sitzung 27 hatte nie einen eigenen Abschnitt geschrieben** — sie hatte nur die Kopfzeile umgeschrieben. Ein Checkpoint, der eine Zahl behauptet, die man nicht nachrechnen kann, ist eine Behauptung, keine Messung.
+
+### Ein **echter Fehler im Fremdcode**, gefunden durch den ersten Testlauf
+
+Der erste `./gradlew :app:testDebugUnitTest --rerun-tasks` nach dem Abbruch war **rot, 1 von 2489**: `AttemptForkTest > ohne Vergleich wird nicht zusammengefuehrt FAILED`.
+
+Ursache in `AttemptFork.kt:302`:
+
+```kotlin
+if (false && !comparison.compared) {   // ← der Vergleichs-Schalter war abgeschaltet
+```
+
+Das ist **genau die zweite Fertig-Bedingung von 077** („Zusammenführen nur nach Vergleich und ausdrücklicher Freigabe"). Mit `false &&` konnte `MergeGate.mayMerge` einen Zusammenführungsvorgang **allein aufgrund der Freigabe eines einzelnen Versuchs** durchwinken — der Nutzer hätte nie etwas verglichen. Der Klassenkommentar oben beschrieb das Tor als geschlossen; im Code war es offen. Dieselbe Lücke wie in Sitzung 23 und 24: **Behauptung und Verhalten laufen auseinander**.
+
+Behoben auf `if (!comparison.compared)`.
+
+### Der Mutationsnachweis: der Fehler ist genau der, den der Test sehen soll
+
+Nach der Korrektur wieder **denselben Fehler eingebaut** und nur `AttemptForkTest` laufen lassen:
+
+| Zustand | Ergebnis |
+|---|---|
+| `if (!comparison.compared)` | **17 Tests, 0 Fehler** |
+| `if (false && !comparison.compared)` → **rot** | **17 Tests, 1 Fehler** |
+
+Die Zeile zurückgenommen, `md5sum` bestätigt die Datei als byte-identisch zur korrigierten Fassung (`d15d00f7…`), `grep` findet keinen Mutationsrest. Wichtig, weil Sitzung 23 und 24 jeweils eine Mutation erlebten, die **gar nicht geschrieben** war und deshalb grün blieb: hier wurde zuerst `md5sum` **vor** und **nach** dem Zurücknehmen verglichen, nicht die grüne Zahl geglaubt.
+
+### Beide Fertig-Bedingungen von 077 als Eigenschaft, nicht als Absicht
+
+- *„Nutzer sieht, welcher Versuch welche Daten und Modellkosten nutzt."* — `AttemptFootprint` ist ein Pflichtfeld von `AttemptPlan`, und `comparisonLines()` gibt **jeden** Versuch mit Datenquelle, Modell und Kosten aus, nicht eine Summe und nicht nur den Gewinner. Ein Vergleich, der nur den Sieger zeigte, würde genau die Kosten der Alternativen verbergen — und darüber entscheidet der Nutzer. Ohne Preisbeleg trägt ein Versuch `AttemptCost.Open` und **keine Zahl**: eine erfundene Zahl sieht aus wie eine Messung.
+- *„Zusammenführen nur nach Vergleich und ausdrücklicher Freigabe."* — `MergeGate.mayMerge` liest zwei **getrennte** Eingaben, `compared` und `approvedByUser`, und verweigert, wenn eine fehlt. Beide sind `Boolean = false` und **nirgends abgeleitet**: ein beendeter Versuch ist kein Vergleich, ein Vergleich ist keine Freigabe. Der Testfall dafür prüft den harten Fall — Versuch B ist freigegeben, A ist nicht verglichen — und genau der war rot.
+
+Der Schutz „Parallele Agenten erhalten begrenzten Projektzugriff" ist strukturell: `AttemptScope` hat **keinen** beschreibbaren Wert (`mayWriteMainProject` ist für beide Werte `false`), und `AttemptPlan`/`AttemptComparison` lehnen einen Versuch ab, dessen Arbeitsverzeichnis das Hauptprojekt ist. Ein Wert, der schreiben dürfte, würde den Satz zur Dekoration machen.
+
+### Skills: alle vier geladen, nichts installiert
+
+**077** — `/swarm-planner` und `/parallel-task`, beide **von Platte gelesen**. Aus `parallel-task` die Bindung, dass ein Task erst nach RED→GREEN-Nachweis abgeschlossen wird: deshalb wurde der rote Test zuerst **analysiert** statt weggeschrieben. Aus `swarm-planner` die Regel „explizite Abhängigkeiten, atomare Tasks, vor dem Yield reviewen" — hier angewandt als: 077 und 116 haben getrennte Dateien, also durfte keiner dem anderen ins Frontmatter schreiben.
+
+**116** — `android-permissions-security` und `testing-setup`, ebenfalls gelesen. `testing-setup` (Schritt 1: vorhandene Testbasis analysieren) bestätigt den Befund: dieses Projekt nutzt **JUnit4** ohne Mock-Framework, und die neuen Suiten bleiben bewusst abhängigkeitsfrei — eine neue Testbibliothek wäre eine Installation mit Freigabevorbehalt gewesen.
+
+**Gate-Pflicht von 116 (Supply-Chain-Skill): gesucht, nicht installiert.** `npx skills find` mit zwei Formulierungen (`supply chain dependency security`, `npm package install provenance audit`). Ein Kandidat passt **thematisch sogar**:
+- `addyosmani/agent-skills@security-and-hardening` (51.3K Installationen) — Beschreibung nennt wörtlich „assessing supply-chain risk in a new package" und das Triagieren von Package-Manager-Audit-Befunden.
+- **Warum trotzdem nicht installiert:** Es ist ein **fremdes** Repo, und die Installation ist eine globale Umgebungsänderung ohne aktuelle ausdrückliche Freigabe des Nutzers. Die Gate-Pflicht verlangt Suche und Sicherheitsbefund, nicht automatische Aufnahme. **116 hängt deshalb an vorhandener, geprüfter Projektlogik**: `PackageOrigin` ist eine geschlossene Menge von vier Werten, `UNVERIFIED` wird abgewiesen, und `canOverride` gibt **immer `false`** zurück — dieselbe Entscheidung wie in 100 und 101.
+
+### Was diese Sitzung ausdrücklich **nicht** belegt
+
+- **Kein Paket installiert, kein Download.** `RuntimeDependencyInstall.kt` entpackt nichts und schreibt nichts; es liest einen beschriebenen Paketdatensatz und antwortet. `DependencyEvidence.INSTALL_OBSERVED_ON_DEVICE` ist ein `const val = false`.
+- **Kein Gerätetest.** `adb devices` zeigt **kein** Gerät (in dieser Sitzung neu gemessen). 085 bleibt blockiert, und damit auch 086, das laut `depends_on` 085 braucht.
+- **Keine erneute Mutationstabelle für 116.** 116 wurde in Sitzung 27 mit 22 Tests abgeschlossen; diese Sitzung hat die Datei **nur gegen den Gesamtbestand** geprüft, nicht neu mutiert. Das ist eine schmalere Aussage als bei 077 und wird nicht als gleichwertig dargestellt.
+
+### Was der Abschluss von 077 und 116 freigibt
+
+Neu berechnet mit `sync_frontmatter.py --ready`: **0 startbare Aufgaben**. Es bleiben **085** und **086**, beide aus Gerätegründen blockiert — es liegt weiterhin keine Messung auf einem echten Gerät vor.
 
 ## Sitzung 26 — Task 128: Sicherheitstests
 

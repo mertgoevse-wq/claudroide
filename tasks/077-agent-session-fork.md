@@ -5,9 +5,9 @@ wave: "W17"
 depends_on: [073, 078, 090, 099, 070, 071]
 files: [tasks/077-agent-session-fork.md]
 skills: [`/swarm-planner`, `parallel-task`]
-status: pending
+status: done
 gate: false
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "c3912de1dc5541dc"
 ---
 # Aufgabe 077 — Alternative Arbeitsversuche

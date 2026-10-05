@@ -5,9 +5,9 @@ wave: "W26"
 depends_on: [017, 018, 100, 105, 107]
 files: [tasks/116-runtime-dependency-install.md]
 skills: [`android-permissions-security`, `testing-setup`]
-status: pending
+status: done
 gate: true
-done_since_last_edit: false
+done_since_last_edit: true
 content-hash: "4c39cf5173bfc6d7"
 ---
 # Aufgabe 116 — Projektwerkzeuge installieren
