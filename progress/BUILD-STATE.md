@@ -53,19 +53,40 @@ Der Schutz „Parallele Agenten erhalten begrenzten Projektzugriff" ist struktur
 
 **116** — `android-permissions-security` und `testing-setup`, ebenfalls gelesen. `testing-setup` (Schritt 1: vorhandene Testbasis analysieren) bestätigt den Befund: dieses Projekt nutzt **JUnit4** ohne Mock-Framework, und die neuen Suiten bleiben bewusst abhängigkeitsfrei — eine neue Testbibliothek wäre eine Installation mit Freigabevorbehalt gewesen.
 
-**Gate-Pflicht von 116 (Supply-Chain-Skill): gesucht, nicht installiert.** `npx skills find` mit zwei Formulierungen (`supply chain dependency security`, `npm package install provenance audit`). Ein Kandidat passt **thematisch sogar**:
+**Gate-Pflicht von 116 (Supply-Chain-Skill): gesucht, geprüft, auf Freigabe installiert.** `npx skills find` mit zwei Formulierungen (`supply chain dependency security`, `npm package install provenance audit`). Ein Kandidat passt **thematisch sogar**:
 - `addyosmani/agent-skills@security-and-hardening` (51.3K Installationen) — Beschreibung nennt wörtlich „assessing supply-chain risk in a new package" und das Triagieren von Package-Manager-Audit-Befunden.
-- **Warum trotzdem nicht installiert:** Es ist ein **fremdes** Repo, und die Installation ist eine globale Umgebungsänderung ohne aktuelle ausdrückliche Freigabe des Nutzers. Die Gate-Pflicht verlangt Suche und Sicherheitsbefund, nicht automatische Aufnahme. **116 hängt deshalb an vorhandener, geprüfter Projektlogik**: `PackageOrigin` ist eine geschlossene Menge von vier Werten, `UNVERIFIED` wird abgewiesen, und `canOverride` gibt **immer `false`** zurück — dieselbe Entscheidung wie in 100 und 101.
+
+**Sicherheitsbefund vor der Installation** (nicht danach): Repo per `gh api` geprüft — **MIT**, `archived: false`, `fork: false`, 101.366 Stars, zuletzt gepusht 2026-10-03, Inhaber `addyosmani` (nicht das eigene Konto). Inhalt **vor** dem Installieren geklont und gelesen: genau **zwei Markdown-Dateien** (`SKILL.md` 216 Zeilen, `references/hardening-patterns.md` 324 Zeilen), **keine ausführbare Datei, kein Hook, kein Skript mit Seiteneffekt**. `grep` nach `curl|wget|rm -rf|eval|base64 -d|npm install -g` findet **nur Verbote** in der Dokumentation („Never commit secrets", „Never use eval()"), keine Anweisung, etwas auszuführen. Nach der Installation `diff -r` gegen die gelesene Quelle: **identisch**.
+
+**Der Nutzer hat die Installation am 2026-10-05 ausdrücklich freigegeben.** Wichtiger Nebenbefund: `npx skills add` installiert **nicht** global, sondern **projektlokal** nach `.agents/skills/`, legt einen Symlink unter `.claude/skills/` an und ergänzt `skills-lock.json`. Es hat also **drei** Pfade im Repo berührt, nicht einen — `git status` nach der Installation zeigte `M skills-lock.json` plus zwei untracked Pfade.
+
+Zur Hash-Prüfung: der rohe `sha256sum` der installierten `SKILL.md` stimmt **nicht** mit `computedHash` im Lock überein. Das ist **kein Manipulationszeichen**, sondern die Norm des Projekts: `requesting-code-review` und `modularization` zeigen dieselbe Abweichung bei unveränderten Altbeständen. `computedHash` ist also ein normalisierter Hash über mehr als die Rohbytes — eine Eigenschaft der CLI, keine Auffälligkeit dieses Skills. `python3 tools/secret_gate.py .` läuft mit dem Skill im Baum weiterhin mit **0 Treffern**, `sync_frontmatter.py --check` mit **OK**.
+
+**116 hängt unabhängig davon an vorhandener, geprüfter Projektlogik**: `PackageOrigin` ist eine geschlossene Menge von vier Werten, `UNVERIFIED` wird abgewiesen, und `canOverride` gibt **immer `false`** zurück — dieselbe Entscheidung wie in 100 und 101. Der Skill ist ein **Werkzeug**, keine Bedingung für die Fertig-Bedingung.
+
+### Der Push wurde **nicht** ausgeführt, weil das Repository gemessen **öffentlich** ist
+
+Der Nutzer hatte den Push freigegeben. Vor der Ausführung verlangt CLAUDE.md die Prüfung des Remotes — und die Prüfung fiel **gegen** die Freigabe:
+
+| Quelle | Ergebnis |
+|---|---|
+| `gh repo view mertgoevse-wq/claudroide` | `isPrivate: false, visibility: PUBLIC` |
+| `gh api repos/mertgoevse-wq/claudroide` | `private: false, visibility: public` |
+| `skills-lock`-Zeile 313 dieses Checkpoints (Sitzung 21) | `private: true`, `visibility: PRIVATE` |
+
+Dieselbe Messung, die im Checkpoint als Beleg für den **Push** stand, ist heute **falsch**. Das Repository ist zwischenzeitlich **öffentlich** geworden; wer es war und warum, ist aus dem lokalen Stand **nicht** feststellbar. Ein Push hätte Quelltext, Aufgabendateien und die gesamte Historie veröffentlicht.
+
+Deshalb: **Commit `a0999f1` bleibt lokal**, `main` ist genau ein Commit vor `origin/main`, der Arbeitsbaum ist sauber. Die Freigabe „an origin/main pushen" wurde **nicht** auf ein öffentliches Ziel übertragen — sie wurde unter der Annahme erteilt, dass das Repo privat ist, und diese Annahme trägt nicht. Der Nutzer hat danach entschieden, die Sichtbarkeit zuerst selbst zu korrigieren; **bis dahin wird nicht gepusht**. Genau wie in Sitzung 22, als das Ziel stattdessen gemessen und nicht behauptet wurde.
 
 ### Was diese Sitzung ausdrücklich **nicht** belegt
 
-- **Kein Paket installiert, kein Download.** `RuntimeDependencyInstall.kt` entpackt nichts und schreibt nichts; es liest einen beschriebenen Paketdatensatz und antwortet. `DependencyEvidence.INSTALL_OBSERVED_ON_DEVICE` ist ein `const val = false`.
+- **Kein Werkzeugpaket installiert, kein Download.** `RuntimeDependencyInstall.kt` entpackt nichts und schreibt nichts; es liest einen beschriebenen Paketdatensatz und antwortet. `DependencyEvidence.INSTALL_OBSERVED_ON_DEVICE` ist ein `const val = false`. Installiert wurde nur ein **Skill** (Dokumentation, siehe oben) — der ist kein Projektwerkzeug und ändert daran nichts.
 - **Kein Gerätetest.** `adb devices` zeigt **kein** Gerät (in dieser Sitzung neu gemessen). 085 bleibt blockiert, und damit auch 086, das laut `depends_on` 085 braucht.
 - **Keine erneute Mutationstabelle für 116.** 116 wurde in Sitzung 27 mit 22 Tests abgeschlossen; diese Sitzung hat die Datei **nur gegen den Gesamtbestand** geprüft, nicht neu mutiert. Das ist eine schmalere Aussage als bei 077 und wird nicht als gleichwertig dargestellt.
 
 ### Was der Abschluss von 077 und 116 freigibt
 
-Neu berechnet mit `sync_frontmatter.py --ready`: **0 startbare Aufgaben**. Es bleiben **085** und **086**, beide aus Gerätegründen blockiert — es liegt weiterhin keine Messung auf einem echten Gerät vor.
+Neu berechnet mit `sync_frontmatter.py --ready`: **0 startbare Aufgaben**. Es bleiben **085** und **086**, beide aus Gerätegründen blockiert — es liegt weiterhin keine Messung auf einem echten Gerät vor. Der Nutzer hat für beide am 2026-10-05 entschieden: **als Gerüst bauen, Device-Lücke offenlassen**, wie bei 101.
 
 ## Sitzung 26 — Task 128: Sicherheitstests
 
