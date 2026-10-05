@@ -1,13 +1,15 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-05 (achtundzwanzigste Sitzung — Tasks 116 und 077 abgeschlossen und committet)
+**Stand:** 2026-10-05 (achtundzwanzigste Sitzung — Tasks 116 und 077 abgeschlossen, committet **und gepusht** nach Privatmachung des Repos)
 **Status:** **133 von 135 Aufgaben `done`**, 2 offen (085, 086), davon **1 mit `gate: true`** (085, USB/device-blockiert). Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK).
 
 **Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL**, **2489 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2450 + 22 aus 116 + 17 aus 077). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 120 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `tools/secret_gate_fixtures` → 3 Treffer.
 
-**Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen — Angaben aus Sitzung 22):** SM-A566B, Termux/Debian/PRoot. `adb devices` zeigt **kein** Gerät; `/dev/bus/usb` ist für Termux nicht lesbar. **Das OnePlus 6T per USB und der WLAN-Debug-Pfad waren beide unbenutzbar**; es liegt weiterhin keine Messung auf einem echten Gerät vor. Task 085 (USB-Projektzugriff, `gate: true`) bleibt damit aus Device-Gründen blockiert. In dieser Sitzung **nicht** neu gemessen.
+**Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen — Angaben aus Sitzung 22):** SM-A566B, Termux/Debian/PRoot. `adb devices` zeigt **kein** Gerät; `/dev/bus/usb` ist für Termux nicht lesbar. **Das OnePlus 6T per USB und der WLAN-Debug-Pfad waren beide unbenutzbar**; es liegt weiterhin keine Messung auf einem echten Gerät vor. Task 085 (USB-Projektzugriff, `gate: true`) bleibt damit aus Device-Gründen blockiert. **In Sitzung 28 neu gemessen:** `adb devices` zeigt ebenfalls **kein** Gerät.
 
 **Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–27 weiter unten in dieser Datei.
+
+**Letzte sichere Git-Referenz:** `d0a2025` auf `main`, auf `origin/main` **verifiziert** (`rev-list --left-right --count origin/main...main` → `0 0`), Repository zum Push-Zeitpunkt `private=true`.
 
 ## Sitzung 28 — Der Checkpointerzählte falsch, und der Code von 077 war nicht grün
 
@@ -76,7 +78,13 @@ Der Nutzer hatte den Push freigegeben. Vor der Ausführung verlangt CLAUDE.md di
 
 Dieselbe Messung, die im Checkpoint als Beleg für den **Push** stand, ist heute **falsch**. Das Repository ist zwischenzeitlich **öffentlich** geworden; wer es war und warum, ist aus dem lokalen Stand **nicht** feststellbar. Ein Push hätte Quelltext, Aufgabendateien und die gesamte Historie veröffentlicht.
 
-Deshalb: **Commit `a0999f1` bleibt lokal**, `main` ist genau ein Commit vor `origin/main`, der Arbeitsbaum ist sauber. Die Freigabe „an origin/main pushen" wurde **nicht** auf ein öffentliches Ziel übertragen — sie wurde unter der Annahme erteilt, dass das Repo privat ist, und diese Annahme trägt nicht. Der Nutzer hat danach entschieden, die Sichtbarkeit zuerst selbst zu korrigieren; **bis dahin wird nicht gepusht**. Genau wie in Sitzung 22, als das Ziel stattdessen gemessen und nicht behauptet wurde.
+Deshalb: **Commit `a0999f1` bleibt lokal**, `main` ist genau ein Commit vor `origin/main`, der Arbeitsbaum ist sauber. Die Freigabe „an origin/main pushen" wurde **nicht** auf ein öffentliches Ziel übertragen — sie wurde unter der Annahme erteilt, dass das Repo privat ist, und diese Annahme trägt nicht. Genau wie in Sitzung 22, als das Ziel stattdessen gemessen und nicht behauptet wurde.
+
+**Auflösung, danach ausgeführt.** Der Nutzer hat die Sichtbarkeit selbst korrigiert; unmittelbar vor dem Push **noch einmal** gemessen: `private=true`, `visibility=private`, `full_name=mertgoevse-wq/claudroide`. Damit war die Vorbedingung aus CLAUDE.md erfüllt, und der Push lief: **`904660c..d0a2025  main -> main`, exit 0**. Nachkontrolle: `git fetch` + `rev-list --left-right --count origin/main...main` → **0 0**, also lokal und remote identisch; Sichtbarkeit nach dem Push erneut **`private=true`**; Arbeitsbaum sauber.
+
+Gepusht wurden **zwei** Commits: `a0999f1` (Tasks 116 und 077) und `d0a2025` (Skill-Installation und dieser Checkpoint). Der Symlink `.claude/skills/security-and-hardening` ist mit **Modus 120000** als Symlink committet, nicht als aufgelöster Datei-Inhalt.
+
+**Was daraus folgt, und nicht folgt:** Die Sichtbarkeit war zwischendurch öffentlich. Ob das beabsichtigt war und **wie lange** der Stand öffentlich einsehbar war, geht aus dem lokalen Repository **nicht** hervor — das ist eine Frage an GitHub bzw. an den Nutzer, keine, die ich aus Dateien beantworten kann. Für dieses Projekt ist es die Lehre aus 097/101 in neuer Form: die Sichtbarkeit eines Ziels ist ein **gemessener Wert zum Zeitpunkt des Uploads**, keine Eigenschaft, die man aus einer alten Notiz ableiten darf. Genau diese alte Notiz hätte hier einen Upload auf ein öffentliches Repository getragen.
 
 ### Was diese Sitzung ausdrücklich **nicht** belegt
 
