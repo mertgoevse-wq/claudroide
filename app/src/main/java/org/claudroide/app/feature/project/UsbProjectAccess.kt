@@ -1,7 +1,5 @@
 package org.claudroide.app.feature.project
 
-import org.claudroide.app.feature.agent.ExtraCost
-
 /**
  * Task 085 — „USB-Projektzugriff".
  *

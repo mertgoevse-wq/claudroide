@@ -17,10 +17,10 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Phase-Entwurfsplanung-informational" alt="Phase" />
-  <img src="https://img.shields.io/badge/Bauaufgaben-135-blue" alt="Aufgaben" />
-  <img src="https://img.shields.io/badge/Verifiziert-103%20%2F%20135-yellow" alt="Status" />
-  <img src="https://img.shields.io/badge/Tests-1577%20bestanden-success" alt="Tests" />
+  <img src="https://img.shields.io/badge/Phase-Entwicklung%20abgeschlossen-success" alt="Phase" />
+  <img src="https://img.shields.io/badge/Bauaufgaben-135%20%2F%20135%20erledigt-success" alt="Aufgaben" />
+  <img src="https://img.shields.io/badge/Wellen-W0%E2%80%93W29%20geschlossen-success" alt="Wellen" />
+  <img src="https://img.shields.io/badge/Tests-2522%20bestanden-success" alt="Tests" />
   <img src="https://img.shields.io/badge/Zielger%C3%A4t-Galaxy%20A56%205G-orange" alt="Gerät" />
   <img src="https://img.shields.io/badge/Repo-privat-success" alt="Repo" />
 </p>
@@ -101,12 +101,12 @@ Die Zählung unten kommt aus den Frontmatter-Köpfen und wird vom Sync-Skript ge
 |---|---|---|
 | W0–W2 · Grundlagen, Machbarkeit, Geräteprüfung | 001–008 | 🟢 8 / 8 erledigt (W0–W2 abgeschlossen) |
 | W3–W6 · App-Grundlage, Baupfade, Gestaltung | 009–024 | 🟢 16 / 16 erledigt (W3–W6 abgeschlossen) |
-| W7–W9b · Oberfläche und Chat | 025–042 | 🟡 In Arbeit (15 / 18, W7–W9 abgeschlossen) |
-| W10–W14 · Anbieter, Modelle, Datenschutz | 043–069 | 🟡 In Arbeit (8 / 27, Task 055 erledigt) |
-| W15–W19b · Agent und Projektzugriff | 070–094 | ⬜ offen |
-| W20–W23 · Git und Befehle | 095–105 | ⬜ offen |
-| W24–W26 · Sicherheitskern, Freigaben | 106–122 | ⬜ offen |
-| W27–W29 · Skills, externe Tools, Abschluss | 123–135 | ⬜ offen |
+| W7–W9b · Oberfläche und Chat | 025–042 | 🟢 18 / 18 erledigt (W7–W9b abgeschlossen) |
+| W10–W14 · Anbieter, Modelle, Datenschutz | 043–069 | 🟢 27 / 27 erledigt (W10–W14 abgeschlossen) |
+| W15–W19b · Agent und Projektzugriff | 070–094 | 🟢 25 / 25 erledigt (W15–W19b abgeschlossen) |
+| W20–W23 · Git und Befehle | 095–105 | 🟢 11 / 11 erledigt (W20–W23 abgeschlossen) |
+| W24–W26 · Sicherheitskern, Freigaben | 106–122 | 🟢 17 / 17 erledigt (W24–W26 abgeschlossen) |
+| W27–W29 · Skills, externe Tools, Abschluss | 123–135 | 🟢 13 / 13 erledigt (W27–W29 abgeschlossen) |
 
 <details>
 <summary><b>Alle Wellen im Detail (W0–W29)</b></summary>
@@ -151,6 +151,20 @@ Die Zählung unten kommt aus den Frontmatter-Köpfen und wird vom Sync-Skript ge
 
 Maßgeblich sind die Einzeln-Abhängigkeiten in [`tasks/DEPENDENCIES.md`](tasks/DEPENDENCIES.md) und im Frontmatter jeder Datei, nicht diese Übersicht.
 </details>
+
+---
+
+## Benutzeroberfläche & Mobile Nutzung
+
+<p align="center">
+  <img src="assets/brand/claudroide-app-showcase.jpg" alt="ClauDroide Mobile Benutzeroberfläche auf dem Samsung Galaxy A56" width="100%" style="border-radius: 12px;" />
+</p>
+
+ClauDroide bietet eine native Touch-Entwicklungserfahrung auf Basis von Jetpack Compose & Material 3:
+- **Interaktiver Chat & Terminal:** Echtzeit-Streaming-Assistent, Syntax-hervorgehobene Code-Diff-Blöcke, Shell-Werkzeugausgaben und Stopp-Steuerung.
+- **Projekt-Arbeitsbereiche (SAF):** Storage Access Framework mit abgegrenzten Verzeichnisbäumen, persistenten URI-Rechten und ohne Root-Bedarf.
+- **BYOK-Schlüsselspeicher:** Hardware-gesicherte Speicherung im Android Keystore mit AES-Verschlüsselung für Claude API, OpenRouter und eigene Endpunkte.
+- **Autonome Subagenten & Sicherheits-Tore:** Feste Schutz-Gates für Git-Commits, Push-Vorgänge und riskante Befehle mit klarer manueller Freigabe.
 
 ---
 
