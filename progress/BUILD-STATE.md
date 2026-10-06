@@ -1,15 +1,58 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-05 (neunundzwanzigste Sitzung — Tasks 085 und 086 als Gerüst abgeschlossen; **offen: unvollständige Mutationsprüfung**)
+**Stand:** 2026-10-06 (dreißigste Sitzung — Mutationsprüfungen für 085 und 086 nachgezogen; Gesamtlauf über alle 122 Suiten mit 2522 Tests selbst gemessen; GitHub-Sync verifiziert)
 **Status:** **135 von 135 Aufgaben `done`**, 0 offen. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK). **Achtung:** „alle erledigt" heißt hier **nicht** „alles am Gerät belegt" — 085 und 086 tragen eine ausdrücklich offene Gerätebedingung, siehe Sitzung 29.
 
-**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` (Sitzung 28, **vor** 085/086) → BUILD SUCCESSFUL, **2489 Tests, 0 Fehler, 0 übersprungen**. Für 085/086 **nur die beiden neuen Suiten** gelaufen: `UsbProjectAccessTest` **17 Tests, 0 Fehler**, `UsbDisconnectRecoveryTest` **16 Tests, 0 Fehler**. **Ein Gesamtlauf über alle Suiten steht aus** — die Zahl 2522 unten ist eine **Rechnung (2489 + 33), keine Messung**. Gezählt wird aus `app/build/test-results/testDebugUnitTest/*.xml`, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE" war. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0.
+**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest` (Sitzung 30) → BUILD SUCCESSFUL in 4m 27s, **2522 Tests in 122 Suiten, 0 Fehler, 0 übersprungen**. Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über alle 122 XML-Dateien. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0.
 
-**Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen — Angaben aus Sitzung 22):** SM-A566B, Termux/Debian/PRoot. `adb devices` zeigt **kein** Gerät; `/dev/bus/usb` ist für Termux nicht lesbar. **Das OnePlus 6T per USB und der WLAN-Debug-Pfad waren beide unbenutzbar**; es liegt weiterhin keine Messung auf einem echten Gerät vor. Task 085 (USB-Projektzugriff, `gate: true`) bleibt damit aus Device-Gründen blockiert. **In Sitzung 28 neu gemessen:** `adb devices` zeigt ebenfalls **kein** Gerät. **In Sitzung 29 nicht neu gemessen** — dort wurde nur die Entscheidungsschicht gebaut, kein Gerätetest.
+**Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen — Angaben aus Sitzung 22):** SM-A566B, Termux/Debian/PRoot. `adb devices` zeigt **kein** Gerät; `/dev/bus/usb` ist für Termux nicht lesbar. **Das OnePlus 6T per USB und der WLAN-Debug-Pfad waren beide unbenutzbar**; es liegt weiterhin keine Messung auf einem echten Gerät vor. Task 085 (USB-Projektzugriff, `gate: true`) und 086 bleiben aus Gerätegründen als Gerüst mit `const val = false` geschlossen.
 
-**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–28 weiter unten in dieser Datei.
+**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–29 weiter unten in dieser Datei.
 
-**Letzte sichere Git-Referenz:** `d0a2025` auf `main`, auf `origin/main` **verifiziert** (`rev-list --left-right --count origin/main...main` → `0 0`), Repository zum Push-Zeitpunkt `private=true`.
+**Letzte sichere Git-Referenz:** `604be81` auf `main`, auf `origin/main` **verifiziert** (`rev-list --left-right --count origin/main...main` → `0 0`), Repository zum Prüfzeitpunkt `private=true`.
+
+## Sitzung 30 — Mutationsprüfung für 085 und 086 nachgezogen, Gesamtlauf gemessen und GitHub verifiziert
+
+### 1. Online- und Lokaler Abgleich (GitHub & Lokales Repo)
+
+- **GitHub Remote (`origin/main`):**
+  - Repository: `https://github.com/mertgoevse-wq/claudroide.git`
+  - Sichtbarkeit: **`isPrivate: true`**, **`visibility: PRIVATE`** (per GitHub API verifiziert).
+  - Letzter Commit auf GitHub: **`604be81`** (*"Build tasks 085 and 086 as scaffolds, with the device gap left open"*, 2026-10-05T12:19:16Z).
+  - Offene PRs / Issues: **0**.
+- **Lokaler Git-Stand (`main`):**
+  - `HEAD`: **`604be81`** — lokal und remote sind **vollständig synchron** (`rev-list --left-right --count origin/main...main` → `0 0`).
+  - Keine unvollständigen oder unveröffentlichten Commits vor dieser Dokumentation.
+
+### 2. Mutationsprüfungen für Tasks 085 und 086 nachgezogen
+
+In Sitzung 29 war die Mutationsprüfung für 085 und 086 ausdrücklich als offen notiert worden. Beim Start lag die vorbereitete Mutation für 086 in `UsbDisconnectRecovery.kt:383` noch unfertig im Arbeitsverzeichnis. Beide Mutationen wurden in dieser Sitzung isoliert ausgeführt, rot gemessen, zurückgenommen und grün bestätigt:
+
+| Task / Datei | Mutation | Rote Tests | Grüner Nachlauf |
+|---|---|---|---|
+| **086** (`UsbDisconnectRecovery.kt:383`) | `filter { false && !it.isContentConfirmed }` | **2 von 16 Tests fehlgeschlagen:**<br>1. `ein guter Zugriff allein genuegt nicht FAILED` (AssertionError)<br>2. `eine Ablehnung nennt die betroffenen Dateien einzeln FAILED` (ClassCastException) | **16 Tests, 0 Fehler, 0 übersprungen** in `TEST-org.claudroide.app.UsbDisconnectRecoveryTest.xml` |
+| **085** (`UsbProjectAccess.kt:352`) | `if (false && !UsbEvidence.PROBE_OBSERVED_ON_DEVICE) return false` | **2 von 17 Tests fehlgeschlagen:**<br>1. `kein USB-Weg ist verfuegbar ohne Geraetemessung FAILED` (AssertionError)<br>2. `eine perfekt aussehende Erkennung allein macht den Weg nicht verfuegbar FAILED` (AssertionError) | **17 Tests, 0 Fehler, 0 übersprungen** in `TEST-org.claudroide.app.UsbProjectAccessTest.xml` |
+
+Beide Mutationen wurden sauber am Code zurückgenommen; `git diff` bestätigte vor dem Gesamtlauf die vollständige Identität zum Git-Commit-Stand (kein Mutationsrest im Arbeitsbaum).
+
+### 3. Gesamttestlauf über alle Testsuiten selbst gemessen
+
+In Sitzung 29 war die Zahl 2522 nur eine rechnerische Summe (2489 + 33). In Sitzung 30 wurde der vollständige Lauf über alle Suiten ausgeführt:
+- Befehl: `./gradlew :app:testDebugUnitTest`
+- Ergebnis: **BUILD SUCCESSFUL in 4m 27s**.
+- XML-Auswertung über `app/build/test-results/testDebugUnitTest/*.xml`:
+  - **122 Testsuiten (XML-Dateien)**
+  - **2522 Tests insgesamt**
+  - **0 Fehler**
+  - **0 Fehlschläge**
+  - **0 übersprungen**
+- Sicherheitsscan: `python3 tools/secret_gate.py .` → **0 Treffer, exit 0**.
+- Task-Konsistenz: `python3 tools/sync_frontmatter.py --check` → **OK: alle 135 Task-Dateien sind konsistent**.
+
+### 4. Was weiterhin offen bleibt
+
+- **Keine echte Gerätemessung auf dem A56.** `adb devices` sieht unverändert kein Gerät. Die Werte `PROBE_OBSERVED_ON_DEVICE` und `INTERRUPTION_OBSERVED_ON_DEVICE` bleiben wahrheitsgemäß `const val = false`, wie in Sitzung 29 beschlossen.
+- Alle 135 Aufgaben sind konsistent im Status `done`.
 
 ## Sitzung 29 — 085 und 086 als Gerüst, und was daran **nicht** belegt ist
 
