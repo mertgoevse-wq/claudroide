@@ -1,15 +1,17 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-06 (dreißigste Sitzung — Mutationsprüfungen für 085 und 086 nachgezogen; Gesamtlauf über alle 122 Suiten mit 2522 Tests selbst gemessen; GitHub-Sync verifiziert)
+**Stand:** 2026-10-06 (einunddreißigste Sitzung — BUILD-STATE aktualisiert; Tests verifiziert; E2E-Fluss-Analyse gestartet)
 **Status:** **135 von 135 Aufgaben `done`**, 0 offen. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK). **Achtung:** „alle erledigt" heißt hier **nicht** „alles am Gerät belegt" — 085 und 086 tragen eine ausdrücklich offene Gerätebedingung, siehe Sitzung 29.
 
-**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest` (Sitzung 30) → BUILD SUCCESSFUL in 4m 27s, **2522 Tests in 122 Suiten, 0 Fehler, 0 übersprungen**. Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über alle 122 XML-Dateien. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0.
+**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → BUILD SUCCESSFUL in 3m 46s, **2522 Tests in 122 Suiten, 0 Fehler, 0 übersprungen**. APK: `app-debug.apk` 20 MB. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0.
 
-**Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen — Angaben aus Sitzung 22):** SM-A566B, Termux/Debian/PRoot. `adb devices` zeigt **kein** Gerät; `/dev/bus/usb` ist für Termux nicht lesbar. **Das OnePlus 6T per USB und der WLAN-Debug-Pfad waren beide unbenutzbar**; es liegt weiterhin keine Messung auf einem echten Gerät vor. Task 085 (USB-Projektzugriff, `gate: true`) und 086 bleiben aus Gerätegründen als Gerüst mit `const val = false` geschlossen.
+**Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen — Angaben aus Sitzung 22):** SM-A566B, Termux/Debian/PRoot. `adb devices` zeigt **kein** Gerät; `/dev/bus/usb` ist für Termux nicht lesbar. **Es liegt weiterhin keine Messung auf einem echten Gerät vor.** Task 085 (USB-Projektzugriff, `gate: true`) und 086 bleiben aus Gerätegründen als Gerüst mit `const val = false` geschlossen.
 
-**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–29 weiter unten in dieser Datei.
+**GitHub Remote (`origin/main`):** Repository `https://github.com/mertgoevse-wq/claudroide.git`, Sichtbarkeit: **`isPrivate: true`**, **`visibility: PRIVATE`** (verifiziert 2026-10-06). PushedAt: 2026-10-06T17:27:21Z.
 
-**Letzte sichere Git-Referenz:** `604be81` auf `main`, auf `origin/main` **verifiziert** (`rev-list --left-right --count origin/main...main` → `0 0`), Repository zum Prüfzeitpunkt `private=true`.
+**Letzte sichere Git-Referenz:** `f13905c` auf `main`, auf `origin/main` **verifiziert** (`rev-list --left-right --count origin/main...main` → `0 0`).
+
+**Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–30 weiter unten in dieser Datei.
 
 ## Sitzung 30 — Mutationsprüfung für 085 und 086 nachgezogen, Gesamtlauf gemessen und GitHub verifiziert
 

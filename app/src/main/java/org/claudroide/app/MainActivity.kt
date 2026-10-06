@@ -15,8 +15,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.claudroide.app.core.design.ClaudroideTheme
 import org.claudroide.app.feature.chat.ChatScreen
+import org.claudroide.app.feature.chat.ChatViewModel
+import org.claudroide.app.feature.provider.InMemorySecureKeyVault
+import org.claudroide.app.feature.provider.ProviderTransport
 import org.claudroide.app.feature.project.ProjectScreen
 import org.claudroide.app.feature.settings.SettingsScreen
 
@@ -45,6 +49,12 @@ class MainActivity : ComponentActivity() {
 fun AppShell() {
     var currentDestination by remember { mutableStateOf(AppDestination.CHAT) }
 
+    val chatVault = remember { InMemorySecureKeyVault() }
+    val chatTransport = remember { ProviderTransport(chatVault) }
+    val chatViewModel: ChatViewModel = remember {
+        ChatViewModel(keyVault = chatVault, transport = chatTransport)
+    }
+
     NavigationSuiteScaffold(
         navigationSuiteItems = {
             AppDestination.entries.forEach { destination ->
@@ -64,7 +74,7 @@ fun AppShell() {
         modifier = Modifier.fillMaxSize()
     ) {
         when (currentDestination) {
-            AppDestination.CHAT -> ChatScreen()
+            AppDestination.CHAT -> ChatScreen(viewModel = chatViewModel)
             AppDestination.PROJECTS -> ProjectScreen()
             AppDestination.SETTINGS -> SettingsScreen()
         }

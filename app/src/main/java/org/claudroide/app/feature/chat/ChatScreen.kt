@@ -36,6 +36,10 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -47,6 +51,7 @@ import org.claudroide.app.core.design.components.CodeBlock
 import org.claudroide.app.core.design.components.EmptyState
 import org.claudroide.app.core.design.components.MessageBubble
 import org.claudroide.app.core.design.components.StatusChip
+import org.claudroide.app.feature.provider.ProviderCatalogRegistry
 
 /**
  * One entry in the transcript.
@@ -74,7 +79,16 @@ fun ChatScreen(
     onInputChange: (String) -> Unit = {},
     onSendClick: () -> Unit = {},
     onStopClick: () -> Unit = {},
+    viewModel: ChatViewModel? = null,
 ) {
+    val s = viewModel?.uiState?.collectAsState()?.value ?: ChatUiState()
+    val effectiveMessages = s.messages.ifEmpty { messages }
+    val effectiveInput = s.input.copy(
+        targetProviderName = ProviderCatalogRegistry.getProvider(s.currentProviderId)
+            ?.displayName ?: input.targetProviderName
+    )
+    val effectiveError = s.error
+
     val listState = rememberLazyListState()
 
     Scaffold(
@@ -87,7 +101,7 @@ fun ChatScreen(
                             style = TypeTokens.TitleLargeStyle,
                         )
                         Text(
-                            text = input.targetProviderName,
+                            text = effectiveInput.targetProviderName,
                             style = TypeTokens.BodySmallStyle,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             maxLines = 1,
@@ -108,9 +122,9 @@ fun ChatScreen(
             )
         },
         floatingActionButton = {
-            if (messages.isEmpty()) {
+            if (effectiveMessages.isEmpty()) {
                 FilledIconButton(
-                    onClick = onNewChatClick,
+                    onClick = { viewModel?.newConversation() ?: onNewChatClick() },
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -130,7 +144,7 @@ fun ChatScreen(
                 .padding(padding)
                 .imePadding(),
         ) {
-            if (messages.isEmpty()) {
+            if (effectiveMessages.isEmpty()) {
                 Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                     EmptyState(
                         icon = Icons.Default.ChatBubbleOutline,
@@ -148,14 +162,11 @@ fun ChatScreen(
                     ),
                     verticalArrangement = Arrangement.spacedBy(TypeTokens.SpacingSmall + TypeTokens.SpacingXSmall),
                 ) {
-                    items(messages, key = { it.id }) { message ->
+                    items(effectiveMessages, key = { it.id }) { message ->
                         MessageBubble(
                             text = message.text,
                             mine = message.fromUser,
                             modifier = Modifier
-                                // A phone is ~360dp wide. Letting a bubble take the
-                                // whole width makes the two sides hard to tell apart,
-                                // so each is capped and the sender's is pushed right.
                                 .fillMaxWidth()
                                 .widthIn(max = 300.dp),
                             footer = message.code?.let { code ->
@@ -163,17 +174,26 @@ fun ChatScreen(
                             },
                         )
                     }
-                    if (messages.last().isStreaming) {
+                    if (s.isStreaming && effectiveMessages.lastOrNull()?.isStreaming == true) {
                         item(key = "streaming") { StreamingIndicator() }
                     }
                 }
             }
 
+            if (effectiveError != null) {
+                Text(
+                    text = effectiveError,
+                    style = TypeTokens.BodySmallStyle,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(horizontal = TypeTokens.SpacingMedium)
+                )
+            }
+
             MessageComposer(
-                input = input,
-                onInputChange = onInputChange,
-                onSendClick = onSendClick,
-                onStopClick = onStopClick,
+                input = effectiveInput,
+                onInputChange = { viewModel?.onInputChange(it) ?: onInputChange(it) },
+                onSendClick = { viewModel?.sendMessage() ?: onSendClick() },
+                onStopClick = { viewModel?.stopStreaming() ?: onStopClick() },
             )
         }
     }

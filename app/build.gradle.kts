@@ -73,9 +73,14 @@ dependencies {
 
     // Security & Encrypted Preferences
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
+    // Encrypted DataStore for provider keys and session history
+    implementation("androidx.datastore:datastore:1.1.1")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+
+    // HTTP transport (okhttp — raw API calls, no SDK)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     // Testing
     testImplementation("junit:junit:4.13.2")
