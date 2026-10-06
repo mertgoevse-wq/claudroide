@@ -9,7 +9,7 @@
 
 **GitHub Remote (`origin/main`):** Repository `https://github.com/mertgoevse-wq/claudroide.git`, Sichtbarkeit: **`isPrivate: true`**, **`visibility: PRIVATE`** (verifiziert 2026-10-06). PushedAt: 2026-10-06T17:27:21Z.
 
-**Letzte sichere Git-Referenz:** `f13905c` auf `main`, auf `origin/main` **verifiziert** (`rev-list --left-right --count origin/main...main` → `0 0`).
+**Letzte sichere Git-Referenz:** `5aa6450` auf `main`, auf `origin/main` **verifiziert** (`rev-list --left-right --count origin/main...main` → `0 0`).
 
 **Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–30 weiter unten in dieser Datei.
 
