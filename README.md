@@ -1,7 +1,7 @@
 # ClauDroide
 
 <p align="center">
-  <img src="assets/brand/banner.png" alt="ClauDroide — a green Android dome and a terminal-screen bot holding hands beside the product name" width="100%" style="border-radius: 12px;" />
+  <img src="assets/brand/1791295622623.jpg" alt="ClauDroide — a green Android dome and a terminal-screen bot holding hands beside the product name" width="100%" style="border-radius: 12px;" />
 </p>
 
 <p align="center">
