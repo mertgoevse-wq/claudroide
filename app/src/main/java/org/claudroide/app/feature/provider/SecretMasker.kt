@@ -30,7 +30,8 @@ object SecretMasker {
         "Sensitive Assignment" to Regex(
             """(?i)\b(?:api[_-]?key|password|client_secret|access_token)\s*[=:]\s*['"]?([^\s'"&,]{4,})['"]?"""
         ),
-        "Prefixed Key" to Regex("""(?i)\b[a-zA-Z_][a-zA-Z0-9_.\-]*\s*=\s*(sk-[a-zA-Z0-9_\-]{8,})""")
+        "Prefixed Key" to Regex("""(?i)\b[a-zA-Z_][a-zA-Z0-9_.\-]*\s*=\s*(sk-[a-zA-Z0-9_\-]{8,})"""),
+        "GitHub Token" to Regex("""\bgh[pousr]_[A-Za-z0-9]{12,}\b""")
     )
 
     /**
@@ -84,4 +85,25 @@ object SecretMasker {
      * for strict network isolation and access controls.
      */
     fun isCompleteSecurityGuarantee(): Boolean = false
+
+    private val SENSITIVE_FILES = setOf(
+        ".env",
+        "google-services.json",
+        "local.properties",
+        "keystore",
+        "credentials.json",
+        "secrets.properties"
+    )
+
+    fun isSensitiveFileName(name: String): Boolean {
+        return SENSITIVE_FILES.any { name.equals(it, ignoreCase = true) || name.contains(it) }
+    }
+
+    /** Returns redacted content or warning if filename is sensitive. */
+    fun redactFileEntry(filename: String, content: String): String {
+        if (isSensitiveFileName(filename)) {
+            return "[Content of \$filename suppressed — sensitive file]"
+        }
+        return redact(content)
+    }
 }
