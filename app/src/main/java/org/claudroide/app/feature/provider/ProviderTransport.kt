@@ -1,5 +1,6 @@
 package org.claudroide.app.feature.provider
 
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -62,6 +63,15 @@ class ProviderTransport(
         // Allow cancellation from outside
         awaitClose { callRef.get()?.cancel() }
 
+        // Idle timeout: cancel the stream if no data arrives for SSE_IDLE_TIMEOUT_SECONDS
+        val timeoutJob = launch {
+            delay(SSE_IDLE_TIMEOUT_SECONDS * 1000)
+            if (!call.isCanceled()) {
+                callRef.get()?.cancel()
+                close(ProviderConnectionException("Stream-Timeout: keine Daten fuer ${SSE_IDLE_TIMEOUT_SECONDS}s"))
+            }
+        }
+
         call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: java.io.IOException) {
                 if (!call.isCanceled()) {
@@ -73,6 +83,11 @@ class ProviderTransport(
 
             override fun onResponse(call: Call, response: Response) {
                 if (!response.isSuccessful) {
+                    if (call.isCanceled()) {
+                        response.close()
+                        close(java.util.concurrent.CancellationException("Anfrage abgebrochen"))
+                        return
+                    }
                     val errorBody = response.body?.string() ?: "Keine Fehlerdetails"
                     response.close()
                     close(ProviderConnectionException(
@@ -81,10 +96,21 @@ class ProviderTransport(
                     return
                 }
 
+                if (call.isCanceled()) {
+                    response.close()
+                    close(java.util.concurrent.CancellationException("Anfrage abgebrochen"))
+                    return
+                }
+
                 val parser = SseEventParser()
                 try {
                     response.body?.charStream()?.buffered()?.use { reader ->
                         reader.lineSequence().forEach { line ->
+                            if (call.isCanceled()) {
+                                response.close()
+                                close(java.util.concurrent.CancellationException("Anfrage abgebrochen"))
+                                return@use
+                            }
                             parser.acceptLine(line)?.let { event ->
                                 trySend(event).getOrThrow()
                             }
@@ -92,8 +118,13 @@ class ProviderTransport(
                     }
                     parser.acceptLine("")?.let { trySend(it).getOrThrow() }
                 } catch (e: Exception) {
-                    close(ProviderConnectionException("Stream-Fehler: ${e.message}"))
+                    if (e is java.util.concurrent.CancellationException || call.isCanceled()) {
+                        close(java.util.concurrent.CancellationException("Anfrage abgebrochen"))
+                    } else {
+                        close(ProviderConnectionException("Stream-Fehler: ${e.message}"))
+                    }
                 } finally {
+                    timeoutJob.cancel()
                     response.close()
                     close()
                 }
@@ -169,6 +200,8 @@ class ProviderTransport(
     }
 
     companion object {
+        private const val SSE_IDLE_TIMEOUT_SECONDS = 90L
+
         val DEFAULT_CLIENT: OkHttpClient = OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
