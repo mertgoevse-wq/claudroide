@@ -50,7 +50,7 @@ enum class AgentMode(val label: String, val germanLabel: String) {
 
     companion object {
         /** Default mode for new sessions — safe, no side effects. */
-        const val DEFAULT: AgentMode = DISCUSS
+        val DEFAULT: AgentMode = DISCUSS
 
         /** Parse from string (case-insensitive). */
         fun parse(input: String): AgentMode = when (input.trim().lowercase()) {

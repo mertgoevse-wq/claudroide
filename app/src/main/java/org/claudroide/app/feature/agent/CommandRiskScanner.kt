@@ -85,7 +85,7 @@ object CommandRiskScanner {
         if (lower.contains("rm -rf") || lower.contains("rm -r") && lower.contains("/")) {
             return "Recursive force delete — irreversible data loss"
         }
-        if (lower.matches("^rm\\s+.*\\*")) {
+        if (Regex("^rm\\s+.*\\*").matches(lower)) {
             return "Wildcard delete — matches multiple files"
         }
         if (lower.contains("mkfs") || lower.contains("format") || lower.contains("dd if=")) {
@@ -121,7 +121,7 @@ object CommandRiskScanner {
         if (lower.contains("sk-") || lower.contains("ghp_") || lower.contains("gho_") ||
             lower.contains("github_pat_") || lower.contains("AIza") || lower.contains("AKIA") ||
             lower.contains("xoxb-") || lower.contains("xoxp-") || lower.contains("nvapi-") ||
-            lower.matches(".*[a-zA-Z0-9]{32,}.*") && (lower.contains("key") || lower.contains("token") || lower.contains("secret"))) {
+            Regex(".*[a-zA-Z0-9]{32,}.*").matches(lower) && (lower.contains("key") || lower.contains("token") || lower.contains("secret"))) {
             return "Possible API key/secret in command — never include credentials"
         }
 
@@ -272,20 +272,15 @@ object CommandRiskScanner {
         return SAFE_PREFIXES.any { trimmed.startsWith(it) || lower.startsWith(it) }
     }
 
-    companion object {
+    // For testing access - separate object since we're already in an object
+    object TestHelpers {
         /** For testing: exposes checkBlocked for unit tests. */
-        @VisibleForTesting
         internal fun checkBlockedForTest(cmd: String): String? = checkBlocked(cmd)
 
         /** For testing: exposes checkCaution for unit tests. */
-        @VisibleForTesting
         internal fun checkCautionForTest(cmd: String): List<String> = checkCaution(cmd)
 
         /** For testing: exposes isKnownSafe for unit tests. */
-        @VisibleForTesting
         internal fun isKnownSafeForTest(cmd: String): Boolean = isKnownSafe(cmd)
     }
 }
-
-// For internal test visibility
-internal annotation class VisibleForTesting
