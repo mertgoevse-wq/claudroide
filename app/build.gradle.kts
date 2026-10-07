@@ -63,7 +63,6 @@ dependencies {
     implementation("androidx.compose.material3.adaptive:adaptive:1.0.0")
     implementation("androidx.compose.material3.adaptive:adaptive-layout:1.0.0")
     implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.0.0")
-    // NavigationSuiteScaffold lives in its own artifact, not in adaptive-navigation.
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0")
     implementation("androidx.compose.material:material-icons-extended")
 
@@ -74,7 +73,8 @@ dependencies {
     // Security & Encrypted Preferences
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
     // Encrypted DataStore for provider keys and session history
-    implementation("androidx.datastore:datastore:1.1.1")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.datastore:datastore-rxjava3:1.1.1")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
@@ -85,8 +85,6 @@ dependencies {
     // Testing
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
-    // org.json ships with Android but is absent on the JVM test classpath.
-    // The real implementation is needed so SSE payload parsing is genuinely tested.
     testImplementation("org.json:json:20240303")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")

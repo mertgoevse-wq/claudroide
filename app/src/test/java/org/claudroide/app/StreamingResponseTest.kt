@@ -1,11 +1,11 @@
 package org.claudroide.app
 
-import org.claudroide.app.feature.chat.PartialJsonAssembler
-import org.claudroide.app.feature.chat.SseEvent
-import org.claudroide.app.feature.chat.SseEventParser
-import org.claudroide.app.feature.chat.StopReason
-import org.claudroide.app.feature.chat.StreamState
-import org.claudroide.app.feature.chat.StreamingResponseEngine
+import org.claudroide.app.feature.provider.network.PartialJsonAssembler
+import org.claudroide.app.feature.provider.network.SseEvent
+import org.claudroide.app.feature.provider.network.SseEventParser
+import org.claudroide.app.feature.provider.network.StopReason
+import org.claudroide.app.feature.provider.network.StreamState
+import org.claudroide.app.feature.provider.network.StreamingResponseEngine
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -52,7 +52,8 @@ class StreamingResponseTest {
             """.trimIndent()
         )
 
-        val result = engine.acceptAll(events)
+        events.forEach { engine.accept(it) }
+        val result = engine.current()
 
         assertEquals(StreamState.COMPLETED, result.state)
         assertEquals("Hallo Welt", result.text)
@@ -83,18 +84,15 @@ class StreamingResponseTest {
     @Test
     fun interleavedBlocks_areReassembledInIndexOrder() {
         val engine = StreamingResponseEngine()
-        engine.acceptAll(
-            listOf(
-                SseEvent.ContentBlockStart(0, "text"),
-                SseEvent.ContentBlockStart(1, "tool_use"),
-                // Tool fragments arrive on block 1 but are not display text.
-                SseEvent.ContentBlockDelta(1, "input_json_delta", partialJson = "{\"a\":"),
-                SseEvent.ContentBlockDelta(0, "text_delta", text = "Antwort"),
-                SseEvent.ContentBlockDelta(1, "input_json_delta", partialJson = "1}"),
-                SseEvent.ContentBlockDelta(0, "text_delta", text = " hier"),
-                SseEvent.MessageStop
-            )
-        )
+        listOf(
+            SseEvent.ContentBlockStart(0, "text"),
+            SseEvent.ContentBlockStart(1, "tool_use"),
+            SseEvent.ContentBlockDelta(1, "input_json_delta", partialJson = "{\"a\":"),
+            SseEvent.ContentBlockDelta(0, "text_delta", text = "Antwort"),
+            SseEvent.ContentBlockDelta(1, "input_json_delta", partialJson = "1}"),
+            SseEvent.ContentBlockDelta(0, "text_delta", text = " hier"),
+            SseEvent.MessageStop
+        ).forEach { engine.accept(it) }
 
         val result = engine.current()
         assertEquals("tool JSON must not leak into the visible text", "Antwort hier", result.text)
@@ -106,12 +104,10 @@ class StreamingResponseTest {
     @Test
     fun abortedStream_isNotComplete_butKeepsPartialText() {
         val engine = StreamingResponseEngine()
-        engine.acceptAll(
-            listOf(
-                SseEvent.ContentBlockStart(0, "text"),
-                SseEvent.ContentBlockDelta(0, "text_delta", text = "Halbe Antwort")
-            )
-        )
+        listOf(
+            SseEvent.ContentBlockStart(0, "text"),
+            SseEvent.ContentBlockDelta(0, "text_delta", text = "Halbe Antwort")
+        ).forEach { engine.accept(it) }
 
         val result = engine.abort()
 
@@ -136,13 +132,11 @@ class StreamingResponseTest {
     @Test
     fun abortAfterCompletion_doesNotUndoTheFinishedAnswer() {
         val engine = StreamingResponseEngine()
-        engine.acceptAll(
-            listOf(
-                SseEvent.ContentBlockDelta(0, "text_delta", text = "Fertig"),
-                SseEvent.MessageDelta("end_turn", 5),
-                SseEvent.MessageStop
-            )
-        )
+        listOf(
+            SseEvent.ContentBlockDelta(0, "text_delta", text = "Fertig"),
+            SseEvent.MessageDelta("end_turn", 5),
+            SseEvent.MessageStop
+        ).forEach { engine.accept(it) }
 
         val result = engine.abort()
 
@@ -155,13 +149,11 @@ class StreamingResponseTest {
     @Test
     fun failedStream_keepsTextOnce_andDoesNotDuplicate() {
         val engine = StreamingResponseEngine()
-        engine.acceptAll(
-            listOf(
-                SseEvent.ContentBlockStart(0, "text"),
-                SseEvent.ContentBlockDelta(0, "text_delta", text = "Teil eins "),
-                SseEvent.ContentBlockDelta(0, "text_delta", text = "Teil zwei")
-            )
-        )
+        listOf(
+            SseEvent.ContentBlockStart(0, "text"),
+            SseEvent.ContentBlockDelta(0, "text_delta", text = "Teil eins "),
+            SseEvent.ContentBlockDelta(0, "text_delta", text = "Teil zwei")
+        ).forEach { engine.accept(it) }
 
         val result = engine.fail("Verbindung unterbrochen.")
 
@@ -197,7 +189,8 @@ class StreamingResponseTest {
             """.trimIndent()
         )
 
-        val result = engine.acceptAll(events)
+        events.forEach { engine.accept(it) }
+        val result = engine.current()
 
         assertEquals(StreamState.FAILED, result.state)
         assertEquals("Server überlastet", result.errorMessage)
@@ -209,14 +202,13 @@ class StreamingResponseTest {
     @Test
     fun maxTokensStopReason_isDistinguishedFromEndTurn() {
         val engine = StreamingResponseEngine()
-        val result = engine.acceptAll(
-            listOf(
-                SseEvent.ContentBlockDelta(0, "text_delta", text = "abgeschnitten"),
-                SseEvent.MessageDelta("max_tokens", 64),
-                SseEvent.MessageStop
-            )
-        )
+        listOf(
+            SseEvent.ContentBlockDelta(0, "text_delta", text = "abgeschnitten"),
+            SseEvent.MessageDelta("max_tokens", 64),
+            SseEvent.MessageStop
+        ).forEach { engine.accept(it) }
 
+        val result = engine.current()
         assertEquals(StopReason.MAX_TOKENS, result.stopReason)
         assertTrue("server confirmed the end", result.isComplete)
     }
@@ -224,13 +216,12 @@ class StreamingResponseTest {
     @Test
     fun messageStop_withoutStopReason_isCompleteWithUnknownReason() {
         val engine = StreamingResponseEngine()
-        val result = engine.acceptAll(
-            listOf(
-                SseEvent.ContentBlockDelta(0, "text_delta", text = "Text"),
-                SseEvent.MessageStop
-            )
-        )
+        listOf(
+            SseEvent.ContentBlockDelta(0, "text_delta", text = "Text"),
+            SseEvent.MessageStop
+        ).forEach { engine.accept(it) }
 
+        val result = engine.current()
         assertTrue(result.isComplete)
         assertEquals(StopReason.UNKNOWN, result.stopReason)
     }
@@ -238,13 +229,12 @@ class StreamingResponseTest {
     @Test
     fun usageIsAbsent_whenServerDidNotReportIt() {
         val engine = StreamingResponseEngine()
-        val result = engine.acceptAll(
-            listOf(
-                SseEvent.ContentBlockDelta(0, "text_delta", text = "Text"),
-                SseEvent.MessageStop
-            )
-        )
+        listOf(
+            SseEvent.ContentBlockDelta(0, "text_delta", text = "Text"),
+            SseEvent.MessageStop
+        ).forEach { engine.accept(it) }
 
+        val result = engine.current()
         assertNull(result.inputTokens)
         assertNull(result.outputTokens)
         assertFalse("no invented numbers", result.usageReported)
@@ -287,7 +277,8 @@ class StreamingResponseTest {
 
         assertTrue(events.any { it is SseEvent.Malformed })
         val engine = StreamingResponseEngine()
-        val result = engine.acceptAll(events)
+        events.forEach { engine.accept(it) }
+        val result = engine.current()
         assertEquals("trotzdem", result.text)
     }
 
@@ -307,7 +298,8 @@ class StreamingResponseTest {
         )
 
         val engine = StreamingResponseEngine()
-        val result = engine.acceptAll(events)
+        events.forEach { engine.accept(it) }
+        val result = engine.current()
         assertEquals("Text", result.text)
     }
 
@@ -325,10 +317,11 @@ class StreamingResponseTest {
         assertEquals("interne Gedankengänge", delta.thinkingDelta)
 
         val engine = StreamingResponseEngine()
+        events.forEach { engine.accept(it) }
         assertEquals(
             "raw reasoning must not become visible text",
             "",
-            engine.acceptAll(events).text
+            engine.current().text
         )
     }
 

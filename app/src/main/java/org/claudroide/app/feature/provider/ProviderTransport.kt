@@ -10,9 +10,10 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import org.claudroide.app.feature.chat.SseEvent
-import org.claudroide.app.feature.chat.SseEventParser
+import org.claudroide.app.feature.provider.network.SseEvent
+import org.claudroide.app.feature.provider.network.SseEventParser
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * Task 072+ — raw HTTP transport for LLM providers.
@@ -20,6 +21,15 @@ import java.util.concurrent.TimeUnit
  * The only production code that opens a network connection.
  * API keys come from [KeyVaultStorage]; this class never holds one.
  * Output is [SseEvent]s, never raw text.
+ * 
+ * Features:
+ * - Proper HTTP status handling (non-2xx)
+ * - Timeout handling
+ * - Cancellation support
+ * - Provider-specific headers and auth
+ * - Protocol-specific formatting
+ * - Stream error handling
+ * - Usage/token data extraction
  */
 class ProviderTransport(
     private val keyVault: KeyVaultStorage,
@@ -36,17 +46,94 @@ class ProviderTransport(
         val apiKey = keyVault.retrieveKey(descriptor.providerId)
             ?: throw ProviderConnectionException("Kein Zugangsschlüssel fuer ${descriptor.providerId} hinterlegt.")
 
+        val (headers, requestBody) = buildRequest(descriptor, modelId, messages, system, maxTokens, apiKey)
+
+        val request = Request.Builder()
+            .url(descriptor.baseUrl)
+            .post(requestBody)
+            .apply { headers.forEach { (k, v) -> addHeader(k, v) } }
+            .build()
+
+        val callRef = AtomicReference<Call?>()
+
+        val call = httpClient.newCall(request)
+        callRef.set(call)
+
+        // Allow cancellation from outside
+        awaitClose { callRef.get()?.cancel() }
+
+        call.enqueue(object : Callback {
+            override fun onFailure(call: Call, e: java.io.IOException) {
+                if (!call.isCanceled()) {
+                    close(ProviderConnectionException("Verbindungsfehler: ${e.message}"))
+                } else {
+                    close(java.util.concurrent.CancellationException("Anfrage abgebrochen"))
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (!response.isSuccessful) {
+                    val errorBody = response.body?.string() ?: "Keine Fehlerdetails"
+                    response.close()
+                    close(ProviderConnectionException(
+                        "HTTP ${response.code}: ${response.message} - $errorBody"
+                    ))
+                    return
+                }
+
+                val parser = SseEventParser()
+                try {
+                    response.body?.charStream()?.buffered()?.use { reader ->
+                        reader.lineSequence().forEach { line ->
+                            parser.acceptLine(line)?.let { event ->
+                                trySend(event).getOrThrow()
+                            }
+                        }
+                    }
+                    parser.acceptLine("")?.let { trySend(it).getOrThrow() }
+                } catch (e: Exception) {
+                    close(ProviderConnectionException("Stream-Fehler: ${e.message}"))
+                } finally {
+                    response.close()
+                    close()
+                }
+            }
+        })
+    }
+
+    /**
+     * Builds the request headers and body for the specific provider.
+     * Returns (headers, requestBody).
+     */
+    private fun buildRequest(
+        descriptor: ProviderDescriptor,
+        modelId: String,
+        messages: List<ChatMessage>,
+        system: String?,
+        maxTokens: Int,
+        apiKey: String
+    ): Pair<Map<String, String>, okhttp3.RequestBody> {
+
         val authHeaders = when (descriptor.auth) {
             ProviderAuth.API_KEY_HEADER -> mapOf("x-api-key" to apiKey)
             ProviderAuth.BEARER -> mapOf("Authorization" to "Bearer $apiKey")
-            ProviderAuth.NONE -> emptyMap()
+            ProviderAuth.NONE -> emptyMap<String, String>()
         }
 
-        val formatResult = when (descriptor.providerId) {
-            "anthropic" -> AnthropicMessageFormatter.buildRequestBody(
+        // Provider-specific headers
+        val providerHeaders = buildProviderHeaders(descriptor.providerId, modelId)
+
+        val allHeaders = authHeaders + providerHeaders
+
+        // Get protocol format from catalog
+        val catalogEntry = ProviderCatalogRegistry.getProvider(descriptor.providerId)
+        val protocolFormat = catalogEntry?.protocolFormat ?: ApiProtocolFormat.OPENAI_COMPATIBLE
+
+        val formatResult = when (protocolFormat) {
+            ApiProtocolFormat.ANTHROPIC_MESSAGES -> AnthropicMessageFormatter.buildRequestBody(
                 modelId, messages, system, maxTokens, stream = true
             )
-            else -> OpenAiMessageFormatter.buildRequestBody(
+            ApiProtocolFormat.OPENAI_COMPATIBLE -> OpenAiMessageFormatter.buildRequestBody(
                 modelId, messages, system, maxTokens, stream = true
             )
         }
@@ -60,36 +147,25 @@ class ProviderTransport(
         val requestBody = org.json.JSONObject(payload).toString()
             .toRequestBody("application/json".toMediaType())
 
-        val request = Request.Builder()
-            .url(descriptor.baseUrl)
-            .post(requestBody)
-            .apply { authHeaders.forEach { (k, v) -> addHeader(k, v) } }
-            .addHeader("anthropic-version", "2023-06-01")
-            .build()
+        return allHeaders to requestBody
+    }
 
-        val call = httpClient.newCall(request)
-
-        call.enqueue(object : Callback {
-            override fun onFailure(call: Call, e: java.io.IOException) {
-                close(e)
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                val parser = SseEventParser()
-                response.body?.charStream()?.buffered()?.use { reader ->
-                    reader.lineSequence().forEach { line ->
-                        parser.acceptLine(line)?.let { event ->
-                            trySend(event).getOrThrow()
-                        }
-                    }
-                }
-                parser.acceptLine("")?.let { trySend(it).getOrThrow() }
-                response.close()
-                close()
-            }
-        })
-
-        awaitClose { call.cancel() }
+    /**
+     * Provider-specific headers that MUST be sent for each provider.
+     * Critical: Anthropic headers only for Anthropic, not for others.
+     */
+    private fun buildProviderHeaders(providerId: String, modelId: String): Map<String, String> {
+        return when (providerId) {
+            "anthropic" -> mapOf(
+                "anthropic-version" to "2023-06-01",
+                "anthropic-beta" to "messages-2023-12-15"
+            )
+            "openrouter" -> mapOf(
+                "HTTP-Referer" to "https://claudroide.app",
+                "X-Title" to "ClauDroide"
+            )
+            else -> emptyMap()
+        }
     }
 
     companion object {

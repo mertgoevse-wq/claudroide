@@ -1,18 +1,22 @@
 package org.claudroide.app.feature.chat
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.claudroide.app.feature.provider.InMemorySecureKeyVault
+import org.claudroide.app.feature.provider.KeyVaultFactory
 import org.claudroide.app.feature.provider.KeyVaultStorage
 import org.claudroide.app.feature.provider.ProviderAuth
 import org.claudroide.app.feature.provider.ProviderAuthType
 import org.claudroide.app.feature.provider.ProviderCatalogRegistry
 import org.claudroide.app.feature.provider.ProviderDescriptor
 import org.claudroide.app.feature.provider.ProviderTransport
+import org.claudroide.app.feature.provider.network.StreamState
+import org.claudroide.app.feature.provider.network.StreamingResponseEngine
 
 /**
  * Task 070+ — "Gemeinsame Agent-Funktionen" / Chat session state.
@@ -21,13 +25,38 @@ import org.claudroide.app.feature.provider.ProviderTransport
  * This is the only ViewModel in the app and the bridge between ChatScreen and the transport.
  */
 class ChatViewModel(
-    private val keyVault: KeyVaultStorage,
+    private val application: Application,
+    private val keyVault: KeyVaultStorage = KeyVaultFactory.create(application),
     private val transport: ProviderTransport = ProviderTransport(keyVault),
-    private val sessionStore: SessionPersistence = InMemorySessionStore()
+    private val sessionStore: SessionPersistence = SessionDataStore(application)
 ) : ViewModel() {
+
+    /** Test-only constructor — no Android Application required. */
+    @Suppress("unused")
+    constructor(
+        keyVault: KeyVaultStorage,
+        transport: ProviderTransport = ProviderTransport(keyVault),
+        sessionStore: SessionPersistence = NoOpSessionStore
+    ) : this(StubApplication(), keyVault, transport, sessionStore) {
+        // Skip Android-specific session restoration in tests.
+    }
+
+    private class StubApplication : Application() {
+        // Stub exists only so the primary constructor has a non-null Application.
+        // No Android runtime is required — the test constructor never invokes
+        // Application lifecycle methods.
+    }
+
+    private object NoOpSessionStore : SessionPersistence {
+        override suspend fun lastSession(): SessionRecord? = null
+        override suspend fun save(session: SessionRecord) {}
+    }
 
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
+
+    // Reference to the active streaming job so stopStreaming can cancel it.
+    private var streamingJob: Job? = null
 
     init {
         // Restore last session on startup (Task 039 — Sitzungen fortsetzen)
@@ -44,7 +73,8 @@ class ChatViewModel(
                     },
                     currentProviderId = last.providerId,
                     currentModelId = last.modelId,
-                    conversationId = last.conversationId
+                    conversationId = last.conversationId,
+                    streamState = last.streamState
                 )
             }
         }
@@ -116,7 +146,7 @@ class ChatViewModel(
             streamState = StreamState.CONNECTING
         )
 
-        viewModelScope.launch {
+        streamingJob = viewModelScope.launch {
             val engine = StreamingResponseEngine()
             val history = buildHistory(_uiState.value.messages.dropLast(1), text)
 
@@ -165,7 +195,14 @@ class ChatViewModel(
     }
 
     fun stopStreaming() {
-        _uiState.value = _uiState.value.copy(isStreaming = false)
+        streamingJob?.cancel()
+        streamingJob = null
+        val engine = StreamingResponseEngine()
+        engine.abort()
+        _uiState.value = _uiState.value.copy(
+            isStreaming = false,
+            streamState = StreamState.ABORTED
+        )
     }
 
     fun clearError() {
@@ -200,7 +237,8 @@ class ChatViewModel(
                     providerId = state.currentProviderId,
                     modelId = state.currentModelId,
                     messages = state.messages.map { it.text },
-                    timestamp = System.currentTimeMillis()
+                    timestamp = System.currentTimeMillis(),
+                    streamState = state.streamState
                 )
             )
         }
@@ -229,20 +267,7 @@ data class TokenUsage(
     val total: Int get() = inputTokens + outputTokens
 }
 
-interface SessionPersistence {
-    suspend fun save(record: SessionRecord)
-    suspend fun lastSession(): SessionRecord?
-}
-
-data class SessionRecord(
-    val conversationId: String,
-    val providerId: String,
-    val modelId: String,
-    val messages: List<String>,
-    val timestamp: Long
-)
-
-/** In-memory fallback until encrypted DataStore is wired. */
+/** In-memory fallback for JVM tests. */
 class InMemorySessionStore : SessionPersistence {
     private var last: SessionRecord? = null
     override suspend fun save(record: SessionRecord) { last = record }

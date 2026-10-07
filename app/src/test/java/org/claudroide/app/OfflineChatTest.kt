@@ -5,8 +5,8 @@ import org.claudroide.app.feature.chat.OfflineChatPolicy
 import org.claudroide.app.feature.chat.OfflineChatState
 import org.claudroide.app.feature.chat.ReconnectBehaviour
 import org.claudroide.app.feature.chat.SendDecision
-import org.claudroide.app.feature.chat.StreamState
-import org.claudroide.app.feature.chat.StreamingResponse
+import org.claudroide.app.feature.provider.network.StreamState
+import org.claudroide.app.feature.provider.network.StreamingResponse
 import org.claudroide.app.feature.chat.UnsentRequest
 import org.claudroide.app.feature.chat.UnsentRequestStatus
 import org.junit.Assert.*

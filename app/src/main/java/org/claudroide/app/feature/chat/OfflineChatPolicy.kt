@@ -242,16 +242,16 @@ object OfflineChatPolicy {
      * An aborted or failed answer is never complete, so it can never be stored or shown
      * as a finished message.
      */
-    fun partialAnswerIsComplete(streamState: StreamState): Boolean =
-        streamState == StreamState.COMPLETED
+    fun partialAnswerIsComplete(streamState: org.claudroide.app.feature.provider.network.StreamState): Boolean =
+        streamState == org.claudroide.app.feature.provider.network.StreamState.COMPLETED
 
     /** True when the preserved answer must be shown as "unvollständig". */
-    fun showsIncompleteNotice(response: StreamingResponse): Boolean =
+    fun showsIncompleteNotice(response: org.claudroide.app.feature.provider.network.StreamingResponse): Boolean =
         !partialAnswerIsComplete(response.state) &&
             (response.isIncomplete || response.hasContent)
 
     /** Plain German hint for an interrupted answer. */
-    fun incompleteAnswerHint(response: StreamingResponse): String? =
+    fun incompleteAnswerHint(response: org.claudroide.app.feature.provider.network.StreamingResponse): String? =
         if (showsIncompleteNotice(response)) MSG_PARTIAL_ANSWER else null
 
     /** Lets the user change a preserved request. Blank text turns it back into a draft. */

@@ -19,9 +19,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import org.claudroide.app.core.design.ClaudroideTheme
 import org.claudroide.app.feature.chat.ChatScreen
 import org.claudroide.app.feature.chat.ChatViewModel
-import org.claudroide.app.feature.provider.InMemorySecureKeyVault
-import org.claudroide.app.feature.provider.ProviderTransport
 import org.claudroide.app.feature.project.ProjectScreen
+import org.claudroide.app.feature.project.ProjectSaver
+import org.claudroide.app.feature.project.ProjectSaverProvider
+import org.claudroide.app.feature.project.PersistentFolderAccess
+import org.claudroide.app.feature.project.PersistentFolderAccessProvider
+import org.claudroide.app.feature.project.ContentResolverUriAvailability
 import org.claudroide.app.feature.settings.SettingsScreen
 
 enum class AppDestination(
@@ -37,6 +40,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
+        // Initialize providers
+        val persistentAccess = PersistentFolderAccess()
+        val uriAvailability = ContentResolverUriAvailability(this)
+        ProjectSaverProvider.initialize(this, persistentAccess, uriAvailability)
+        PersistentFolderAccessProvider.initialize(persistentAccess)
+
         setContent {
             ClaudroideTheme {
                 AppShell()
@@ -49,11 +59,7 @@ class MainActivity : ComponentActivity() {
 fun AppShell() {
     var currentDestination by remember { mutableStateOf(AppDestination.CHAT) }
 
-    val chatVault = remember { InMemorySecureKeyVault() }
-    val chatTransport = remember { ProviderTransport(chatVault) }
-    val chatViewModel: ChatViewModel = remember {
-        ChatViewModel(keyVault = chatVault, transport = chatTransport)
-    }
+    val chatViewModel: ChatViewModel = viewModel()
 
     NavigationSuiteScaffold(
         navigationSuiteItems = {
