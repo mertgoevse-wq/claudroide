@@ -49,8 +49,35 @@ fun ProjectScreen(
                 title = { Text(stringResource(R.string.nav_projects)) },
                 actions = {
                     if (persistentAccess.hasGrants) {
-                        IconButton(onClick = { /* TODO: show folder list */ }) {
+                        var showGrants by remember { mutableStateOf(false) }
+                        IconButton(onClick = { showGrants = true }) {
                             Icon(Icons.Default.Folder, contentDescription = "Current project")
+                        }
+                        if (showGrants) {
+                            AlertDialog(
+                                onDismissRequest = { showGrants = false },
+                                title = { Text("Offene Projektordner") },
+                                text = {
+                                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                        persistentAccess.grants.forEach { grant ->
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween
+                                            ) {
+                                                Text(text = grant.displayName, style = MaterialTheme.typography.bodyMedium)
+                                                Text(
+                                                    text = if (grant.readOnly) "Nur Lesen" else "Lesen/Schreiben",
+                                                    style = MaterialTheme.typography.bodySmall,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
+                                        }
+                                    }
+                                },
+                                confirmButton = {
+                                    TextButton(onClick = { showGrants = false }) { Text("Schliessen") }
+                                }
+                            )
                         }
                     }
                 }
