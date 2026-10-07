@@ -1,9 +1,9 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-06 (einunddreißigste Sitzung — BUILD-STATE aktualisiert; Tests verifiziert; E2E-Fluss-Analyse gestartet)
-**Status:** **135 von 135 Aufgaben `done`**, 0 offen. Alle 135 Frontmatter-Dateien konsistent (`python3 tools/sync_frontmatter.py --check` OK). **Achtung:** „alle erledigt" heißt hier **nicht** „alles am Gerät belegt" — 085 und 086 tragen eine ausdrücklich offene Gerätebedingung, siehe Sitzung 29.
+**Stand:** 2026-10-07 (zweiunddreißigste Sitzung — Refactoring + Build-Fix + APK)
+**Status:** **135 von 135 Aufgaben `done`**, 0 offen. Refactoring abgeschlossen und gepusht. APK gebaut und nach `dist/` kopiert.
 
-**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → BUILD SUCCESSFUL in 3m 46s, **2522 Tests in 122 Suiten, 0 Fehler, 0 übersprungen**. APK: `app-debug.apk` 20 MB. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0.
+**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → BUILD SUCCESSFUL in 5m 16s, **2530 Tests in 122 Suiten, 0 Fehler, 0 übersprungen** (+8 neue Tests gegenüber vorher). APK: `dist/ClauDroide-latest.apk` 22 MB. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0. `python3 tools/sync_frontmatter.py --check` → OK.
 
 **Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen — Angaben aus Sitzung 22):** SM-A566B, Termux/Debian/PRoot. `adb devices` zeigt **kein** Gerät; `/dev/bus/usb` ist für Termux nicht lesbar. **Es liegt weiterhin keine Messung auf einem echten Gerät vor.** Task 085 (USB-Projektzugriff, `gate: true`) und 086 bleiben aus Gerätegründen als Gerüst mit `const val = false` geschlossen.
 
