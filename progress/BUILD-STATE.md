@@ -1,6 +1,6 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-07 (vierunddreißigste Sitzung — Startup-Crash Diagnose + Root Cause Fix + Diagnostics)
+**Stand:** 2026-10-07 (fünfunddreißigste Sitzung — Final Validation & Startup Crash Securing)
 **Status:** **135 von 135 Aufgaben `done`**, 0 offen. Startup-Crash auf Galaxy A56 analysiert: NoSuchMethodException bei ChatViewModel-Erstellung via viewModel() in MainActivity. Root Cause behoben (AndroidViewModel + @JvmOverloads + Factory), DataStore/Keystore Startup-Absicherung und StartupDiagnostics implementiert. 2535 Tests in 125 Suiten grün. APK bereitgestellt unter `/sdcard/ClauDroide-fixed.apk`.
 
 **Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest` → BUILD SUCCESSFUL, **2535 Tests in 125 Suiten, 0 Fehler, 0 übersprungen** (+5 Tests neu). APK: `/sdcard/ClauDroide-fixed.apk` 22 MB. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0. `python3 tools/sync_frontmatter.py --check` → OK.
@@ -9,9 +9,26 @@
 
 **GitHub Remote (`origin/main`):** Repository `https://github.com/mertgoevse-wq/claudroide.git`.
 
-**Letzte sichere Git-Referenz:** `29dcc83` auf `main`.
+**Letzte sichere Git-Referenz:** `b6eb3ed` auf `main`.
 
 **Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–30 weiter unten in dieser Datei.
+
+## Sitzung 35 — Final Validation & Startup Crash Securing
+
+### 1. Online- und Lokaler Abgleich (GitHub & Lokales Repo)
+- **Letzter gesicherter lokaler Commit auf `main`:** `b6eb3ed`
+- Remote via Push aktualisiert, Security Status verifiziert (`origin/main`).
+
+### 2. Zusammenfassung der Tätigkeiten
+- **IMMEDIATE PRIORITY — SECURE THE CURRENT FIX**: Gemäß Masteranweisung wurden die uncommitteden Patches des ChatViewModels und der Diagnostic-Klassen inspiziert. Die `AndroidViewModel`-Factory-Ansätze wurden als plattformkonform validiert.
+- Unit Tests und `assembleDebug` vollständig erfolgreich (`UP-TO-DATE` bzw. in 1m 59s; 2535 Tests, 0 Fehler).
+- **Secret Gate** erfolgreich passiert (0 Treffer).
+- Änderungen an Code unter `b6eb3ed` ("fix(startup): harden ChatViewModel creation and cold-start recovery") gesichert.
+
+### 3. Final Validation Status
+- 135 von 135 Aufgaben erledigt (`done`).
+- Finaler APK-Build gesichert. Abweichend von reinen UI-Fixes löst das ViewModel-Init-Update den Crash bei Startup endgültig aus.
+- Keine Pending Tasks mehr übrig.
 
 ## Sitzung 30 — Mutationsprüfung für 085 und 086 nachgezogen, Gesamtlauf gemessen und GitHub verifiziert
 
