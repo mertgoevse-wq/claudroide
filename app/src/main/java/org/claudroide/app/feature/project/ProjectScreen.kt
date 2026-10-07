@@ -24,11 +24,12 @@ import org.claudroide.app.core.design.ClaudroideTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProjectScreen(
-    projectSaver: ProjectSaver = remember { 
-        ProjectSaverProvider.get() 
+    projectSaver: ProjectSaver = run {
+        val ctx = androidx.compose.ui.platform.LocalContext.current
+        remember(ctx) { ProjectSaverProvider.get(ctx) }
     },
-    persistentAccess: PersistentFolderAccess = remember { 
-        PersistentFolderAccessProvider.get() 
+    persistentAccess: PersistentFolderAccess = remember {
+        PersistentFolderAccessProvider.get()
     }
 ) {
     var restoreReport by remember { mutableStateOf<RestoreReport?>(null) }
@@ -220,7 +221,19 @@ object ProjectSaverProvider {
         instance = ProjectSaver(context, persistentAccess, uriAvailability)
     }
 
-    fun get(): ProjectSaver = instance ?: error("ProjectSaver not initialized. Call initialize() first.")
+    fun get(context: Context? = null): ProjectSaver {
+        return instance ?: synchronized(this) {
+            instance ?: run {
+                if (context != null) {
+                    val access = PersistentFolderAccessProvider.get()
+                    val avail = ContentResolverUriAvailability(context)
+                    ProjectSaver(context, access, avail).also { instance = it }
+                } else {
+                    error("ProjectSaver not initialized. Call initialize() first.")
+                }
+            }
+        }
+    }
 }
 
 /**

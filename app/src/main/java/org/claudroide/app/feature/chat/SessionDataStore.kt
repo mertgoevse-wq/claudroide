@@ -4,12 +4,15 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import java.io.IOException
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -46,28 +49,43 @@ class SessionDataStore(private val context: Context) : SessionPersistence {
         }
     }
 
-    override suspend fun lastSession(): SessionRecord? = context.dataStore.data
-        .map { prefs ->
-            val conversationId = prefs[Keys.CONVERSATION_ID] ?: return@map null
-            val providerId = prefs[Keys.PROVIDER_ID] ?: return@map null
-            val modelId = prefs[Keys.MODEL_ID] ?: return@map null
-            val messagesJson = prefs[Keys.MESSAGES] ?: return@map null
-            val timestamp = prefs[Keys.TIMESTAMP] ?: return@map null
-            val streamStateStr = prefs[Keys.STREAM_STATE] ?: org.claudroide.app.feature.provider.network.StreamState.IDLE.name
+    override suspend fun lastSession(): SessionRecord? = try {
+        context.dataStore.data
+            .catch { e ->
+                if (e is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw e
+                }
+            }
+            .map { prefs ->
+                val conversationId = prefs[Keys.CONVERSATION_ID] ?: return@map null
+                val providerId = prefs[Keys.PROVIDER_ID] ?: return@map null
+                val modelId = prefs[Keys.MODEL_ID] ?: return@map null
+                val messagesJson = prefs[Keys.MESSAGES] ?: return@map null
+                val timestamp = prefs[Keys.TIMESTAMP] ?: return@map null
+                val streamStateStr = prefs[Keys.STREAM_STATE] ?: org.claudroide.app.feature.provider.network.StreamState.IDLE.name
 
-            val messages = jsonToMessages(messagesJson)
-            val streamState = org.claudroide.app.feature.provider.network.StreamState.valueOf(streamStateStr)
+                val messages = jsonToMessages(messagesJson)
+                val streamState = try {
+                    org.claudroide.app.feature.provider.network.StreamState.valueOf(streamStateStr)
+                } catch (_: Exception) {
+                    org.claudroide.app.feature.provider.network.StreamState.IDLE
+                }
 
-            SessionRecord(
-                conversationId = conversationId,
-                providerId = providerId,
-                modelId = modelId,
-                messages = messages,
-                timestamp = timestamp,
-                streamState = streamState
-            )
-        }
-        .first()
+                SessionRecord(
+                    conversationId = conversationId,
+                    providerId = providerId,
+                    modelId = modelId,
+                    messages = messages,
+                    timestamp = timestamp,
+                    streamState = streamState
+                )
+            }
+            .first()
+    } catch (_: Exception) {
+        null
+    }
 
     suspend fun saveAgentState(
         conversationId: String,

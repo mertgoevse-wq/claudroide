@@ -1,5 +1,6 @@
 package org.claudroide.app
 
+import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,9 +15,11 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.claudroide.app.core.design.ClaudroideTheme
+import org.claudroide.app.core.diagnostics.StartupDiagnostics
 import org.claudroide.app.feature.chat.ChatScreen
 import org.claudroide.app.feature.chat.ChatViewModel
 import org.claudroide.app.feature.project.ProjectScreen
@@ -39,14 +42,18 @@ enum class AppDestination(
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        StartupDiagnostics.markPhase(StartupDiagnostics.Phase.MAIN_ACTIVITY_CREATE)
         enableEdgeToEdge()
-        
+
         // Initialize providers
+        StartupDiagnostics.markPhase(StartupDiagnostics.Phase.DEPENDENCIES_INIT)
         val persistentAccess = PersistentFolderAccess()
         val uriAvailability = ContentResolverUriAvailability(this)
+        StartupDiagnostics.markPhase(StartupDiagnostics.Phase.PROJECT_STORAGE_INIT)
         ProjectSaverProvider.initialize(this, persistentAccess, uriAvailability)
         PersistentFolderAccessProvider.initialize(persistentAccess)
 
+        StartupDiagnostics.markPhase(StartupDiagnostics.Phase.COMPOSE_INIT)
         setContent {
             ClaudroideTheme {
                 AppShell()
@@ -59,7 +66,16 @@ class MainActivity : ComponentActivity() {
 fun AppShell() {
     var currentDestination by remember { mutableStateOf(AppDestination.CHAT) }
 
-    val chatViewModel: ChatViewModel = viewModel()
+    StartupDiagnostics.markPhase(StartupDiagnostics.Phase.VIEWMODEL_INIT)
+    val context = LocalContext.current.applicationContext as Application
+    val chatViewModel: ChatViewModel = viewModel(
+        factory = remember(context) { ChatViewModel.provideFactory(context) }
+    )
+
+    LaunchedEffect(Unit) {
+        StartupDiagnostics.markPhase(StartupDiagnostics.Phase.FIRST_FRAME)
+        StartupDiagnostics.markPhase(StartupDiagnostics.Phase.READY)
+    }
 
     NavigationSuiteScaffold(
         navigationSuiteItems = {

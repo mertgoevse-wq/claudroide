@@ -155,7 +155,7 @@ object KeyVaultFactory {
     fun create(context: Context): KeyVaultStorage {
         return try {
             AndroidKeystoreKeyVault(context)
-        } catch (e: Exception) {
+        } catch (t: Throwable) {
             InMemorySecureKeyVault()
         }
     }

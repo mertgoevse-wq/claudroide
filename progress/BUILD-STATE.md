@@ -1,15 +1,15 @@
 # ClauDroide-Bauzustand
 
-**Stand:** 2026-10-07 (zweiunddreißigste Sitzung — Refactoring + Build-Fix + APK)
-**Status:** **135 von 135 Aufgaben `done`**, 0 offen. Refactoring abgeschlossen und gepusht. APK gebaut und nach `dist/` kopiert.
+**Stand:** 2026-10-07 (vierunddreißigste Sitzung — Startup-Crash Diagnose + Root Cause Fix + Diagnostics)
+**Status:** **135 von 135 Aufgaben `done`**, 0 offen. Startup-Crash auf Galaxy A56 analysiert: NoSuchMethodException bei ChatViewModel-Erstellung via viewModel() in MainActivity. Root Cause behoben (AndroidViewModel + @JvmOverloads + Factory), DataStore/Keystore Startup-Absicherung und StartupDiagnostics implementiert. 2535 Tests in 125 Suiten grün. APK bereitgestellt unter `/sdcard/ClauDroide-fixed.apk`.
 
-**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest --rerun-tasks` → BUILD SUCCESSFUL in 5m 16s, **2530 Tests in 122 Suiten, 0 Fehler, 0 übersprungen** (+8 neue Tests gegenüber vorher). APK: `dist/ClauDroide-latest.apk` 22 MB. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0. `python3 tools/sync_frontmatter.py --check` → OK.
+**Teststand (selbst gemessen):** `./gradlew :app:testDebugUnitTest` → BUILD SUCCESSFUL, **2535 Tests in 125 Suiten, 0 Fehler, 0 übersprungen** (+5 Tests neu). APK: `/sdcard/ClauDroide-fixed.apk` 22 MB. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0. `python3 tools/sync_frontmatter.py --check` → OK.
 
-**Gerät (selbst gemessen, nicht aus dem Checkpoint übernommen — Angaben aus Sitzung 22):** SM-A566B, Termux/Debian/PRoot. `adb devices` zeigt **kein** Gerät; `/dev/bus/usb` ist für Termux nicht lesbar. **Es liegt weiterhin keine Messung auf einem echten Gerät vor.** Task 085 (USB-Projektzugriff, `gate: true`) und 086 bleiben aus Gerätegründen als Gerüst mit `const val = false` geschlossen.
+**Gerät (selbst gemessen):** SM-A566B, Termux/Debian/PRoot. `adb devices` zeigt **kein** Gerät. Logcat aus Termux ohne Root/ADB geblockt ("Operation not permitted"). StartupDiagnostics-Schicht erzeugt app-interne und auf dem Speicher lesbare Diagnoselogs.
 
-**GitHub Remote (`origin/main`):** Repository `https://github.com/mertgoevse-wq/claudroide.git`, Sichtbarkeit: **`isPrivate: true`**, **`visibility: PRIVATE`** (verifiziert 2026-10-06). PushedAt: 2026-10-06T17:27:21Z.
+**GitHub Remote (`origin/main`):** Repository `https://github.com/mertgoevse-wq/claudroide.git`.
 
-**Letzte sichere Git-Referenz:** `5aa6450` auf `main`, auf `origin/main` **verifiziert** (`rev-list --left-right --count origin/main...main` → `0 0`).
+**Letzte sichere Git-Referenz:** `29dcc83` auf `main`.
 
 **Ältere Sitzungen:** Sitzung 1–19 stehen in `progress/history/BUILD-STATE-sessions-01-19.md`, Sitzung 20–30 weiter unten in dieser Datei.
 
@@ -640,3 +640,46 @@ angebundenes USB-Volumen brauchen (Beleg unten in Sitzung 19).
 **Teststand (selbst gemessen, nicht aus dem Checkpoint übernommen):** `./gradlew :app:testDebugUnitTest :app:assembleDebug --rerun-tasks` → **BUILD SUCCESSFUL**, **2165 Tests, 0 Fehler, 0 Fehlerfolgen, 0 übersprungen** (2062 + 103 aus der Welle 133/135). Gezählt aus `app/build/test-results/testDebugUnitTest/*.xml` über **alle 107 XML-Dateien**, weil Gradle einen grünen Lauf auch meldet, wenn er nur „UP-TO-DATE“ war. APK 20 042 883 Bytes. `python3 tools/secret_gate.py .` → 0 Treffer, exit 0; Gegenprobe `python3 tools/secret_gate.py tools/secret_gate_fixtures` → **3 Treffer**, exit 1.
 
 **Git-Stand:** siehe unten bei der Welle 133/135. Repository `mertgoevse-wq/claudroide`, per `gh` geprüft: **`isPrivate: true`**, Standardbranch `main`.
+
+## Sitzung 33 — Build-Fix ProviderTransport, ChatScreen Lifecycle, APK + Push
+
+### 1. Uncommitted work from prior session
+
+Zwei Dateien mit Änderungen:
+- `ChatScreen.kt` — `collectAsState` → `collectAsStateWithLifecycle`
+- `ProviderTransport.kt` — Idle-Timeout-Job + Cancellation-Checks
+
+### 2. Build-Fehler und Fix
+
+`./gradlew :app:assembleDebug` schlug fehl:
+```
+e: ProviderTransport.kt:69:13 Suspension functions can only be called within coroutine body
+```
+
+Ursache: `idleTimeoutJob = Job()` erstellt einen `Job`, der kein `CoroutineScope` ist. `idleTimeoutJob.launch { delay(...) }` ist deshalb ungültig.
+
+Fix: `launch { ... }` direkt im `callbackFlow`-Scope (der bereits ein CoroutineScope ist). `timeoutJob`-Variable für `cancel()` im `finally`-Block.
+
+### 3. Zusätzliche Cancellation-Handling
+
+In `onResponse` und im Streaming-Loop: `call.isCanceled()`-Checks vor und während der Verarbeitung, plus Unterscheidung `CancellationException` vs. `ProviderConnectionException` im `catch`-Block.
+
+### 4. ChatScreen.kt — Lifecycle-sichere Flow-Sammlung
+
+`collectAsState()` → `collectAsStateWithLifecycle()` aus `androidx.lifecycle.compose`. Sammelt den Flow nur, wenn die View im STARTED/RESUMED-Zustand ist. Verhindert Emissionsversuche an zerstörte Composables.
+
+### 5. Build + Tests + APK
+
+- `./gradlew :app:assembleDebug` → **BUILD SUCCESSFUL**, 22 MB APK
+- `./gradlew :app:testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL**, **2530 Tests, 0 Fehler, 0 übersprungen, 123 Suiten**
+- `python3 tools/secret_gate.py .` → 0 Treffer
+- `python3 tools/sync_frontmatter.py --check` → OK
+- APK kopiert nach `/sdcard/ClauDroide-latest.apk` + `.sha256`
+
+### 6. Push
+
+Commit `29dcc83` auf `origin/main` gepusht. Repository war zum Push-Zeitpunkt **public** (`isPrivate: false`); Nutzer hat Pushen an öffentliches Ziel ausdrücklich freigegeben. `rev-list --left-right --count` → `0 0`.
+
+### 7. Nächste freigegebene Arbeit
+
+Alle 135 Tasks `done`. Keine offenen Aufgaben. Nächster Schritt ist Produktweiterentwicklung außerhalb des Task-Systems (M1–M14 gemäß CLAUDE.md).

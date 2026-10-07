@@ -1,7 +1,9 @@
 package org.claudroide.app.feature.chat
 
 import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,12 +26,25 @@ import org.claudroide.app.feature.provider.network.StreamingResponseEngine
  * Owns the live chat: messages, streaming state, provider selection, session persistence.
  * This is the only ViewModel in the app and the bridge between ChatScreen and the transport.
  */
-class ChatViewModel(
-    private val application: Application,
+class ChatViewModel @JvmOverloads constructor(
+    application: Application,
     private val keyVault: KeyVaultStorage = KeyVaultFactory.create(application),
     private val transport: ProviderTransport = ProviderTransport(keyVault),
     private val sessionStore: SessionPersistence = SessionDataStore(application)
-) : ViewModel() {
+) : AndroidViewModel(application) {
+
+    companion object {
+        fun provideFactory(application: Application): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    if (modelClass.isAssignableFrom(ChatViewModel::class.java)) {
+                        return ChatViewModel(application) as T
+                    }
+                    throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
+                }
+            }
+    }
 
     /** Test-only constructor — no Android Application required. */
     @Suppress("unused")
