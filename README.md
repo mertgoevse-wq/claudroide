@@ -17,10 +17,9 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Phase-Engineering%20Complete-success" alt="Phase" />
+  <img src="https://img.shields.io/badge/Phase-Active%20Development-yellow" alt="Phase" />
   <img src="https://img.shields.io/badge/Tasks-135%20%2F%20135%20Done-success" alt="Tasks" />
-  <img src="https://img.shields.io/badge/Waves-W0%E2%80%93W29%20Closed-success" alt="Waves" />
-  <img src="https://img.shields.io/badge/Tests-2522%20passing-success" alt="Tests" />
+  <img src="https://img.shields.io/badge/Tests-2530%20passing-success" alt="Tests" />
   <img src="https://img.shields.io/badge/Target-Galaxy%20A56%205G-orange" alt="Device" />
   <img src="https://img.shields.io/badge/Repo-private-success" alt="Repo" />
 </p>
