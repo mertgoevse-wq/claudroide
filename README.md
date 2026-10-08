@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="assets/brand/mark-256.png" alt="ClauDroide mark" width="96" />
+  <img src="assets/brand/1791468217945.jpg" alt="ClauDroide mark" width="96" />
   <br>
   <b>ClauDroide</b> — Autonomous Mobile AI Coding Assistant for Android
   <br>
