@@ -9,7 +9,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "org.claudroide.app"
+        applicationId = "org.claudroide.next"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
