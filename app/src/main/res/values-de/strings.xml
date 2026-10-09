@@ -32,4 +32,7 @@
     <string name="chat_send">Senden</string>
     <string name="chat_stop">Stoppen</string>
     <string name="project_open_folder">Projektordner öffnen</string>
+
+    <!-- Accessibility Service -->
+    <string name="accessibility_service_description">Ermöglicht ClauDroide die Prüfung des Bildschirminhalts und die Ausführung von Touch-Aktionen, um mobile Arbeitsabläufe für dich zu automatisieren.</string>
 </resources>

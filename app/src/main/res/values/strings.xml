@@ -32,4 +32,7 @@
     <string name="chat_send">Send</string>
     <string name="chat_stop">Stop</string>
     <string name="project_open_folder">Open project folder</string>
+
+    <!-- Accessibility Service -->
+    <string name="accessibility_service_description">Enables ClauDroide to inspect screen structure and dispatch touch gestures to automate mobile workflows on your behalf.</string>
 </resources>
