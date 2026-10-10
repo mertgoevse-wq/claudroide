@@ -58,6 +58,69 @@ object ModelRegistry {
             supportsVision = true,
             contextWindowTokens = 200000
         ),
+        // OpenAI official models
+        ModelDescriptor(
+            id = "gpt-4o",
+            displayName = "GPT-4o",
+            providerId = "openai",
+            origin = ModelOrigin.OFFICIAL_PROVIDER_CATALOG,
+            supportsStreaming = true,
+            supportsTools = true,
+            supportsVision = true,
+            contextWindowTokens = 128000
+        ),
+        ModelDescriptor(
+            id = "gpt-4o-mini",
+            displayName = "GPT-4o Mini",
+            providerId = "openai",
+            origin = ModelOrigin.OFFICIAL_PROVIDER_CATALOG,
+            supportsStreaming = true,
+            supportsTools = true,
+            supportsVision = true,
+            contextWindowTokens = 128000
+        ),
+        // OpenRouter curated models
+        ModelDescriptor(
+            id = "anthropic/claude-3.5-sonnet",
+            displayName = "Claude 3.5 Sonnet (OpenRouter)",
+            providerId = "openrouter",
+            origin = ModelOrigin.OFFICIAL_PROVIDER_CATALOG,
+            supportsStreaming = true,
+            supportsTools = true,
+            supportsVision = true,
+            contextWindowTokens = 200000
+        ),
+        ModelDescriptor(
+            id = "meta-llama/llama-3.3-70b-instruct:free",
+            displayName = "Llama 3.3 70B Free (OpenRouter)",
+            providerId = "openrouter",
+            origin = ModelOrigin.OFFICIAL_PROVIDER_CATALOG,
+            supportsStreaming = true,
+            supportsTools = true,
+            supportsVision = false,
+            contextWindowTokens = 131072
+        ),
+        // OmniRoute bridge models
+        ModelDescriptor(
+            id = "role:fast",
+            displayName = "Fast Model (OmniRoute)",
+            providerId = "omniroute",
+            origin = ModelOrigin.OFFICIAL_PROVIDER_CATALOG,
+            supportsStreaming = true,
+            supportsTools = true,
+            supportsVision = true,
+            contextWindowTokens = 128000
+        ),
+        ModelDescriptor(
+            id = "role:coder",
+            displayName = "Coder Model (OmniRoute)",
+            providerId = "omniroute",
+            origin = ModelOrigin.OFFICIAL_PROVIDER_CATALOG,
+            supportsStreaming = true,
+            supportsTools = true,
+            supportsVision = true,
+            contextWindowTokens = 128000
+        ),
         // Local server default models
         ModelDescriptor(
             id = "qwen2.5-coder:7b",

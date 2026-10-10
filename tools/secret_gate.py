@@ -66,7 +66,7 @@ REPEATED = re.compile(r'^(.)\1{7,}$')
 # betroffen: dort ist der gesuchte Pfad die Wurzel, nicht ein Unterordner.
 SKIP_DIRS = {
     '.git', 'build', '.gradle', '.kotlin', 'node_modules', '.idea',
-    'secret_gate_fixtures',
+    'secret_gate_fixtures', '_sources',
 }
 
 

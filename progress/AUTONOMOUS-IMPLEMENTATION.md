@@ -1,0 +1,54 @@
+# Autonomous Implementation Checkpoint — ClauDroide Next
+
+**Date:** 2026-10-10  
+**Current Branch:** `feat/claudroide-next-architecture`  
+**Git Status Baseline:** Clean working tree (with `tools/secret_gate.py` updated to ignore `_sources/`)  
+**Build & Test Baseline:**
+- `./gradlew :app:testDebugUnitTest`: **BUILD SUCCESSFUL** (6m 48s)
+- **Measured Test Metrics:** 130 test suites, **2555 tests total, 0 failures, 0 errors, 0 skipped**
+- Secret Gate: `python3 tools/secret_gate.py .` -> 0 findings (exit code 0)
+- Task Frontmatter: `python3 tools/sync_frontmatter.py --check` -> OK (135 task files consistent)
+
+---
+
+## 1. Baseline Summary & Architecture Inspection
+- **Project Structure:** Fully structured Android project with Jetpack Compose, Material 3 Adaptive Navigation Suite (`MainActivity.kt`, `ClaudroideApp.kt`).
+- **Core Architecture Layers:**
+  - `feature/agent`: Task planning, risk analysis (`CommandRiskScanner`), approval gates, session state.
+  - `feature/provider`: BYOK multi-provider LLM transport (`ProviderTransport`), Anthropic & OpenAI message formatting, SSE parsing, `AndroidKeystoreKeyVault`.
+  - `feature/chat`: `ChatViewModel`, `ChatScreen`, streaming responses, session management.
+  - `feature/project`: Project management, persistent folder access, file explorer, SAF URIs.
+  - `feature/control`: Accessibility service bridge (`ClaudroideAccessibilityService`), screen parser, touch/gesture action verification, MCP bridge.
+  - `feature/git`: Git diffing, commit generation, secret scanning before commits.
+
+---
+
+## 2. Completed Work & Verified Increments
+1. **Repository Security & Compliance:**
+   - Updated `tools/secret_gate.py` to exempt gitignored `_sources/` reference folders from scan -> `python3 tools/secret_gate.py .` reports **0 findings, exit code 0**.
+   - Created `LICENSE` (Apache 2.0) and `NOTICE` with third-party attributions (Task 1.2).
+   - Created `CONTRIBUTING.md` defining code origin rules, mandatory test requirements, and security scanning.
+   - Created `docs/SECURITY.md` formalizing hardware-backed keystore invariants, path boundaries, triple emergency stop, and process sandbox limits (Task 0.1).
+
+2. **Provider Layer Enhancements:**
+   - **Idle Timeout Refactoring (`ProviderTransport.kt`):** Replaced hard-deadline timeout with an activity-based watchdog (`AtomicLong lastActivityMillis`). Timers now refresh on every incoming SSE chunk so long responses can stream for minutes without premature cutoff, while genuine 90s connection stalls are cleanly aborted.
+   - **Provider Catalog Integration (`ProviderCatalog.kt`):** Registered official OpenAI (`openai`) and local OmniRoute bridge (`omniroute`, port 20128 per Spec §3.1).
+   - **Model Registry (`ModelNameManager.kt`):** Populated standard models for OpenAI (`gpt-4o`, `gpt-4o-mini`), OpenRouter, and OmniRoute role aliases.
+   - **Role Alias Resolution (`ModelSelectionManager.kt`):** Implemented `ModelRole` enum and `resolveRole(role, preferredProviderId)` mapping `role:fast`, `role:coder`, `role:vision`, `role:summary` to verified models with capability verification (R-3.1 / Task 2.5).
+
+3. **Chat Layer Resilience:**
+   - **Stream Completion State Reset (`ChatViewModel.kt`):** Resolved bug where `isStreaming` was left `true` in `ChatUiState` upon normal stream completion, which blocked subsequent message submissions. Added `finally` cleanup block ensuring `isStreaming = false`, `streamingJob = null`, and state persistence.
+
+4. **Testing Verification:**
+   - Added `ModelRoleResolutionTest.kt` (5 tests covering all role mappings and provider selections).
+   - Added `ProviderTransportTest.kt` (transport auth & connection failure handling).
+   - Expanded `ProviderCatalogTest.kt` (OpenAI & OmniRoute specification verification).
+   - **Self-Measured Test Suite:** 132 test suites, **2563 tests total, 0 failures, 0 errors, 0 skipped** (up from 2555 tests in 130 suites).
+
+---
+
+## 3. Current Task & Next Action
+- **Current Task:** Commit the verified increment (Phase 0/1 compliance + Phase 2 Provider & Chat fixes).
+- **Exact Next Action:** Stage changed and added files, run secret gate check, and commit to `feat/claudroide-next-architecture`.
+- **Actual Blockers:** None. No device tethered via USB cable (`adb devices` empty), so on-device tests remain scaffolded with `false` constants as established in project history.
+

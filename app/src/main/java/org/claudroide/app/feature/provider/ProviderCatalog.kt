@@ -93,7 +93,47 @@ object ProviderCatalogRegistry {
             )
         )
 
-        // 3. Local Server (Ollama / vLLM / llama.cpp on device or LAN)
+        // 3. OpenAI Official API (BYOK)
+        register(
+            ProviderCatalogEntry(
+                id = "openai",
+                displayName = "OpenAI API",
+                documentationUrl = "https://platform.openai.com/docs/api-reference",
+                isOfficiallyDocumented = true,
+                allowedAuthTypes = listOf(ProviderAuthType.BEARER_TOKEN),
+                defaultEndpoint = "https://api.openai.com/v1/chat/completions",
+                protocolFormat = ApiProtocolFormat.OPENAI_COMPATIBLE,
+                capabilities = setOf(
+                    ProviderCapability.STREAMING,
+                    ProviderCapability.TOOL_CALLING,
+                    ProviderCapability.VISION_IMAGE_INPUT,
+                    ProviderCapability.SYSTEM_INSTRUCTIONS
+                ),
+                lastVerifiedDate = "2026-10-01"
+            )
+        )
+
+        // 4. OmniRoute (Local routing bridge on port 20128)
+        register(
+            ProviderCatalogEntry(
+                id = "omniroute",
+                displayName = "OmniRoute (127.0.0.1:20128)",
+                documentationUrl = "http://127.0.0.1:20128",
+                isOfficiallyDocumented = true,
+                allowedAuthTypes = listOf(ProviderAuthType.BEARER_TOKEN, ProviderAuthType.NO_AUTH_LOCAL),
+                defaultEndpoint = "http://127.0.0.1:20128/v1/chat/completions",
+                protocolFormat = ApiProtocolFormat.OPENAI_COMPATIBLE,
+                capabilities = setOf(
+                    ProviderCapability.STREAMING,
+                    ProviderCapability.TOOL_CALLING,
+                    ProviderCapability.VISION_IMAGE_INPUT,
+                    ProviderCapability.SYSTEM_INSTRUCTIONS
+                ),
+                lastVerifiedDate = "2026-10-08"
+            )
+        )
+
+        // 5. Local Server (Ollama / vLLM / llama.cpp on device or LAN)
         register(
             ProviderCatalogEntry(
                 id = "local_server",

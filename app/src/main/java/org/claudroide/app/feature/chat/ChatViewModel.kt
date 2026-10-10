@@ -184,6 +184,7 @@ class ChatViewModel @JvmOverloads constructor(
                             isStreaming = !response.isComplete
                         ),
                         streamState = response.state,
+                        isStreaming = !response.isComplete,
                         lastUsage = if (response.usageReported) {
                             TokenUsage(response.inputTokens ?: 0, response.outputTokens ?: 0)
                         } else _uiState.value.lastUsage
@@ -205,6 +206,10 @@ class ChatViewModel @JvmOverloads constructor(
                     streamState = StreamState.FAILED,
                     error = e.message
                 )
+            } finally {
+                _uiState.value = _uiState.value.copy(isStreaming = false)
+                streamingJob = null
+                persistSession()
             }
         }
     }

@@ -63,12 +63,20 @@ class ProviderTransport(
         // Allow cancellation from outside
         awaitClose { callRef.get()?.cancel() }
 
-        // Idle timeout: cancel the stream if no data arrives for SSE_IDLE_TIMEOUT_SECONDS
+        val lastActivityMillis = java.util.concurrent.atomic.AtomicLong(System.currentTimeMillis())
+
+        // Idle timeout: cancel the stream only if no data arrives for SSE_IDLE_TIMEOUT_SECONDS
         val timeoutJob = launch {
-            delay(SSE_IDLE_TIMEOUT_SECONDS * 1000)
-            if (!call.isCanceled()) {
-                callRef.get()?.cancel()
-                close(ProviderConnectionException("Stream-Timeout: keine Daten fuer ${SSE_IDLE_TIMEOUT_SECONDS}s"))
+            while (isActive) {
+                delay(2000)
+                val idleSeconds = (System.currentTimeMillis() - lastActivityMillis.get()) / 1000
+                if (idleSeconds >= SSE_IDLE_TIMEOUT_SECONDS) {
+                    if (!call.isCanceled()) {
+                        callRef.get()?.cancel()
+                        close(ProviderConnectionException("Stream-Timeout: keine Daten fuer ${SSE_IDLE_TIMEOUT_SECONDS}s"))
+                    }
+                    break
+                }
             }
         }
 
@@ -82,6 +90,7 @@ class ProviderTransport(
             }
 
             override fun onResponse(call: Call, response: Response) {
+                lastActivityMillis.set(System.currentTimeMillis())
                 if (!response.isSuccessful) {
                     if (call.isCanceled()) {
                         response.close()
@@ -106,6 +115,7 @@ class ProviderTransport(
                 try {
                     response.body?.charStream()?.buffered()?.use { reader ->
                         reader.lineSequence().forEach { line ->
+                            lastActivityMillis.set(System.currentTimeMillis())
                             if (call.isCanceled()) {
                                 response.close()
                                 close(java.util.concurrent.CancellationException("Anfrage abgebrochen"))

@@ -11,11 +11,29 @@ class ProviderCatalogTest {
     @Test
     fun defaultProviders_areRegistered() {
         val all = ProviderCatalogRegistry.getAllProviders()
-        assertTrue(all.size >= 4)
+        assertTrue(all.size >= 6)
         assertNotNull(ProviderCatalogRegistry.getProvider("anthropic"))
         assertNotNull(ProviderCatalogRegistry.getProvider("openrouter"))
+        assertNotNull(ProviderCatalogRegistry.getProvider("openai"))
+        assertNotNull(ProviderCatalogRegistry.getProvider("omniroute"))
         assertNotNull(ProviderCatalogRegistry.getProvider("local_server"))
         assertNotNull(ProviderCatalogRegistry.getProvider("custom_endpoint"))
+    }
+
+    @Test
+    fun openaiProvider_conformsToSpecification() {
+        val openai = requireNotNull(ProviderCatalogRegistry.getProvider("openai"))
+        assertTrue(openai.isOfficiallyDocumented)
+        assertEquals(ApiProtocolFormat.OPENAI_COMPATIBLE, openai.protocolFormat)
+        assertTrue(openai.allowedAuthTypes.contains(ProviderAuthType.BEARER_TOKEN))
+        assertEquals("https://api.openai.com/v1/chat/completions", openai.defaultEndpoint)
+    }
+
+    @Test
+    fun omnirouteProvider_conformsToSpecification() {
+        val omni = requireNotNull(ProviderCatalogRegistry.getProvider("omniroute"))
+        assertEquals(ApiProtocolFormat.OPENAI_COMPATIBLE, omni.protocolFormat)
+        assertTrue(omni.defaultEndpoint.contains("20128"))
     }
 
     @Test

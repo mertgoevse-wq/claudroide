@@ -18,6 +18,18 @@ data class ModelSelection(
     val capabilities: List<ModelCapability> = emptyList()
 )
 
+enum class ModelRole(val alias: String, val descriptionDe: String, val descriptionEn: String) {
+    FAST("role:fast", "Schnelle Antworten, geringe Latenz", "Fast responses, low latency"),
+    CODER("role:coder", "Programmier- und Architekturaufgaben", "Coding and architecture tasks"),
+    VISION("role:vision", "Bild- und Bildschirmanalyse", "Image and screen analysis"),
+    SUMMARY("role:summary", "Zusammenfassungen und Kontextverdichtung", "Summaries and context compression");
+
+    companion object {
+        fun fromAlias(alias: String): ModelRole? =
+            entries.find { it.alias.equals(alias.trim(), ignoreCase = true) }
+    }
+}
+
 /**
  * Outcome of a model change request.
  */
@@ -63,23 +75,72 @@ class ModelSelectionManager(
             return ModelSelectionResult.Invalid("Anbieter-ID darf nicht leer sein.")
         }
 
-        val capabilities = capabilityRegistry.getCapabilities(newModelId)
-        val isVerified = capabilities.isNotEmpty()
+        val resolvedModelId = if (newModelId.startsWith("role:") && providerId != "omniroute") {
+            val role = ModelRole.fromAlias(newModelId)
+            if (role != null) resolveRole(role, providerId).modelId else newModelId
+        } else {
+            newModelId
+        }
+
+        val capabilities = capabilityRegistry.getCapabilities(resolvedModelId)
+        val isVerified = capabilities.isNotEmpty() || (providerId == "omniroute" && resolvedModelId.startsWith("role:"))
 
         val newSelection = ModelSelection(
             providerId = providerId,
-            modelId = newModelId,
+            modelId = resolvedModelId,
             isVerified = isVerified,
             capabilities = capabilities.map { it.capability }
         )
 
         val warning = buildChangeWarning(
-            newModelId = newModelId,
+            newModelId = resolvedModelId,
             currentModelId = currentModelId,
             isVerified = isVerified
         )
 
         return ModelSelectionResult.RequiresConfirmation(newSelection, warning)
+    }
+
+    /**
+     * Resolves a role alias like "role:fast" or "role:coder" to a concrete verified model.
+     * Respects the preferred provider or picks the best available provider.
+     */
+    fun resolveRole(
+        role: ModelRole,
+        preferredProviderId: String? = null
+    ): ModelSelection {
+        val providerId = preferredProviderId ?: "anthropic"
+        val modelId = when (providerId) {
+            "anthropic" -> when (role) {
+                ModelRole.FAST -> "claude-haiku-4-5-20251001"
+                ModelRole.CODER -> "claude-sonnet-5-5"
+                ModelRole.VISION -> "claude-sonnet-5-5"
+                ModelRole.SUMMARY -> "claude-haiku-4-5-20251001"
+            }
+            "openai" -> when (role) {
+                ModelRole.FAST -> "gpt-4o-mini"
+                ModelRole.CODER -> "gpt-4o"
+                ModelRole.VISION -> "gpt-4o"
+                ModelRole.SUMMARY -> "gpt-4o-mini"
+            }
+            "omniroute" -> role.alias
+            "local_server" -> when (role) {
+                ModelRole.CODER -> "qwen2.5-coder:7b"
+                else -> "llama3.2:latest"
+            }
+            else -> when (role) {
+                ModelRole.CODER -> "claude-sonnet-5-5"
+                else -> "claude-haiku-4-5-20251001"
+            }
+        }
+
+        val capabilities = capabilityRegistry.getCapabilities(modelId)
+        return ModelSelection(
+            providerId = providerId,
+            modelId = modelId,
+            isVerified = capabilities.isNotEmpty() || providerId == "omniroute",
+            capabilities = capabilities.map { it.capability }
+        )
     }
 
     /**
