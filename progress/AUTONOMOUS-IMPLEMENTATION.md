@@ -39,16 +39,25 @@
 3. **Chat Layer Resilience:**
    - **Stream Completion State Reset (`ChatViewModel.kt`):** Resolved bug where `isStreaming` was left `true` in `ChatUiState` upon normal stream completion, which blocked subsequent message submissions. Added `finally` cleanup block ensuring `isStreaming = false`, `streamingJob = null`, and state persistence.
 
-4. **Testing Verification:**
+4. **Device Agent Safety & Invariants (Phase 6 / Tasks 6.4 & 6.5 / Spec §6.4 & §6.5):**
+   - **Control Blacklist Policy (`ControlBlacklistPolicy.kt`):** Implemented protection policy forbidding interactions, gestures, screenshots, and launches for sensitive packages (banking, fintech, password managers, authenticators, system credentials).
+   - **Triple Emergency Stop (`EmergencyStopController.kt`):** Built controller supporting top bar button, floating overlay, and hardware volume-down double-click detection (800ms window) with irreversible triggered state until explicit user reset.
+   - **Tool Precondition Integration (`AndroidToolExecutor.kt`):** Wired both emergency stop and blacklist checking into the precondition evaluation phase, rejecting any tool action prior to execution if triggered or if targeting/running on a blacklisted package.
+
+5. **Testing Verification:**
    - Added `ModelRoleResolutionTest.kt` (5 tests covering all role mappings and provider selections).
    - Added `ProviderTransportTest.kt` (transport auth & connection failure handling).
    - Expanded `ProviderCatalogTest.kt` (OpenAI & OmniRoute specification verification).
-   - **Self-Measured Test Suite:** 132 test suites, **2563 tests total, 0 failures, 0 errors, 0 skipped** (up from 2555 tests in 130 suites).
+   - Added `ControlBlacklistPolicyTest.kt` (7 tests covering default blacklist, keyword matching, allowed apps, and dynamic list modifications).
+   - Added `EmergencyStopControllerTest.kt` (6 tests covering top button, floating button, volume-down double click, window timeouts, and user reset).
+   - Expanded `AndroidToolExecutorTest.kt` (3 new integration tests for emergency stop halting, launch blocking, and foreground blacklist blocking).
+   - **Self-Measured Test Suite:** 134 test suites, **2579 tests total, 0 failures, 0 errors, 0 skipped** (up from 2555 tests in 130 suites, +24 tests verified).
 
 ---
 
 ## 3. Current Task & Next Action
-- **Current Task:** Commit the verified increment (Phase 0/1 compliance + Phase 2 Provider & Chat fixes).
+- **Current Task:** Commit the verified control safety increment (Tasks 6.4 & 6.5).
 - **Exact Next Action:** Stage changed and added files, run secret gate check, and commit to `feat/claudroide-next-architecture`.
-- **Actual Blockers:** None. No device tethered via USB cable (`adb devices` empty), so on-device tests remain scaffolded with `false` constants as established in project history.
+- **Actual Blockers:** None. Device testing is verified via unit tests and mock/fake android control bridges; real hardware `adb` tethering remains pending physical connection as documented.
+
 

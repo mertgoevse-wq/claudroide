@@ -5,6 +5,9 @@ import org.claudroide.app.feature.control.bridge.AndroidControlBridge
 import org.claudroide.app.feature.control.bridge.ScreenshotResult
 import org.claudroide.app.feature.control.model.ControlCapability
 import org.claudroide.app.feature.control.model.ScreenSnapshot
+import org.claudroide.app.feature.control.safety.BlacklistVerdict
+import org.claudroide.app.feature.control.safety.ControlBlacklistPolicy
+import org.claudroide.app.feature.control.safety.EmergencyStopController
 
 /**
  * Result of executing an Android tool action through the executor.
@@ -21,14 +24,18 @@ data class ToolExecutionResponse(
  */
 class AndroidToolExecutor(
     private val bridge: AndroidControlBridge,
-    private val settleDelayMs: Long = 250L
+    private val settleDelayMs: Long = 250L,
+    private val blacklistPolicy: ControlBlacklistPolicy = ControlBlacklistPolicy(),
+    private val emergencyStopController: EmergencyStopController = EmergencyStopController()
 ) {
 
     suspend fun execute(action: AndroidToolAction): ToolExecutionResponse {
-        // 1. Precondition verification
-        val preconditionError = checkPreconditions(action)
+        // 1. Pre-action observation (observe screen state before executing)
+        val beforeSnapshot = bridge.captureScreenTree(false)
+
+        // 2. Precondition & safety verification
+        val preconditionError = checkPreconditions(action, beforeSnapshot)
         if (preconditionError != null) {
-            val current = bridge.captureScreenTree(false)
             return ToolExecutionResponse(
                 action = action,
                 verification = ActionVerificationResult(
@@ -38,12 +45,9 @@ class AndroidToolExecutor(
                     diff = null,
                     suggestedRecovery = RecoveryAction.REQUEST_USER_PERMISSION
                 ),
-                latestSnapshot = current
+                latestSnapshot = beforeSnapshot
             )
         }
-
-        // 2. Pre-action observation (observe screen state before executing)
-        val beforeSnapshot = bridge.captureScreenTree(false)
 
         // 3. Action dispatch
         var screenshotResult: ScreenshotResult? = null
@@ -105,9 +109,22 @@ class AndroidToolExecutor(
         )
     }
 
-    private fun checkPreconditions(action: AndroidToolAction): String? {
+    private fun checkPreconditions(
+        action: AndroidToolAction,
+        currentSnapshot: ScreenSnapshot?
+    ): String? {
+        if (emergencyStopController.isTriggered) {
+            val source = emergencyStopController.lastStopEvent?.source?.displayNameEn ?: "Emergency Stop"
+            return "Emergency stop is active ($source). All device actions are halted."
+        }
+
         if (!bridge.isServiceActive()) {
             return "AccessibilityService is not enabled or currently inactive."
+        }
+
+        val blacklistVerdict = blacklistPolicy.checkActionAllowed(action, currentSnapshot?.packageName)
+        if (blacklistVerdict is BlacklistVerdict.Blocked) {
+            return "Security Blacklist Block: ${blacklistVerdict.reason}"
         }
 
         val dimensions = bridge.getScreenDimensions()

@@ -110,4 +110,40 @@ class AndroidToolExecutorTest {
         assertFalse(response.verification.success)
         assertTrue(response.verification.observation.contains("AccessibilityService is not enabled"))
     }
+
+    @Test
+    fun `failing action when emergency stop is active`() = runBlocking {
+        val stopController = org.claudroide.app.feature.control.safety.EmergencyStopController()
+        stopController.trigger(org.claudroide.app.feature.control.safety.EmergencyStopSource.TOP_BAR_BUTTON)
+        val safetyExecutor = AndroidToolExecutor(bridge, settleDelayMs = 0L, emergencyStopController = stopController)
+
+        val response = safetyExecutor.execute(AndroidToolAction.Tap(100f, 100f))
+
+        assertFalse(response.verification.success)
+        assertTrue(response.verification.observation.contains("Emergency stop is active"))
+        assertFalse(bridge.actionLog.any { it.startsWith("tap(100") })
+    }
+
+    @Test
+    fun `failing action when launching blacklisted app`() = runBlocking {
+        val response = executor.execute(AndroidToolAction.LaunchApp("com.paypal.android.p2pmobile"))
+
+        assertFalse(response.verification.success)
+        assertTrue(response.verification.observation.contains("Security Blacklist Block"))
+    }
+
+    @Test
+    fun `failing action when foreground app is blacklisted`() = runBlocking {
+        bridge.currentSnapshot = ScreenSnapshot(
+            packageName = "com.revolut.revolut",
+            dimensions = ScreenDimensions(1080, 2340),
+            elements = emptyList()
+        )
+
+        val response = executor.execute(AndroidToolAction.Tap(100f, 100f))
+
+        assertFalse(response.verification.success)
+        assertTrue(response.verification.observation.contains("Security Blacklist Block"))
+        assertFalse(bridge.actionLog.any { it.startsWith("tap(100") })
+    }
 }
