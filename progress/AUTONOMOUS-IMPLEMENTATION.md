@@ -55,9 +55,20 @@
 
 ---
 
-## 3. Current Task & Next Action
-- **Current Task:** Commit the verified control safety increment (Tasks 6.4 & 6.5).
-- **Exact Next Action:** Stage changed and added files, run secret gate check, and commit to `feat/claudroide-next-architecture`.
-- **Actual Blockers:** None. Device testing is verified via unit tests and mock/fake android control bridges; real hardware `adb` tethering remains pending physical connection as documented.
+## 3. Build & Artifact Verification
+- **Unit Tests:** `./gradlew :app:testDebugUnitTest`: **BUILD SUCCESSFUL** across 134 suites, **2579 tests, 0 failures, 0 errors, 0 skipped**.
+- **Application Assembly:** `./gradlew :app:assembleDebug`: **BUILD SUCCESSFUL** (3m 45s).
+- **Generated Artifact:** `app/build/outputs/apk/debug/app-debug.apk` (22 MB).
+- **On-Device Staging:** Staged directly to `/sdcard/ClauDroide-next.apk` with SHA256 checksum file `/sdcard/ClauDroide-next.apk.sha256`.
+- **Secret Scan:** `python3 tools/secret_gate.py .` -> 0 hits (exit code 0).
+- **Task Frontmatter:** `python3 tools/sync_frontmatter.py --check` -> OK (135 files consistent).
+- **Latest Commit:** `532fed9` on `feat/claudroide-next-architecture`.
+
+---
+
+## 4. Current Status & Next Action
+- **Current Status:** Phase 0/1 foundation and Phase 2/6 core logic (stream idle timeout watchdog, model role router, chat state lifecycle cleanup, control blacklist policy, triple emergency stop) implemented, verified, and committed.
+- **Exact Next Action:** Continue advancing non-Stitch dependent backend and agent features (project explorer tree enhancements, agent tool verification, and session persistence).
+- **Actual Blockers:** None. Physical `adb devices` tethering remains pending hardware cable connection, with device conditions properly isolated behind confirmed safety policies.
 
 
