@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><title>ClauDroide</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-bright": "#f9f9f8", "on-surface": "#1a1c1c", "secondary-fixed": "#d9e3f6", "surface-dim": "#dadad9", "surface-container-low": "#f3f4f3", "on-tertiary": "#ffffff", "inverse-surface": "#2f3130", "secondary-fixed-dim": "#bdc7d9", "primary-fixed": "#ffdbcf", "on-tertiary-fixed": "#0f0069", "on-secondary-fixed": "#121c2a", "on-surface-variant": "#57423b", "on-secondary-container": "#596373", "on-background": "#1a1c1c", "on-secondary-fixed-variant": "#3d4756", "primary-fixed-dim": "#ffb59c", "secondary": "#555f6f", "secondary-container": "#d6e0f3", "tertiary-container": "#645efb", "outline": "#8a726a", "on-primary-fixed-variant": "#822801", "tertiary-fixed-dim": "#c3c0ff", "surface-variant": "#e2e2e2", "tertiary-fixed": "#e2dfff", "background": "#f9f9f8", "error-container": "#ffdad6", "inverse-on-surface": "#f1f1f0", "on-secondary": "#ffffff", "primary": "#9f3c16", "error": "#ba1a1a", "on-primary": "#ffffff", "surface-container-highest": "#e2e2e2", "surface-container-lowest": "#ffffff", "on-tertiary-fixed-variant": "#3323cc", "surface-tint": "#a23e18", "outline-variant": "#dec0b7", "surface-container-high": "#e8e8e7", "tertiary": "#4b41e1", "surface-container": "#eeeeed", "surface": "#f9f9f8", "on-error": "#ffffff", "inverse-primary": "#ffb59c", "on-primary-fixed": "#390c00", "on-error-container": "#93000a", "on-tertiary-container": "#fffbff", "primary-container": "#bf542c", "on-primary-container": "#fffbff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xl": "2.5rem", "margin": "1rem", "gutter": "1rem", "space-xs": "0.25rem", "gutter-tablet": "1.5rem", "space-lg": "1.5rem", "margin-desktop": "2.5rem", "space-md": "1rem", "space-sm": "0.5rem", "gutter-desktop": "2rem", "margin-tablet": "1.5rem" }, "fontFamily": { "body-sm": ["Inter"], "code-md": ["JetBrains Mono"], "code-sm": ["JetBrains Mono"], "headline-xl": ["Inter"], "body-md": ["Inter"], "label-md": ["Inter"], "body-lg": ["Inter"], "label-mono": ["JetBrains Mono"], "headline-lg": ["Inter"], "headline-md": ["Inter"] }, "fontSize": { "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "code-md": ["13.5px", { "lineHeight": "22px", "fontWeight": "450" }], "code-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }], "headline-xl": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }], "body-lg": ["16px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "400" }], "label-mono": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500" }], "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }] } } } }</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface font-body-md text-body-md flex flex-col min-h-screen antialiased"><header class="fixed top-0 inset-x-0 z-50 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] pt-safe"><div class="h-6 px-margin flex items-center justify-between text-on-surface"><span class="font-label-mono text-label-mono tracking-tight font-medium select-none">13:38</span><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[14px] leading-none">signal_cellular_alt</span><span class="font-label-mono text-label-mono font-medium leading-none">5G</span><span class="material-symbols-outlined text-[16px] leading-none ml-space-xs">battery_charging_full</span></div></div><div class="h-14 px-margin flex items-center justify-between"><div class="flex items-center gap-space-sm min-w-0"><button aria-label="Navigation menu" class="w-11 h-11 flex items-center justify-center text-on-surface hover:text-primary transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">menu</span></button><h1 class="font-headline-md text-headline-md text-on-surface truncate">Files</h1></div><div class="flex items-center gap-space-xs flex-shrink-0"><button aria-label="Search workspace" class="w-11 h-11 flex items-center justify-center text-on-surface hover:text-primary transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">search</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full pt-20 pb-20 bg-surface px-margin"><div class="flex flex-col w-full pb-6 space-y-space-md">
+<!-- Sub-Header Context Bar -->
+<div class="flex items-center justify-between w-full bg-surface-container-lowest px-space-md py-space-sm rounded-xl shadow-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<button aria-label="Zurück zur Übersicht" class="w-10 h-10 -ml-1 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-container active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[22px]">arrow_back</span>
+</button>
+<div class="flex flex-col min-w-0">
+<span class="font-label-mono text-label-mono text-primary font-semibold tracking-wider uppercase">Repository</span>
+<h2 class="font-headline-md text-headline-md text-on-surface truncate">FlyLab Android Client</h2>
+</div>
+</div>
+<div class="flex items-center gap-space-xs">
+<button aria-label="Suche umschalten" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-container active:scale-95 transition-all" id="btn-search-toggle" type="button">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</button>
+<button aria-label="Sortieren und Filtern" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-container active:scale-95 transition-all" id="btn-sort" type="button">
+<span class="material-symbols-outlined text-[20px]">swap_vert</span>
+</button>
+</div>
+</div>
+<!-- Search & Filter Area -->
+<div class="flex flex-col gap-space-sm">
+<div class="relative w-full">
+<span class="absolute left-3.5 top-1/2 -translate-y-1/2 material-symbols-outlined text-secondary text-[20px] pointer-events-none">search</span>
+<input class="w-full h-11 pl-11 pr-10 bg-surface-container-low text-on-surface rounded-xl font-body-md text-body-md placeholder:text-secondary focus:outline-none focus:bg-surface-container-lowest focus:ring-0 transition-all shadow-sm" id="file-search-input" placeholder="Dateien durchsuchen..." type="text"/>
+<button aria-label="Suche zurücksetzen" class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-secondary hover:text-on-surface" id="search-clear-btn" type="button">
+<span class="material-symbols-outlined text-[14px]">close</span>
+</button>
+</div>
+<!-- Filter Chips Horizontal Scroll -->
+<div class="flex items-center gap-space-xs overflow-x-auto no-scrollbar py-1" id="filter-chip-group">
+<button class="filter-chip px-3 py-1.5 rounded-full bg-primary text-on-primary font-label-md text-label-md shrink-0 shadow-sm transition-transform active:scale-95 flex items-center gap-1.5" data-filter="all" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-on-primary"></span>
+<span>Alle</span>
+<span class="opacity-80 text-[10px] ml-0.5">6</span>
+</button>
+<button class="filter-chip px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md shrink-0 hover:bg-surface-container-high active:scale-95 transition-all" data-filter="kotlin" type="button">
+        Kotlin
+      </button>
+<button class="filter-chip px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md shrink-0 hover:bg-surface-container-high active:scale-95 transition-all" data-filter="gradle" type="button">
+        Gradle
+      </button>
+<button class="filter-chip px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md shrink-0 hover:bg-surface-container-high active:scale-95 transition-all" data-filter="json" type="button">
+        JSON
+      </button>
+<button class="filter-chip px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md shrink-0 hover:bg-surface-container-high active:scale-95 transition-all" data-filter="markdown" type="button">
+        Markdown
+      </button>
+<button class="filter-chip px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md shrink-0 hover:bg-surface-container-high active:scale-95 transition-all" data-filter="cpp" type="button">
+        C++ NDK
+      </button>
+</div>
+</div>
+<!-- Action Bar & Sync Health -->
+<div class="flex items-center justify-between gap-space-sm bg-surface-container-low px-space-md py-2.5 rounded-xl">
+<div class="flex items-center gap-2 min-w-0">
+<span class="relative flex h-2.5 w-2.5 shrink-0">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-mono text-label-mono text-on-surface truncate">Sync aktiv · main (0a9e7f)</span>
+<span class="font-body-sm text-body-sm text-secondary truncate">Git-Branch synchron</span>
+</div>
+</div>
+<button class="shrink-0 h-9 px-3.5 rounded-full bg-primary text-on-primary font-label-md text-label-md flex items-center gap-1.5 shadow-sm active:scale-95 transition-transform" id="btn-add-file" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span>
+<span>Datei</span>
+</button>
+</div>
+<!-- File List (Clean Vertical Stack) -->
+<div class="flex flex-col space-y-2" id="file-list-container">
+<!-- Item 1: AudioRecordingService.kt -->
+<div class="file-row group bg-surface-container-lowest rounded-xl p-space-sm transition-all hover:shadow-md shadow-sm" data-category="kotlin" data-name="audiorecordingservice.kt">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-lg bg-primary-fixed flex flex-col items-center justify-center shrink-0 text-on-primary-fixed">
+<span class="font-label-mono text-label-mono font-semibold tracking-tighter">.kt</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-code-md text-code-md font-medium text-on-surface truncate">AudioRecordingService.kt</span>
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="font-label-mono text-label-mono px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant">Kotlin Source</span>
+<span class="text-secondary text-[10px]">•</span>
+<span class="font-body-sm text-body-sm text-secondary">4.2 KB</span>
+<span class="text-secondary text-[10px]">•</span>
+<span class="font-body-sm text-body-sm text-primary font-medium">vor 25 Min</span>
+</div>
+</div>
+</div>
+<button aria-label="Optionen für AudioRecordingService.kt" class="btn-context-menu w-8 h-8 rounded-full flex items-center justify-center text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+<!-- Quick Action Pill Tray -->
+<div class="flex items-center gap-space-xs mt-2.5 pt-2 border-t-0 bg-surface-container-low/60 p-1.5 rounded-lg">
+<button class="flex-1 py-1 px-2 rounded-md bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">visibility</span>
+<span>Ansehen</span>
+</button>
+<button class="flex-1 py-1 px-2 rounded-md bg-surface-container-lowest hover:bg-surface-container text-primary font-label-md text-label-md flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">chat_bubble_outline</span>
+<span>Im Chat</span>
+</button>
+<button aria-label="Datei verwalten" class="w-7 h-7 rounded-md bg-surface-container-lowest hover:bg-error-container text-secondary hover:text-error flex items-center justify-center transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">file_download</span>
+</button>
+</div>
+</div>
+<!-- Item 2: MainActivity.kt -->
+<div class="file-row group bg-surface-container-lowest rounded-xl p-space-sm transition-all hover:shadow-md shadow-sm" data-category="kotlin" data-name="mainactivity.kt">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-lg bg-primary-fixed flex flex-col items-center justify-center shrink-0 text-on-primary-fixed">
+<span class="font-label-mono text-label-mono font-semibold tracking-tighter">.kt</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-code-md text-code-md font-medium text-on-surface truncate">MainActivity.kt</span>
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="font-label-mono text-label-mono px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant">Compose UI</span>
+<span class="text-secondary text-[10px]">•</span>
+<span class="font-body-sm text-body-sm text-secondary">6.8 KB</span>
+<span class="text-secondary text-[10px]">•</span>
+<span class="font-body-sm text-body-sm text-secondary">Vor 2 Tagen</span>
+</div>
+</div>
+</div>
+<button aria-label="Optionen für MainActivity.kt" class="btn-context-menu w-8 h-8 rounded-full flex items-center justify-center text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+<div class="flex items-center gap-space-xs mt-2.5 pt-2 bg-surface-container-low/60 p-1.5 rounded-lg">
+<button class="flex-1 py-1 px-2 rounded-md bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">visibility</span>
+<span>Ansehen</span>
+</button>
+<button class="flex-1 py-1 px-2 rounded-md bg-surface-container-lowest hover:bg-surface-container text-primary font-label-md text-label-md flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">chat_bubble_outline</span>
+<span>Im Chat</span>
+</button>
+<button aria-label="Datei verwalten" class="w-7 h-7 rounded-md bg-surface-container-lowest hover:bg-error-container text-secondary hover:text-error flex items-center justify-center transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">file_download</span>
+</button>
+</div>
+</div>
+<!-- Item 3: AudioEngineNative.cpp -->
+<div class="file-row group bg-surface-container-lowest rounded-xl p-space-sm transition-all hover:shadow-md shadow-sm" data-category="cpp" data-name="audioenginenative.cpp">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-lg bg-secondary-fixed flex flex-col items-center justify-center shrink-0 text-on-secondary-fixed">
+<span class="font-label-mono text-label-mono font-semibold tracking-tighter">.cpp</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-code-md text-code-md font-medium text-on-surface truncate">AudioEngineNative.cpp</span>
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="font-label-mono text-label-mono px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant">C++ NDK</span>
+<span class="text-secondary text-[10px]">•</span>
+<span class="font-body-sm text-body-sm text-secondary">12.1 KB</span>
+<span class="text-secondary text-[10px]">•</span>
+<span class="font-body-sm text-body-sm text-secondary">Vor 4 Tagen</span>
+</div>
+</div>
+</div>
+<button aria-label="Optionen für AudioEngineNative.cpp" class="btn-context-menu w-8 h-8 rounded-full flex items-center justify-center text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+<div class="flex items-center gap-space-xs mt-2.5 pt-2 bg-surface-container-low/60 p-1.5 rounded-lg">
+<button class="flex-1 py-1 px-2 rounded-md bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">visibility</span>
+<span>Ansehen</span>
+</button>
+<button class="flex-1 py-1 px-2 rounded-md bg-surface-container-lowest hover:bg-surface-container text-primary font-label-md text-label-md flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">chat_bubble_outline</span>
+<span>Im Chat</span>
+</button>
+<button aria-label="Datei verwalten" class="w-7 h-7 rounded-md bg-surface-container-lowest hover:bg-error-container text-secondary hover:text-error flex items-center justify-center transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">file_download</span>
+</button>
+</div>
+</div>
+<!-- Item 4: build.gradle.kts -->
+<div class="file-row group bg-surface-container-lowest rounded-xl p-space-sm transition-all hover:shadow-md shadow-sm" data-category="gradle" data-name="build.gradle.kts">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed flex flex-col items-center justify-center shrink-0 text-on-tertiary-fixed">
+<span class="material-symbols-outlined text-[20px]">build_circle</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-code-md text-code-md font-medium text-on-surface truncate">build.gradle.kts</span>
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="font-label-mono text-label-mono px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant">Gradle Script</span>
+<span class="text-secondary text-[10px]">•</span>
+<span class="font-body-sm text-body-sm text-secondary">2.9 KB</span>
+<span class="text-secondary text-[10px]">•</span>
+<span class="font-body-sm text-body-sm text-secondary">Vor 1 Woche</span>
+</div>
+</div>
+</div>
+<button aria-label="Optionen für build.gradle.kts" class="btn-context-menu w-8 h-8 rounded-full flex items-center justify-center text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+<div class="flex items-center gap-space-xs mt-2.5 pt-2 bg-surface-container-low/60 p-1.5 rounded-lg">
+<button class="flex-1 py-1 px-2 rounded-md bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">visibility</span>
+<span>Ansehen</span>
+</button>
+<button class="flex-1 py-1 px-2 rounded-md bg-surface-container-lowest hover:bg-surface-container text-primary font-label-md text-label-md flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">chat_bubble_outline</span>
+<span>Im Chat</span>
+</button>
+<button aria-label="Datei verwalten" class="w-7 h-7 rounded-md bg-surface-container-lowest hover:bg-error-container text-secondary hover:text-error flex items-center justify-center transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">file_download</span>
+</button>
+</div>
+</div>
+<!-- Item 5: onnx_runtime_config.json -->
+<div class="file-row group bg-surface-container-lowest rounded-xl p-space-sm transition-all hover:shadow-md shadow-sm" data-category="json" data-name="onnx_runtime_config.json">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex flex-col items-center justify-center shrink-0 text-on-surface-variant">
+<span class="font-label-mono text-label-mono font-semibold tracking-tighter">{ }</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-code-md text-code-md font-medium text-on-surface truncate">onnx_runtime_config.json</span>
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="font-label-mono text-label-mono px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant">JSON Config</span>
+<span class="text-secondary text-[10px]">•</span>
+<span class="font-body-sm text-body-sm text-secondary">1.1 KB</span>
+<span class="text-secondary text-[10px]">•</span>
+<span class="font-body-sm text-body-sm text-secondary">Vor 1 Woche</span>
+</div>
+</div>
+</div>
+<button aria-label="Optionen für onnx_runtime_config.json" class="btn-context-menu w-8 h-8 rounded-full flex items-center justify-center text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+<div class="flex items-center gap-space-xs mt-2.5 pt-2 bg-surface-container-low/60 p-1.5 rounded-lg">
+<button class="flex-1 py-1 px-2 rounded-md bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">visibility</span>
+<span>Ansehen</span>
+</button>
+<button class="flex-1 py-1 px-2 rounded-md bg-surface-container-lowest hover:bg-surface-container text-primary font-label-md text-label-md flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">chat_bubble_outline</span>
+<span>Im Chat</span>
+</button>
+<button aria-label="Datei verwalten" class="w-7 h-7 rounded-md bg-surface-container-lowest hover:bg-error-container text-secondary hover:text-error flex items-center justify-center transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">file_download</span>
+</button>
+</div>
+</div>
+<!-- Item 6: README.md -->
+<div class="file-row group bg-surface-container-lowest rounded-xl p-space-sm transition-all hover:shadow-md shadow-sm" data-category="markdown" data-name="readme.md">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-lg bg-surface-variant flex flex-col items-center justify-center shrink-0 text-secondary">
+<span class="material-symbols-outlined text-[20px]">description</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-code-md text-code-md font-medium text-on-surface truncate">README.md</span>
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="font-label-mono text-label-mono px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant">Markdown Doku</span>
+<span class="text-secondary text-[10px]">•</span>
+<span class="font-body-sm text-body-sm text-secondary">3.4 KB</span>
+<span class="text-secondary text-[10px]">•</span>
+<span class="font-body-sm text-body-sm text-secondary">Vor 2 Wochen</span>
+</div>
+</div>
+</div>
+<button aria-label="Optionen für README.md" class="btn-context-menu w-8 h-8 rounded-full flex items-center justify-center text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+<div class="flex items-center gap-space-xs mt-2.5 pt-2 bg-surface-container-low/60 p-1.5 rounded-lg">
+<button class="flex-1 py-1 px-2 rounded-md bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">visibility</span>
+<span>Ansehen</span>
+</button>
+<button class="flex-1 py-1 px-2 rounded-md bg-surface-container-lowest hover:bg-surface-container text-primary font-label-md text-label-md flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">chat_bubble_outline</span>
+<span>Im Chat</span>
+</button>
+<button aria-label="Datei verwalten" class="w-7 h-7 rounded-md bg-surface-container-lowest hover:bg-error-container text-secondary hover:text-error flex items-center justify-center transition-all" type="button">
+<span class="material-symbols-outlined text-[14px]">file_download</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Interactive Context Menu Sheet (Hidden by default, triggered on 3 dots) -->
+<div class="hidden fixed inset-0 z-50 bg-inverse-surface/40 backdrop-blur-sm flex flex-col justify-end p-margin pb-safe" id="file-action-sheet">
+<div class="bg-surface-container-lowest rounded-2xl p-space-md shadow-xl flex flex-col space-y-3 animate-in fade-in slide-in-from-bottom duration-200">
+<div class="flex items-center justify-between pb-2 border-b-0">
+<div class="flex flex-col min-w-0">
+<span class="font-code-md text-code-md font-semibold text-on-surface truncate" id="sheet-file-title">Datei</span>
+<span class="font-label-mono text-label-mono text-secondary">Aktionen auswählen</span>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface" id="close-sheet-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<div class="flex flex-col space-y-1">
+<button class="w-full h-11 px-3 rounded-xl flex items-center gap-3 text-on-surface hover:bg-surface-container text-left transition-colors" type="button">
+<span class="material-symbols-outlined text-primary text-[20px]">chat_bubble</span>
+<span class="font-body-md text-body-md">Im aktuellen Chat referenzieren</span>
+</button>
+<button class="w-full h-11 px-3 rounded-xl flex items-center gap-3 text-on-surface hover:bg-surface-container text-left transition-colors" type="button">
+<span class="material-symbols-outlined text-secondary text-[20px]">history</span>
+<span class="font-body-md text-body-md">Git-Verlauf und Diffs ansehen</span>
+</button>
+<button class="w-full h-11 px-3 rounded-xl flex items-center gap-3 text-on-surface hover:bg-surface-container text-left transition-colors" type="button">
+<span class="material-symbols-outlined text-secondary text-[20px]">file_download</span>
+<span class="font-body-md text-body-md">Auf Gerät exportieren</span>
+</button>
+<button class="w-full h-11 px-3 rounded-xl flex items-center gap-3 text-error hover:bg-error-container text-left transition-colors" type="button">
+<span class="material-symbols-outlined text-error text-[20px]">delete</span>
+<span class="font-body-md text-body-md font-medium">Aus Workspace entfernen</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Toast Notification Feedback -->
+<div class="hidden fixed bottom-24 left-1/2 -translate-x-1/2 z-50 bg-inverse-surface text-inverse-on-surface px-4 py-2 rounded-full font-label-md text-label-md shadow-lg flex items-center gap-2" id="toast-pill">
+<span class="material-symbols-outlined text-[16px] text-primary-fixed">check_circle</span>
+<span id="toast-text">Aktion ausgeführt</span>
+</div>
+</div>
+<script>
+  (function() {
+    const searchInput = document.getElementById('file-search-input');
+    const searchClear = document.getElementById('search-clear-btn');
+    const filterChips = document.querySelectorAll('.filter-chip');
+    const fileRows = document.querySelectorAll('.file-row');
+    const actionSheet = document.getElementById('file-action-sheet');
+    const closeSheetBtn = document.getElementById('close-sheet-btn');
+    const sheetFileTitle = document.getElementById('sheet-file-title');
+    const toast = document.getElementById('toast-pill');
+    const toastText = document.getElementById('toast-text');
+
+    let currentFilter = 'all';
+
+    function showToast(msg) {
+      if (!toast) return;
+      toastText.textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 2200);
+    }
+
+    function applyFilters() {
+      const query = (searchInput?.value || '').toLowerCase().trim();
+      fileRows.forEach(row => {
+        const cat = row.getAttribute('data-category');
+        const name = row.getAttribute('data-name') || '';
+        const matchesCat = (currentFilter === 'all') || (cat === currentFilter);
+        const matchesQuery = !query || name.includes(query);
+
+        if (matchesCat && matchesQuery) {
+          row.classList.remove('hidden');
+        } else {
+          row.classList.add('hidden');
+        }
+      });
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        if (e.target.value.length > 0) {
+          searchClear?.classList.remove('hidden');
+        } else {
+          searchClear?.classList.add('hidden');
+        }
+        applyFilters();
+      });
+    }
+
+    if (searchClear) {
+      searchClear.addEventListener('click', () => {
+        if (searchInput) searchInput.value = '';
+        searchClear.classList.add('hidden');
+        applyFilters();
+      });
+    }
+
+    filterChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        filterChips.forEach(c => {
+          c.className = 'filter-chip px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md shrink-0 hover:bg-surface-container-high active:scale-95 transition-all';
+        });
+        chip.className = 'filter-chip px-3 py-1.5 rounded-full bg-primary text-on-primary font-label-md text-label-md shrink-0 shadow-sm transition-transform active:scale-95 flex items-center gap-1.5';
+        currentFilter = chip.getAttribute('data-filter') || 'all';
+        applyFilters();
+      });
+    });
+
+    document.querySelectorAll('.btn-context-menu').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const row = btn.closest('.file-row');
+        const fileName = row ? row.querySelector('.font-code-md')?.textContent : 'Datei';
+        if (sheetFileTitle) sheetFileTitle.textContent = fileName || 'Datei';
+        actionSheet?.classList.remove('hidden');
+      });
+    });
+
+    if (closeSheetBtn) {
+      closeSheetBtn.addEventListener('click', () => {
+        actionSheet?.classList.add('hidden');
+      });
+    }
+
+    if (actionSheet) {
+      actionSheet.addEventListener('click', (e) => {
+        if (e.target === actionSheet) {
+          actionSheet.classList.add('hidden');
+        }
+      });
+    }
+
+    document.querySelectorAll('#file-action-sheet button').forEach(actionBtn => {
+      if (actionBtn.id !== 'close-sheet-btn') {
+        actionBtn.addEventListener('click', () => {
+          actionSheet?.classList.add('hidden');
+          showToast(actionBtn.textContent.trim());
+        });
+      }
+    });
+
+    document.getElementById('btn-add-file')?.addEventListener('click', () => {
+      showToast('Neue Datei zum Projekt erstellen');
+    });
+
+    document.getElementById('btn-sort')?.addEventListener('click', () => {
+      showToast('Nach Datum sortiert');
+    });
+
+    document.getElementById('btn-search-toggle')?.addEventListener('click', () => {
+      searchInput?.focus();
+    });
+  })();
+</script></main><nav class="fixed bottom-0 inset-x-0 z-50 bg-surface/85 backdrop-blur-xl shadow-[0_-1px_8px_rgba(0,0,0,0.03)] pb-safe" data-active-classes="text-primary font-semibold"><div class="flex justify-around items-center h-14 px-margin"><a class="flex flex-col items-center justify-center gap-space-xs min-w-[56px] h-11 text-secondary hover:text-on-surface transition-colors" data-path="projects" href="#"><span class="material-symbols-outlined text-[20px]">folder</span><span class="font-label-md text-label-md">Projects</span></a><a aria-current="page" class="flex flex-col items-center justify-center gap-space-xs min-w-[56px] h-11 transition-colors text-primary font-semibold" data-path="files" href="#"><span class="material-symbols-outlined text-[20px]">description</span><span class="font-label-md text-label-md">Files</span></a><a class="flex flex-col items-center justify-center gap-space-xs min-w-[56px] h-11 text-secondary hover:text-on-surface transition-colors" data-path="artifacts" href="#"><span class="material-symbols-outlined text-[20px]">inventory_2</span><span class="font-label-md text-label-md">Artifacts</span></a><a class="flex flex-col items-center justify-center gap-space-xs min-w-[56px] h-11 text-secondary hover:text-on-surface transition-colors" data-path="terminal-builds" href="#"><span class="material-symbols-outlined text-[20px]">terminal</span><span class="font-label-md text-label-md">Builds</span></a></div><div class="h-4 flex items-center justify-center"><div class="w-24 h-1 rounded-full bg-on-surface/20"></div></div></nav></body></html>

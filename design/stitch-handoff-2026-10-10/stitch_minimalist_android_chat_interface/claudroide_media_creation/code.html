@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-tertiary-container": "#fffbff", "background": "#f9f9f8", "on-surface": "#1a1c1c", "secondary": "#555f6f", "on-error": "#ffffff", "on-tertiary-fixed-variant": "#3323cc", "on-error-container": "#93000a", "surface-container": "#eeeeed", "secondary-fixed-dim": "#bdc7d9", "secondary-container": "#d6e0f3", "primary": "#9f3c16", "on-surface-variant": "#57423b", "surface-dim": "#dadad9", "on-primary-container": "#fffbff", "surface-container-lowest": "#ffffff", "surface-container-low": "#f3f4f3", "surface-bright": "#f9f9f8", "inverse-on-surface": "#f1f1f0", "outline": "#8a726a", "tertiary-container": "#645efb", "on-secondary-container": "#596373", "surface-container-highest": "#e2e2e2", "on-tertiary-fixed": "#0f0069", "tertiary-fixed-dim": "#c3c0ff", "surface-container-high": "#e8e8e7", "primary-container": "#bf542c", "tertiary-fixed": "#e2dfff", "inverse-primary": "#ffb59c", "primary-fixed": "#ffdbcf", "on-secondary-fixed-variant": "#3d4756", "primary-fixed-dim": "#ffb59c", "on-tertiary": "#ffffff", "on-secondary": "#ffffff", "tertiary": "#4b41e1", "error": "#ba1a1a", "on-secondary-fixed": "#121c2a", "secondary-fixed": "#d9e3f6", "error-container": "#ffdad6", "surface-variant": "#e2e2e2", "outline-variant": "#dec0b7", "inverse-surface": "#2f3130", "on-background": "#1a1c1c", "on-primary-fixed": "#390c00", "surface-tint": "#a23e18", "on-primary-fixed-variant": "#822801", "surface": "#f9f9f8", "on-primary": "#ffffff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "gutter": "1rem", "margin-tablet": "1.5rem", "margin": "1rem", "space-xl": "2.5rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "space-md": "1rem", "space-lg": "1.5rem", "margin-desktop": "2.5rem", "gutter-tablet": "1.5rem", "gutter-desktop": "2rem" }, "fontFamily": { "body-lg": ["Inter"], "code-sm": ["JetBrains Mono"], "label-mono": ["JetBrains Mono"], "headline-md": ["Inter"], "headline-xl": ["Inter"], "headline-lg": ["Inter"], "label-md": ["Inter"], "body-md": ["Inter"], "body-sm": ["Inter"], "code-md": ["JetBrains Mono"] }, "fontSize": { "body-lg": ["16px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "400" }], "code-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }], "label-mono": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-xl": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "code-md": ["13.5px", { "lineHeight": "22px", "fontWeight": "450" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] pt-safe"><div class="h-16 px-margin flex items-center justify-between"><div class="flex items-center gap-space-sm min-w-0 pr-space-sm"><button aria-label="Navigate back" class="w-11 h-11 -ml-space-sm flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container transition-colors shrink-0" onclick="history.back()"><span class="material-symbols-outlined text-[24px]">arrow_back</span></button><div class="flex flex-col justify-center min-w-0"><h1 class="font-headline-md text-headline-md text-on-surface truncate tracking-tight">Media Studio</h1><span class="font-label-mono text-label-mono text-on-surface-variant truncate uppercase tracking-wider">FlyLab Workspace · Media Engine</span></div></div><div class="flex items-center gap-space-xs shrink-0"><button aria-label="More options" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[22px]">more_vert</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col relative w-full pt-16 pb-safe bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- Interactive & Dynamic Canvas Wrapper -->
+<div class="px-margin pt-space-md pb-space-xl flex flex-col gap-space-md">
+<!-- Project & Adapter Context Banner -->
+<div class="flex flex-col gap-space-xs p-space-md bg-surface-container-low rounded-xl shadow-sm">
+<div class="flex items-center justify-between gap-space-xs">
+<div class="flex items-center gap-space-xs min-w-0">
+<span class="material-symbols-outlined text-primary text-[18px] shrink-0" style="font-variation-settings: 'FILL' 1;">folder_code</span>
+<span class="font-label-mono text-label-mono text-on-surface truncate uppercase">Projekt: FlyLab Android Client</span>
+</div>
+<span class="inline-flex items-center px-space-xs py-[2px] bg-surface-container-highest text-on-surface-variant rounded font-label-mono text-label-mono tracking-wider shrink-0">v2.4.0</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="relative flex h-2 w-2 shrink-0">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-medium">OmniRoute Active</span>
+</div>
+<span class="font-label-mono text-label-mono text-secondary">3 Provider bereit</span>
+</div>
+</div>
+<!-- Media Type Segmented Pills -->
+<div class="flex items-center gap-space-xs overflow-x-auto no-scrollbar py-space-xs -mx-margin px-margin">
+<!-- Active Pill -->
+<button class="flex items-center gap-space-xs px-space-md py-space-xs bg-primary text-on-primary rounded-full shrink-0 shadow-sm transition-transform active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">image</span>
+<span class="font-label-md text-label-md font-semibold tracking-wide">Bild</span>
+</button>
+<!-- Inactive Pills -->
+<button class="flex items-center gap-space-xs px-space-md py-space-xs bg-surface-container text-on-surface-variant rounded-full shrink-0 hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">music_note</span>
+<span class="font-label-md text-label-md">Audio &amp; Musik</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-space-xs bg-surface-container text-on-surface-variant rounded-full shrink-0 hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">movie</span>
+<span class="font-label-md text-label-md">Video</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-space-xs bg-surface-container text-on-surface-variant rounded-full shrink-0 hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">view_in_ar</span>
+<span class="font-label-md text-label-md">3D / Vektor</span>
+</button>
+</div>
+<!-- Clean Prompt / Description Area with Visual Spec -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm relative">
+<div class="flex items-center justify-between">
+<label class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-wider flex items-center gap-space-xs" for="prompt-input">
+<span class="material-symbols-outlined text-[15px] text-primary">auto_awesome</span>
+          Prompt Spezifikation
+        </label>
+<div class="flex items-center gap-space-xs">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-1" id="clear-btn" title="Löschen" type="button">
+<span class="material-symbols-outlined text-[16px]">clear_all</span>
+</button>
+<span class="font-label-mono text-label-mono text-secondary" id="char-counter">158 Zeichen</span>
+</div>
+</div>
+<div class="relative">
+<textarea class="w-full bg-surface-container-low text-on-surface font-body-md text-body-md p-space-sm rounded-lg resize-none outline-none focus:bg-surface-container transition-all" id="prompt-input" placeholder="Beschreibe das gewünschte Medium, Stil, Stimmung oder Verwendungszweck..." rows="4">Minimalistische Vektor-Illustration eines stilisierten Android NPU-Chips mit fließenden Audio-Wellen in Terracotta und warmem Graphitgrau, transparenter Hintergrund.</textarea>
+</div>
+<!-- Quick Enhancement Helpers / Prompts Presets -->
+<div class="flex items-center gap-space-xs overflow-x-auto no-scrollbar pt-space-xs">
+<button class="inline-flex items-center gap-1 px-space-xs py-[3px] bg-surface-container text-on-surface-variant rounded font-label-mono text-label-mono hover:text-on-surface transition-colors shrink-0" onclick="appendToken('Photoreal')" type="button">
+<span class="text-primary font-bold">+</span> 8k Vektor
+        </button>
+<button class="inline-flex items-center gap-1 px-space-xs py-[3px] bg-surface-container text-on-surface-variant rounded font-label-mono text-label-mono hover:text-on-surface transition-colors shrink-0" onclick="appendToken('Transparent Background')" type="button">
+<span class="text-primary font-bold">+</span> Alpha Cutout
+        </button>
+<button class="inline-flex items-center gap-1 px-space-xs py-[3px] bg-surface-container text-on-surface-variant rounded font-label-mono text-label-mono hover:text-on-surface transition-colors shrink-0" onclick="appendToken('Material 3 Dynamic Lighting')" type="button">
+<span class="text-primary font-bold">+</span> M3 Surface
+        </button>
+</div>
+</div>
+<!-- Provider & Modell Schnellwahl Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-wider">Engine Pipeline</span>
+<span class="inline-flex items-center gap-1 font-label-mono text-label-mono text-primary font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+          Low Latency Tier
+        </span>
+</div>
+<div class="flex items-center justify-between gap-space-sm p-space-sm bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-9 h-9 rounded-lg bg-surface-container-highest flex items-center justify-center shrink-0 text-primary">
+<span class="material-symbols-outlined text-[20px]">cognition</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md font-medium text-on-surface truncate">Google Imagen 3</span>
+<span class="font-label-mono text-label-mono text-secondary truncate">OmniRoute Neural Broker · v3.2</span>
+</div>
+</div>
+<button class="px-space-sm py-space-xs bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg font-label-md text-label-md shrink-0 transition-colors flex items-center gap-1" id="provider-switch-btn" type="button">
+<span>Ändern</span>
+<span class="font-label-mono text-label-mono bg-surface-container-highest px-1 rounded text-on-surface">(3)</span>
+</button>
+</div>
+</div>
+<!-- Format & Seitenverhältnis (Default Mode) -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-wider">Format &amp; Seitenverhältnis</span>
+<span class="font-label-mono text-label-mono text-secondary" id="active-resolution-indicator">1024 × 1024 px</span>
+</div>
+<!-- Compact Ratio Selectors -->
+<div class="grid grid-cols-3 gap-space-sm" id="ratio-selector-group">
+<!-- 1:1 Active -->
+<button class="ratio-btn flex flex-col items-center justify-center py-space-sm px-space-xs rounded-lg bg-primary text-on-primary shadow-sm transition-all text-center" data-ratio="1:1" data-res="1024 × 1024 px" type="button">
+<div class="w-5 h-5 rounded-sm bg-on-primary/20 flex items-center justify-center mb-1">
+<span class="w-3.5 h-3.5 border-2 border-on-primary rounded-none"></span>
+</div>
+<span class="font-label-md text-label-md font-semibold">1:1</span>
+<span class="font-label-mono text-label-mono opacity-80">Quadrat</span>
+</button>
+<!-- 16:9 Inactive -->
+<button class="ratio-btn flex flex-col items-center justify-center py-space-sm px-space-xs rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-surface-container transition-all text-center" data-ratio="16:9" data-res="1920 × 1080 px" type="button">
+<div class="w-5 h-5 rounded-sm bg-surface-container-highest flex items-center justify-center mb-1">
+<span class="w-4 h-2.5 border border-on-surface-variant rounded-none"></span>
+</div>
+<span class="font-label-md text-label-md font-medium">16:9</span>
+<span class="font-label-mono text-label-mono text-secondary">Landscape</span>
+</button>
+<!-- 9:16 Inactive -->
+<button class="ratio-btn flex flex-col items-center justify-center py-space-sm px-space-xs rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-surface-container transition-all text-center" data-ratio="9:16" data-res="1080 × 1920 px" type="button">
+<div class="w-5 h-5 rounded-sm bg-surface-container-highest flex items-center justify-center mb-1">
+<span class="w-2.5 h-4 border border-on-surface-variant rounded-none"></span>
+</div>
+<span class="font-label-md text-label-md font-medium">9:16</span>
+<span class="font-label-mono text-label-mono text-secondary">Story</span>
+</button>
+</div>
+</div>
+<!-- Visual Sample & Reference Section -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-wider">Referenz &amp; Mockup-Stil</span>
+<span class="font-label-mono text-label-mono text-secondary">Optional</span>
+</div>
+<!-- Preview Image Thumbnail from Data Pipeline -->
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="relative rounded-lg overflow-hidden h-24 bg-surface-container-high group">
+<img class="w-full h-full object-cover" data-alt="A stylized vector art rendering of an Android neural processing unit chip with glowing terracotta acoustic sound waves flowing outwards against a clean neutral off-white background in modern executive minimalist design style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9YdSneVJkWGfzIEq7k_vmIjjS4N5ffMBsaU7YqJ97kFFT9XV3PDriBbKWDBWMdGEzoK4rfneYneBQiuF9VIBosH9r6uWXJ1i9zv6ODo3pSAEigSO5tKtclIY9iEEv4110PQG9mrOfSBN_Hvcs7HvhEfgIzkW7SjKjq0vVfmKC1ARZ9YD3YuhqSH7zkxiGtRDSIodoCR3EgbCljxTJiSyOfF9rDu3On40lxUgtcFN6JYXguXwNbIVx-w"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-space-xs">
+<span class="font-label-mono text-label-mono text-surface-container-lowest">Stil-Referenz #1</span>
+</div>
+<button class="absolute top-1 right-1 w-6 h-6 rounded-full bg-surface/80 text-on-surface flex items-center justify-center shadow" type="button">
+<span class="material-symbols-outlined text-[14px]">close</span>
+</button>
+</div>
+<!-- Reference Media Input Trigger -->
+<button class="h-24 rounded-lg bg-surface-container-low hover:bg-surface-container flex flex-col items-center justify-center p-space-xs text-center transition-colors group" type="button">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-primary group-hover:scale-105 transition-transform mb-1">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</div>
+<span class="font-label-md text-label-md font-medium text-on-surface">Sample anhängen</span>
+<span class="font-label-mono text-label-mono text-secondary">PNG, SVG, MP3</span>
+</button>
+</div>
+</div>
+<!-- Collapsible: Experten-Parameter & Diagnostik -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden transition-all">
+<button class="w-full p-space-md flex items-center justify-between text-left hover:bg-surface-container-low/50 transition-colors" id="expert-toggle-btn" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-md bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md font-semibold text-on-surface">Experten-Parameter &amp; Diagnostik</span>
+<span class="font-label-mono text-label-mono text-secondary">Seed, Guidance, Negative Prompt, Pipeline Steps</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary text-[22px] transition-transform duration-200" id="expert-chevron">expand_more</span>
+</button>
+<!-- Folded Content -->
+<div class="hidden px-space-md pb-space-md flex flex-col gap-space-md" id="expert-content">
+<div class="h-px bg-surface-container-high w-full"></div>
+<!-- Slider: CFG Guidance Scale -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex justify-between items-center">
+<span class="font-label-mono text-label-mono text-on-surface">CFG Scale (Prompt Treue)</span>
+<span class="font-label-mono text-label-mono text-primary font-bold" id="cfg-val">7.5</span>
+</div>
+<input class="w-full accent-primary h-1.5 bg-surface-container-high rounded-lg cursor-pointer" id="cfg-range" max="15" min="1" step="0.5" type="range" value="7.5"/>
+<div class="flex justify-between font-label-mono text-label-mono text-secondary">
+<span>Kreativ (3.0)</span>
+<span>Präzise (12.0)</span>
+</div>
+</div>
+<!-- Grid for Seed & Steps -->
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-mono text-label-mono text-on-surface-variant">Sampling Steps</label>
+<div class="flex items-center bg-surface-container-low rounded-lg p-space-xs px-space-sm">
+<span class="font-label-mono text-label-mono text-secondary pr-2">#</span>
+<input class="w-full bg-transparent text-on-surface font-label-mono text-label-mono outline-none" type="number" value="32"/>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-mono text-label-mono text-on-surface-variant">Seed</label>
+<div class="flex items-center bg-surface-container-low rounded-lg p-space-xs px-space-sm">
+<span class="material-symbols-outlined text-[15px] text-secondary pr-1">casino</span>
+<input class="w-full bg-transparent text-on-surface font-label-mono text-label-mono outline-none" type="text" value="-1 (Zufall)"/>
+</div>
+</div>
+</div>
+<!-- Negative Prompt -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-mono text-label-mono text-on-surface-variant">Negative Prompt (Ausschließen)</label>
+<input class="w-full bg-surface-container-low text-on-surface font-label-mono text-label-mono p-space-sm rounded-lg outline-none focus:bg-surface-container" type="text" value="3d rendering blur, photorealistic human skin, noisy raster artifacts, watermarks"/>
+</div>
+</div>
+</div>
+<!-- Telemetry & Model Pipeline Spec Card -->
+<div class="flex items-center justify-between p-space-sm bg-surface-container-low rounded-lg text-secondary">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-primary">speed</span>
+<span class="font-label-mono text-label-mono">Latenz-Schätzung: ~4-7s</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px]">memory</span>
+<span class="font-label-mono text-label-mono">1 Task Queue Job</span>
+</div>
+</div>
+<!-- Primary Action Button -->
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<button class="w-full h-12 bg-primary hover:bg-primary-container text-on-primary font-body-md text-body-md font-semibold rounded-full flex items-center justify-center gap-space-sm shadow-md active:scale-[0.99] transition-all" id="generate-action-btn" type="button">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span>Medium generieren</span>
+</button>
+<div class="flex items-center justify-center gap-space-xs text-center pt-space-xs">
+<span class="material-symbols-outlined text-[14px] text-secondary">verified_user</span>
+<span class="font-label-mono text-label-mono text-secondary">FlyLab On-Premise &amp; Vertex AI Enterprise Encrypted</span>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Dynamic Character Counter & Prompt helpers
+  const promptInput = document.getElementById('prompt-input');
+  const charCounter = document.getElementById('char-counter');
+  const clearBtn = document.getElementById('clear-btn');
+
+  function updateCharCount() {
+    if (promptInput && charCounter) {
+      charCounter.innerText = `${promptInput.value.length} Zeichen`;
+    }
+  }
+
+  if (promptInput) {
+    promptInput.addEventListener('input', updateCharCount);
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      if (promptInput) {
+        promptInput.value = '';
+        updateCharCount();
+        promptInput.focus();
+      }
+    });
+  }
+
+  function appendToken(token) {
+    if (promptInput) {
+      const current = promptInput.value.trim();
+      promptInput.value = current ? `${current}, ${token}` : token;
+      updateCharCount();
+    }
+  }
+
+  // Ratio Buttons Interaction
+  const ratioButtons = document.querySelectorAll('.ratio-btn');
+  const resIndicator = document.getElementById('active-resolution-indicator');
+
+  ratioButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      ratioButtons.forEach(b => {
+        b.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+        b.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+        const iconBox = b.querySelector('div');
+        if (iconBox) {
+          iconBox.classList.remove('bg-on-primary/20');
+          iconBox.classList.add('bg-surface-container-highest');
+        }
+      });
+
+      btn.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+      btn.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+      const activeIconBox = btn.querySelector('div');
+      if (activeIconBox) {
+        activeIconBox.classList.add('bg-on-primary/20');
+        activeIconBox.classList.remove('bg-surface-container-highest');
+      }
+
+      if (resIndicator) {
+        resIndicator.innerText = btn.getAttribute('data-res');
+      }
+    });
+  });
+
+  // Collapsible Expert Settings Toggle
+  const expertToggle = document.getElementById('expert-toggle-btn');
+  const expertContent = document.getElementById('expert-content');
+  const expertChevron = document.getElementById('expert-chevron');
+
+  if (expertToggle && expertContent && expertChevron) {
+    expertToggle.addEventListener('click', () => {
+      const isHidden = expertContent.classList.contains('hidden');
+      if (isHidden) {
+        expertContent.classList.remove('hidden');
+        expertChevron.classList.add('rotate-180');
+      } else {
+        expertContent.classList.add('hidden');
+        expertChevron.classList.remove('rotate-180');
+      }
+    });
+  }
+
+  // CFG Slider Value Reflection
+  const cfgRange = document.getElementById('cfg-range');
+  const cfgVal = document.getElementById('cfg-val');
+  if (cfgRange && cfgVal) {
+    cfgRange.addEventListener('input', (e) => {
+      cfgVal.innerText = e.target.value;
+    });
+  }
+
+  // Button Generation Visual Ripple
+  const genBtn = document.getElementById('generate-action-btn');
+  if (genBtn) {
+    genBtn.addEventListener('click', function() {
+      const originalHtml = this.innerHTML;
+      this.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span><span>Job in Queue übermittelt...</span>';
+      setTimeout(() => {
+        this.innerHTML = originalHtml;
+      }, 1800);
+    });
+  }
+</script></main></body></html>

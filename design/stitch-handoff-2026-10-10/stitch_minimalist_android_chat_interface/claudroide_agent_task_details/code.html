@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface": "#f9f9f8", "on-secondary": "#ffffff", "surface-tint": "#a23e18", "on-secondary-fixed": "#121c2a", "on-error-container": "#93000a", "on-secondary-container": "#596373", "surface-bright": "#f9f9f8", "inverse-surface": "#2f3130", "error": "#ba1a1a", "surface-variant": "#e2e2e2", "on-tertiary-container": "#fffbff", "surface-container-highest": "#e2e2e2", "secondary-fixed": "#d9e3f6", "tertiary-fixed-dim": "#c3c0ff", "on-primary-fixed-variant": "#822801", "tertiary": "#4b41e1", "on-primary-fixed": "#390c00", "inverse-primary": "#ffb59c", "outline": "#8a726a", "secondary-container": "#d6e0f3", "on-tertiary": "#ffffff", "on-surface": "#1a1c1c", "surface-container": "#eeeeed", "tertiary-fixed": "#e2dfff", "on-tertiary-fixed": "#0f0069", "primary-container": "#bf542c", "on-error": "#ffffff", "on-primary-container": "#fffbff", "primary-fixed": "#ffdbcf", "inverse-on-surface": "#f1f1f0", "surface-dim": "#dadad9", "primary-fixed-dim": "#ffb59c", "surface-container-high": "#e8e8e7", "on-primary": "#ffffff", "on-secondary-fixed-variant": "#3d4756", "surface-container-lowest": "#ffffff", "outline-variant": "#dec0b7", "on-surface-variant": "#57423b", "surface-container-low": "#f3f4f3", "secondary-fixed-dim": "#bdc7d9", "primary": "#9f3c16", "error-container": "#ffdad6", "secondary": "#555f6f", "on-tertiary-fixed-variant": "#3323cc", "on-background": "#1a1c1c", "background": "#f9f9f8", "tertiary-container": "#645efb" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "gutter-tablet": "1.5rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "gutter-desktop": "2rem", "margin": "1rem", "space-lg": "1.5rem", "space-md": "1rem", "space-xl": "2.5rem", "margin-desktop": "2.5rem", "gutter": "1rem", "margin-tablet": "1.5rem" }, fontFamily: { "code-sm": ["JetBrains Mono"], "code-md": ["JetBrains Mono"], "headline-lg": ["Inter"], "headline-xl": ["Inter"], "body-sm": ["Inter"], "body-md": ["Inter"], "body-lg": ["Inter"], "label-md": ["Inter"], "label-mono": ["JetBrains Mono"], "headline-md": ["Inter"] }, fontSize: { "code-sm": ["12px", { lineHeight: "18px", fontWeight: "400" }], "code-md": ["13.5px", { lineHeight: "22px", fontWeight: "450" }], "headline-lg": ["24px", { lineHeight: "32px", letterSpacing: "-0.015em", fontWeight: "600" }], "headline-xl": ["32px", { lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "600" }], "body-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }], "body-md": ["14px", { lineHeight: "22px", fontWeight: "400" }], "body-lg": ["16px", { lineHeight: "26px", letterSpacing: "-0.005em", fontWeight: "400" }], "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500" }], "label-mono": ["11px", { lineHeight: "14px", letterSpacing: "0.04em", fontWeight: "500" }], "headline-md": ["20px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "600" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-gutter flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0"><button aria-label="Navigate back" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container transition-colors" onclick="history.back()"><span class="material-symbols-outlined text-[22px]">arrow_back</span></button><div class="flex flex-col min-w-0"><div class="flex items-center gap-space-xs"><span class="text-label-mono font-label-mono text-on-surface-variant truncate">FlyLab Android Client</span><span class="text-label-mono font-label-mono text-primary bg-primary-fixed px-1.5 py-0.5 rounded-full">main</span></div><h1 class="text-headline-md font-headline-md text-on-surface truncate">Agent Task Details</h1></div></div><div class="flex items-center gap-space-xs shrink-0"><button aria-label="More workspace actions" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col relative w-full pt-16 bg-surface min-h-screen pb-safe"><div class="flex flex-col w-full pb-28">
+<!-- Status Alert Ticker / Context Banner -->
+<div class="px-margin pt-space-md">
+<div class="bg-surface-container-high rounded-xl p-space-md shadow-sm">
+<div class="flex items-center justify-between gap-space-sm mb-space-sm">
+<div class="flex items-center gap-space-xs min-w-0">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse shrink-0"></span>
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-wider truncate">Nutzer-Anweisung · Vor 12 Min</span>
+</div>
+<span class="inline-flex items-center gap-1 font-label-mono text-label-mono px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed shrink-0">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+          Schritt 3 / 4
+        </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface font-medium leading-relaxed mb-space-md">
+        „Optimiere die Audioaufnahme auf Oboe/AAudio mit exklusivem Buffer und verknüpfe den Hexagon NPU Inferenz-Kanal. Stelle sicher, dass die Unit-Tests kompilieren.“
+      </p>
+<div class="flex items-center justify-between pt-space-xs border-t border-surface-variant/40">
+<div class="flex items-center gap-space-sm">
+<span class="font-label-mono text-label-mono text-on-surface-variant">Worker:</span>
+<span class="font-label-mono text-label-mono text-on-surface font-medium">ClauDroide-v4.2a</span>
+</div>
+<div class="flex items-center gap-1 font-label-mono text-label-mono text-secondary">
+<span class="material-symbols-outlined text-[15px]">schedule</span>
+<span>03m 42s aktiv</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Diagnostic Metrics Bar -->
+<div class="px-margin mt-space-md">
+<div class="bg-surface-container rounded-xl p-space-md">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Diagnose &amp; Verifikation</span>
+<span class="font-label-mono text-label-mono text-primary bg-primary-fixed px-2 py-0.5 rounded-full">Pipeline Grün</span>
+</div>
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="bg-surface-container-lowest rounded-lg p-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-mono text-label-mono text-secondary">Unit-Tests</span>
+<span class="material-symbols-outlined text-[16px] text-primary">flaky</span>
+</div>
+<div class="mt-1 flex items-baseline gap-1">
+<span class="font-headline-md text-headline-md text-on-surface">14</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant">/ 15</span>
+</div>
+<div class="mt-1 w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 93.3%;"></div>
+</div>
+<span class="mt-1 block font-label-mono text-[10px] leading-tight text-on-surface-variant">14 Bestanden • 1 Laufend</span>
+</div>
+<div class="bg-surface-container-lowest rounded-lg p-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-mono text-label-mono text-secondary">Latenz (Oboe)</span>
+<span class="material-symbols-outlined text-[16px] text-primary">speed</span>
+</div>
+<div class="mt-1 flex items-baseline gap-1">
+<span class="font-headline-md text-headline-md text-on-surface">3.8</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant">ms</span>
+</div>
+<div class="mt-1 flex items-center gap-1 text-[10px] font-label-mono text-secondary">
+<span class="material-symbols-outlined text-[12px] text-primary">check_circle</span>
+<span class="truncate">Ziel: &lt; 10 ms (–62%)</span>
+</div>
+<span class="mt-1 block font-label-mono text-[10px] leading-tight text-on-surface-variant">Hexagon NPU DMA aktiv</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Step-by-Step Execution Plan -->
+<div class="px-margin mt-space-lg">
+<div class="flex items-center justify-between mb-space-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface">Ausführungsplan</h2>
+<span class="font-label-mono text-label-mono text-on-surface-variant">3 von 4 Schritten</span>
+</div>
+<div class="space-y-space-sm">
+<!-- Step 1: Completed -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm transition-all">
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px] text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-space-xs">
+<h3 class="font-body-md text-body-md font-semibold text-on-surface truncate">1. CMakeLists.txt um Oboe erweitern</h3>
+<span class="font-label-mono text-label-mono text-secondary shrink-0">1.2s</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 leading-relaxed">
+              CMake Target <code class="font-code-sm text-code-sm bg-surface-container px-1 py-0.5 rounded text-on-surface">libaudioengine</code> mit <code class="font-code-sm text-code-sm bg-surface-container px-1 py-0.5 rounded text-on-surface">oboe::oboe</code> statisch gelinkt. Verifiziert via Gradle Sync.
+            </p>
+<div class="mt-space-xs flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">description</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">CMakeLists.txt (+6 Zeilen)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Step 2: Completed -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm transition-all">
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px] text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-space-xs">
+<h3 class="font-body-md text-body-md font-semibold text-on-surface truncate">2. AudioRecordingService auf Low-Latency Buffer umstellen</h3>
+<span class="font-label-mono text-label-mono text-secondary shrink-0">4.8s</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 leading-relaxed">
+              ForegroundService Lifecycle mit neuem <code class="font-code-sm text-code-sm bg-surface-container px-1 py-0.5 rounded text-on-surface">AudioStateCoordinator</code> synchronisiert. AAudio Exclusive Stream aktiviert.
+            </p>
+<div class="mt-space-xs flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">description</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">AudioRecordingService.kt (+24, -8 Zeilen)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Step 3: In Progress (Active) -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm">
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px] text-primary animate-spin">progress_activity</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-space-xs">
+<div class="flex items-center gap-1.5 min-w-0">
+<h3 class="font-body-md text-body-md font-semibold text-on-surface truncate">3. Unit- &amp; Integrationstests ausführen</h3>
+</div>
+<span class="font-label-mono text-label-mono bg-primary-fixed text-on-primary-fixed px-2 py-0.5 rounded-full shrink-0">Aktiv</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 leading-relaxed">
+              Führt <code class="font-code-sm text-code-sm bg-surface-container px-1 py-0.5 rounded text-on-surface">./gradlew testDebugUnitTest --tests *Audio*</code> aus. Logcat Watchdog aktiv.
+            </p>
+<!-- Embedded Live Terminal Output -->
+<div class="mt-space-sm bg-surface-container-high rounded-lg p-space-sm font-code-sm text-code-sm">
+<div class="flex items-center justify-between pb-1 border-b border-surface-variant/50 mb-1.5 text-on-surface-variant">
+<span class="text-[11px] font-label-mono flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+                  Terminal (daemon-pid: 14892)
+                </span>
+<span class="text-[10px] font-label-mono">gradle test</span>
+</div>
+<div class="space-y-0.5 text-on-surface text-[12px] leading-tight overflow-x-auto">
+<p class="text-secondary">&gt; Task :core:audio:testDebugUnitTest</p>
+<p class="text-on-surface"><span class="text-primary font-medium">PASSED</span> [0.18s] AudioRecordingBufferTest.testRingBufferCapacity</p>
+<p class="text-on-surface"><span class="text-primary font-medium">PASSED</span> [0.42s] OboeNativeBridgeTest.testLowLatencyModeInit</p>
+<p class="text-on-surface-variant flex items-center gap-1">
+<span class="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                  RUNNING: HexagonInferenceChannelTest.testExclusiveDmaTransfer...
+                </p>
+</div>
+</div>
+<div class="mt-space-xs flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[14px] text-primary">pending</span>
+<span class="font-code-sm text-code-sm text-primary">AudioPipelineTest.kt (Wird getestet)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Step 4: Proposed / Queued -->
+<div class="bg-surface-container-low rounded-xl p-space-md opacity-80">
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">radio_button_unchecked</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-space-xs">
+<h3 class="font-body-md text-body-md font-semibold text-on-surface-variant truncate">4. Release-Branch anlegen &amp; Commit vorbereiten</h3>
+<span class="font-label-mono text-label-mono text-on-surface-variant/80 shrink-0">Wartend</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 leading-relaxed">
+              Vorgeschlagener Commit: <code class="font-code-sm text-code-sm bg-surface-container px-1 py-0.5 rounded text-on-surface">perf(audio): switch to low-latency oboe buffer</code>.
+            </p>
+<div class="mt-space-xs flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">commit</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Branch: feature/oboe-audio-npu</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Changed Files & Artifacts Summary -->
+<div class="px-margin mt-space-lg">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<h2 class="font-headline-md text-headline-md text-on-surface">Geänderte Dateien</h2>
+<span class="font-label-mono text-label-mono px-1.5 py-0.5 bg-surface-container-high rounded text-on-surface-variant">3</span>
+</div>
+<button class="font-label-mono text-label-mono text-primary flex items-center gap-0.5" onclick="toggleAllFiles()">
+<span class="material-symbols-outlined text-[16px]">unfold_more</span>
+<span>Diffs</span>
+</button>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-space-sm space-y-space-xs shadow-sm">
+<!-- File Item 1 -->
+<div class="rounded-lg p-space-sm hover:bg-surface-container-low transition-colors">
+<div class="flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-[20px] text-primary shrink-0">code</span>
+<div class="min-w-0">
+<p class="font-code-sm text-code-sm text-on-surface font-medium truncate">AudioRecordingService.kt</p>
+<p class="font-label-mono text-label-mono text-on-surface-variant truncate">app/src/main/java/flylab/audio/</p>
+</div>
+</div>
+<div class="flex items-center gap-1.5 shrink-0 font-code-sm text-code-sm">
+<span class="text-on-surface font-medium">+24</span>
+<span class="text-secondary">-8</span>
+</div>
+</div>
+</div>
+<!-- File Item 2 -->
+<div class="rounded-lg p-space-sm hover:bg-surface-container-low transition-colors">
+<div class="flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant shrink-0">build</span>
+<div class="min-w-0">
+<p class="font-code-sm text-code-sm text-on-surface font-medium truncate">CMakeLists.txt</p>
+<p class="font-label-mono text-label-mono text-on-surface-variant truncate">app/src/main/cpp/</p>
+</div>
+</div>
+<div class="flex items-center gap-1.5 shrink-0 font-code-sm text-code-sm">
+<span class="text-on-surface font-medium">+6</span>
+<span class="text-on-surface-variant">0</span>
+</div>
+</div>
+</div>
+<!-- File Item 3 -->
+<div class="rounded-lg p-space-sm hover:bg-surface-container-low transition-colors">
+<div class="flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant shrink-0">data_object</span>
+<div class="min-w-0">
+<p class="font-code-sm text-code-sm text-on-surface font-medium truncate">audio_engine_schema.json</p>
+<p class="font-label-mono text-label-mono text-on-surface-variant truncate">app/src/main/assets/schema/</p>
+</div>
+</div>
+<div class="flex items-center shrink-0">
+<span class="font-label-mono text-label-mono text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">Unverändert</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- NPU Integration Notice (Warm Architectural Delight) -->
+<div class="px-margin mt-space-md">
+<div class="bg-surface-container-low rounded-xl p-space-md flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-[22px] text-primary shrink-0 mt-0.5">neurology</span>
+<div class="flex-1 min-w-0">
+<h4 class="font-body-md text-body-md font-semibold text-on-surface">Qualcomm Hexagon DSP Bindung</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 leading-relaxed">
+          Zero-Copy Shared Memory über <code class="font-code-sm text-code-sm bg-surface-container px-1 py-0.5 rounded text-on-surface">AHardwareBuffer</code> vorbereitet. JNI-Aufrufe minimiert für deterministische Inferenzlatenz.
+        </p>
+</div>
+</div>
+</div>
+<!-- Floating Sticky Action / Control Dock -->
+<div class="fixed bottom-0 inset-x-0 z-40 bg-surface/90 backdrop-blur-md px-margin py-space-sm pb-safe shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
+<div class="max-w-md mx-auto flex items-center justify-between gap-space-sm">
+<!-- Secondary: Task Pausieren -->
+<button aria-label="Task pausieren" class="flex-1 h-12 px-3 rounded-full bg-surface-container-highest hover:bg-surface-variant active:scale-95 transition-all flex items-center justify-center gap-1.5 min-w-0" id="pause-btn" onclick="togglePauseTask()">
+<span class="material-symbols-outlined text-[18px] text-on-surface shrink-0" id="pause-icon">pause</span>
+<span class="font-label-md text-label-md text-on-surface font-medium truncate" id="pause-text">Pausieren</span>
+</button>
+<!-- Outline / Ghost: Plan anpassen -->
+<button aria-label="Plan anpassen" class="flex-1 h-12 px-3 rounded-full bg-surface-container-high hover:bg-surface-container-highest active:scale-95 transition-all flex items-center justify-center gap-1.5 min-w-0" onclick="adjustPlan()">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant shrink-0">tune</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-medium truncate">Planen</span>
+</button>
+<!-- Primary Action: Im Chat besprechen -->
+<button aria-label="Im Chat besprechen" class="flex-[1.5] h-12 px-4 rounded-full bg-primary hover:bg-primary-container active:scale-95 transition-all flex items-center justify-center gap-1.5 min-w-0 shadow-sm" onclick="openChat()">
+<span class="material-symbols-outlined text-[18px] text-on-primary shrink-0">chat</span>
+<span class="font-label-md text-label-md text-on-primary font-semibold truncate">Im Chat</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+  let isPaused = false;
+  function togglePauseTask() {
+    isPaused = !isPaused;
+    const btnText = document.getElementById('pause-text');
+    const btnIcon = document.getElementById('pause-icon');
+    if (isPaused) {
+      btnText.innerText = 'Fortsetzen';
+      btnIcon.innerText = 'play_arrow';
+    } else {
+      btnText.innerText = 'Pausieren';
+      btnIcon.innerText = 'pause';
+    }
+  }
+
+  function adjustPlan() {
+    console.log('Navigating to plan adjustment sheet...');
+  }
+
+  function openChat() {
+    console.log('Opening task thread in AI copilot workspace...');
+  }
+
+  function toggleAllFiles() {
+    console.log('Toggling git diff viewer view...');
+  }
+</script></main></body></html>

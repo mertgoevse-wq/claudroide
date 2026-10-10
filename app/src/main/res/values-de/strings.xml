@@ -27,6 +27,8 @@
     <string name="chat_local_only">Nur lokal</string>
     <string name="chat_composer_hint">Frag etwas zu diesem Projekt…</string>
     <string name="chat_composer_helper">Enter sendet · Shift+Enter neue Zeile</string>
+    <string name="chat_composer_attachment">Anhang hinzufügen</string>
+    <string name="chat_composer_mode">Kompositionsmodus</string>
     <string name="chat_streaming">Streamt…</string>
     <string name="chat_new_conversation">Neue Unterhaltung</string>
     <string name="chat_send">Senden</string>

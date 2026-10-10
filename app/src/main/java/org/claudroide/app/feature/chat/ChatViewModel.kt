@@ -266,6 +266,22 @@ class ChatViewModel @JvmOverloads constructor(
 
     private fun generateConversationId(): String =
         "conv_${System.currentTimeMillis()}_${(0..999).random()}"
+
+    fun onAttachmentClick() {
+        // TODO: Open attachment bottom sheet
+    }
+
+    fun onModeClick() {
+        // TODO: Open mode selector
+    }
+
+    fun removeAttachment(attachmentId: String) {
+        _uiState.value = _uiState.value.copy(
+            input = _uiState.value.input.copy(
+                attachments = _uiState.value.input.attachments.filter { it.id != attachmentId }
+            )
+        )
+    }
 }
 
 data class ChatUiState(

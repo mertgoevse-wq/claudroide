@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;background-color:#f9f9f8;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-container-low": "#f3f4f3", "inverse-on-surface": "#f1f1f0", "on-primary": "#ffffff", "secondary-fixed-dim": "#bdc7d9", "tertiary-container": "#645efb", "on-secondary-fixed": "#121c2a", "surface-bright": "#f9f9f8", "surface-container-high": "#e8e8e7", "on-tertiary-container": "#fffbff", "tertiary": "#4b41e1", "secondary-container": "#d6e0f3", "surface-dim": "#dadad9", "on-background": "#1a1c1c", "surface-variant": "#e2e2e2", "primary-container": "#bf542c", "surface-container": "#eeeeed", "outline-variant": "#dec0b7", "inverse-primary": "#ffb59c", "background": "#f9f9f8", "tertiary-fixed-dim": "#c3c0ff", "on-tertiary-fixed-variant": "#3323cc", "surface-container-highest": "#e2e2e2", "secondary": "#555f6f", "inverse-surface": "#2f3130", "on-secondary-container": "#596373", "primary-fixed-dim": "#ffb59c", "tertiary-fixed": "#e2dfff", "error-container": "#ffdad6", "on-primary-container": "#fffbff", "surface-container-lowest": "#ffffff", "on-secondary": "#ffffff", "primary": "#9f3c16", "on-surface": "#1a1c1c", "outline": "#8a726a", "on-secondary-fixed-variant": "#3d4756", "secondary-fixed": "#d9e3f6", "surface": "#f9f9f8", "error": "#ba1a1a", "primary-fixed": "#ffdbcf", "on-tertiary-fixed": "#0f0069", "on-error": "#ffffff", "on-surface-variant": "#57423b", "on-tertiary": "#ffffff", "on-error-container": "#93000a", "on-primary-fixed": "#390c00", "on-primary-fixed-variant": "#822801", "surface-tint": "#a23e18" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-sm": "0.5rem", "space-lg": "1.5rem", "margin-desktop": "2.5rem", "space-xl": "2.5rem", "gutter-tablet": "1.5rem", "margin-tablet": "1.5rem", "gutter": "1rem", "space-md": "1rem", "space-xs": "0.25rem", "gutter-desktop": "2rem", "margin": "1rem" }, "fontFamily": { "headline-lg": ["Inter"], "code-sm": ["JetBrains Mono"], "code-md": ["JetBrains Mono"], "label-md": ["Inter"], "body-sm": ["Inter"], "body-md": ["Inter"], "headline-xl": ["Inter"], "label-mono": ["JetBrains Mono"], "body-lg": ["Inter"], "headline-md": ["Inter"] }, "fontSize": { "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600"}], "code-sm": ["12px", {"lineHeight": "18px", "fontWeight": "400"}], "code-md": ["13.5px", {"lineHeight": "22px", "fontWeight": "450"}], "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}], "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}], "body-md": ["14px", {"lineHeight": "22px", "fontWeight": "400"}], "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}], "label-mono": ["11px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500"}], "body-lg": ["16px", {"lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "400"}], "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}] } } } }</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-14 px-margin flex items-center justify-between"><div class="flex items-center gap-space-sm"><button aria-label="Go back" class="w-11 h-11 -ml-space-xs flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container active:bg-surface-container-high transition-colors" onclick="history.back()"><span class="material-symbols-outlined text-[24px]">arrow_back</span></button><h1 class="font-headline-md text-headline-md text-on-surface tracking-tight truncate max-w-[200px]">Settings</h1></div><div class="flex items-center gap-space-xs"><button aria-label="More options" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container active:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center ml-space-xs"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col relative w-full pt-14 pb-safe bg-surface min-h-screen"><div class="flex flex-col w-full pb-12">
+<div class="px-margin pt-space-md pb-space-sm">
+<div class="flex items-center gap-space-xs text-secondary mb-1">
+<span class="material-symbols-outlined text-[16px]">hub</span>
+<span class="font-label-mono text-label-mono tracking-wider uppercase">Engine &amp; Inferenz</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary">
+      Modell-Routing, API-Status &amp; Kompatibilität
+    </p>
+</div>
+<div class="flex flex-col gap-space-md px-margin">
+<!-- Active Primary Provider Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm">
+<div class="flex items-start justify-between mb-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">neurology</span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Anthropic Claude</span>
+<span class="inline-flex items-center gap-1 bg-surface-container-high px-1.5 py-0.5 rounded text-[10px] font-label-mono text-primary font-medium">DIRECT API</span>
+</div>
+<p class="font-label-mono text-label-mono text-secondary">Aktivierte primäre Recheneinheit</p>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded-full">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="font-label-mono text-label-mono text-secondary">Live</span>
+</div>
+</div>
+<!-- Model Selector Interactive -->
+<div class="mt-space-sm mb-space-md">
+<label class="block font-label-mono text-label-mono text-secondary mb-1.5 uppercase tracking-wide">
+          Standardmodell für Session
+        </label>
+<div class="relative">
+<select class="w-full bg-surface-container-low text-on-surface font-label-md text-label-md py-2.5 px-3 rounded-lg appearance-none focus:outline-none focus:bg-surface-container transition-colors pr-9 font-medium" id="modelSelect">
+<option selected="" value="3.7-sonnet">Claude 3.7 Sonnet (Standard)</option>
+<option value="3.5-haiku">Claude 3.5 Haiku (Fast)</option>
+<option value="3.5-sonnet">Claude 3.5 Sonnet (Legacy)</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-secondary">
+<span class="material-symbols-outlined text-[18px]">unfold_more</span>
+</div>
+</div>
+</div>
+<!-- Quota / Verification Bar -->
+<div class="bg-surface-container-low rounded-lg p-space-sm mb-space-md">
+<div class="flex justify-between items-center mb-1.5">
+<div class="flex items-center gap-1 text-on-surface font-label-mono text-label-mono">
+<span class="material-symbols-outlined text-[14px] text-primary">verified_user</span>
+<span>Token verifiziert</span>
+</div>
+<span class="font-label-mono text-label-mono text-secondary">Kontingent: <strong class="text-on-surface">84% frei</strong></span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 16%;"></div>
+</div>
+<div class="flex justify-between items-center mt-1 text-secondary font-label-mono text-[10px]">
+<span>Verbraucht: 162k / 1M</span>
+<span>Reset in 12T</span>
+</div>
+</div>
+<!-- Capabilities Matrix -->
+<div>
+<span class="block font-label-mono text-label-mono text-secondary mb-2 uppercase tracking-wide">
+          Verfügbare Kernel-Fähigkeiten
+        </span>
+<div class="flex flex-wrap gap-1.5">
+<span class="inline-flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded text-secondary font-label-mono text-[11px]">
+<span class="material-symbols-outlined text-[13px] text-primary">chat_bubble</span> Chat ✓
+          </span>
+<span class="inline-flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded text-secondary font-label-mono text-[11px]">
+<span class="material-symbols-outlined text-[13px] text-primary">terminal</span> Code-Generierung ✓
+          </span>
+<span class="inline-flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded text-secondary font-label-mono text-[11px]">
+<span class="material-symbols-outlined text-[13px] text-primary">visibility</span> Vision ✓
+          </span>
+<span class="inline-flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded text-secondary font-label-mono text-[11px]">
+<span class="material-symbols-outlined text-[13px] text-primary">psychology</span> Thinking Mode ✓
+          </span>
+<span class="inline-flex items-center gap-1 bg-surface-container-high px-2 py-1 rounded text-secondary font-label-mono text-[11px] opacity-80">
+<span class="material-symbols-outlined text-[13px] text-secondary">check_indeterminate_small</span> Audio/Video ✗ <span class="text-primary font-medium">(OmniRoute)</span>
+</span>
+</div>
+</div>
+</div>
+<!-- Alternative & Fallback Routing -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-[20px]">alt_route</span>
+</div>
+<div>
+<h2 class="font-label-md text-label-md text-on-surface font-semibold">OmniRoute Gateway</h2>
+<p class="font-label-mono text-label-mono text-secondary">Ausfallsichere Kaskadierung</p>
+</div>
+</div>
+<!-- Native Switch Style -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" id="fallbackToggle" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface-container-lowest after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mb-space-md">
+        Automatischer Fallback bei 429 Rate-Limits, Cloud-Latenz &gt; 1800ms oder API-Ausfall.
+      </p>
+<!-- Routing Priority Flow -->
+<div class="bg-surface-container-low rounded-lg p-space-sm">
+<span class="block font-label-mono text-label-mono text-secondary mb-2 uppercase tracking-wide">Prioritätsreihenfolge</span>
+<div class="flex flex-col gap-2">
+<!-- Step 1 -->
+<div class="flex items-center justify-between bg-surface-container-lowest px-2.5 py-2 rounded">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-primary-fixed text-primary font-label-mono text-[10px] flex items-center justify-center font-bold">1</span>
+<span class="font-label-md text-label-md text-on-surface font-medium">Claude 3.7 Sonnet</span>
+</div>
+<span class="font-label-mono text-[10px] text-primary bg-primary-fixed/40 px-2 py-0.5 rounded">Primär</span>
+</div>
+<!-- Step 2 -->
+<div class="flex items-center justify-between bg-surface-container-lowest px-2.5 py-2 rounded">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-surface-container-high text-secondary font-label-mono text-[10px] flex items-center justify-center font-bold">2</span>
+<span class="font-label-md text-label-md text-on-surface font-medium">Gemini 1.5 Pro</span>
+</div>
+<span class="font-label-mono text-[10px] text-secondary">Secondary Node</span>
+</div>
+<!-- Step 3 -->
+<div class="flex items-center justify-between bg-surface-container-lowest px-2.5 py-2 rounded">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-surface-container-high text-secondary font-label-mono text-[10px] flex items-center justify-center font-bold">3</span>
+<span class="font-label-md text-label-md text-on-surface font-medium">Lokales Fallback (ONNX/Ollama)</span>
+</div>
+<span class="font-label-mono text-[10px] text-secondary">Offline / Edge</span>
+</div>
+</div>
+</div>
+</div>
+<!-- API Key & Credentials Protection -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm">
+<div class="flex items-center gap-space-sm mb-space-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">lock</span>
+</div>
+<div>
+<h2 class="font-label-md text-label-md text-on-surface font-semibold">Authentifizierung &amp; Schlüssel</h2>
+<p class="font-label-mono text-label-mono text-secondary">Hardware-gesicherter Keystore</p>
+</div>
+</div>
+<div class="flex flex-col gap-space-sm">
+<div>
+<div class="flex justify-between items-center mb-1">
+<label class="font-label-mono text-label-mono text-secondary">API-SCHLÜSSEL</label>
+<span class="font-label-mono text-[10px] text-emerald-600 flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]">security</span> Android KeyStore Enclave
+            </span>
+</div>
+<div class="flex items-center justify-between bg-surface-container-low px-3 py-2 rounded-lg">
+<span class="font-label-mono text-label-mono text-on-surface tracking-wider">ANTHROPIC_API_KEY_[REDACTED_SAMPLE]</span>
+<button class="p-1 text-secondary hover:text-on-surface" title="Schlüssel kopieren">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+</button>
+</div>
+</div>
+<div>
+<label class="block font-label-mono text-label-mono text-secondary mb-1">ENDPUNKT</label>
+<div class="flex items-center gap-2 bg-surface-container-low px-3 py-2 rounded-lg">
+<span class="material-symbols-outlined text-[16px] text-emerald-600">lock</span>
+<span class="font-code-sm text-code-sm text-on-surface truncate">https://api.anthropic.com/v1</span>
+<span class="ml-auto font-label-mono text-[10px] text-secondary">TLS 1.3</span>
+</div>
+</div>
+<button class="mt-space-xs w-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px]">key</span>
+<span>Schlüssel ändern / neu validieren</span>
+</button>
+</div>
+</div>
+<!-- Model Parameter Defaults -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</div>
+<div>
+<h2 class="font-label-md text-label-md text-on-surface font-semibold">Standard-Parameter</h2>
+<p class="font-label-mono text-label-mono text-secondary">Inferenz-Voreinstellungen</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-space-md mt-space-sm">
+<!-- Temperature -->
+<div>
+<div class="flex justify-between items-center mb-1">
+<label class="font-label-mono text-label-mono text-secondary">TEMPERATURE</label>
+<div class="flex items-center gap-1.5">
+<span class="font-label-mono text-label-mono font-semibold text-primary" id="tempValue">0.2</span>
+<span class="text-[10px] font-label-mono text-secondary">(Präzise Programmierung)</span>
+</div>
+</div>
+<input class="w-full accent-primary h-1.5 bg-surface-container-high rounded-lg appearance-none cursor-pointer" id="tempSlider" max="1" min="0" step="0.05" type="range" value="0.2"/>
+<div class="flex justify-between text-[10px] font-label-mono text-secondary mt-1">
+<span>0.0 Deterministisch</span>
+<span>1.0 Kreativ</span>
+</div>
+</div>
+<!-- Max Tokens -->
+<div class="flex items-center justify-between bg-surface-container-low p-2.5 rounded-lg">
+<div>
+<span class="block font-label-mono text-label-mono text-secondary uppercase">Max Output Tokens</span>
+<span class="font-body-sm text-body-sm text-on-surface">Maximale Token-Länge pro Antwort</span>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface bg-surface-container-lowest px-2.5 py-1 rounded font-semibold">
+            8,192
+          </span>
+</div>
+<!-- System Prompt Override -->
+<div>
+<label class="block font-label-mono text-label-mono text-secondary mb-1">SYSTEM-PROMPT OVERRIDE</label>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-mono text-label-mono text-on-surface font-medium">ClauDroide Studio Dev v2.4</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">edit</span>
+</div>
+<p class="font-code-sm text-[11px] text-secondary line-clamp-2">
+              "Du agierst als leitender Android-Systemarchitekt. Fokussiere auf saubere Kotlin-Coroutines, MVI-Architektur, Unidirektionalen Datenfluss..."
+            </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Test & Diagnostics Action Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm">
+<div class="flex items-center justify-between mb-space-sm">
+<div>
+<span class="font-label-mono text-label-mono text-secondary uppercase">Diagnose &amp; Health-Check</span>
+<p class="font-body-sm text-body-sm text-on-surface">Verbindung zum Anthropic Edge Cluster prüfen</p>
+</div>
+</div>
+<div class="mb-space-sm bg-surface-container-low p-2.5 rounded-lg flex items-center justify-between" id="diagnosticsResult">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="font-label-mono text-label-mono text-on-surface font-medium">200 OK</span>
+<span class="font-label-mono text-label-mono text-secondary">• RTT 142ms</span>
+</div>
+<span class="font-label-mono text-[10px] text-secondary">Letzter Test: Vor 2m</span>
+</div>
+<button class="w-full bg-primary active:bg-primary-container text-on-primary font-label-md text-label-md py-3 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm" id="runDiagnosticsBtn">
+<span class="material-symbols-outlined text-[18px]">wifi_tethering</span>
+<span>Verbindungstest durchführen</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    const tempSlider = document.getElementById('tempSlider');
+    const tempValue = document.getElementById('tempValue');
+    const diagBtn = document.getElementById('runDiagnosticsBtn');
+    const diagResult = document.getElementById('diagnosticsResult');
+
+    if (tempSlider && tempValue) {
+      tempSlider.addEventListener('input', (e) => {
+        tempValue.textContent = Number(e.target.value).toFixed(2);
+      });
+    }
+
+    if (diagBtn && diagResult) {
+      diagBtn.addEventListener('click', () => {
+        diagBtn.disabled = true;
+        diagBtn.classList.add('opacity-75');
+        diagBtn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">refresh</span><span>Test l&auml;uft...</span>';
+        
+        setTimeout(() => {
+          const latency = Math.floor(Math.random() * 30) + 125;
+          diagResult.innerHTML = `
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span class="font-label-mono text-label-mono text-on-surface font-medium">200 OK</span>
+              <span class="font-label-mono text-label-mono text-secondary">&bull; RTT ${latency}ms</span>
+            </div>
+            <span class="font-label-mono text-[10px] text-primary font-medium">Gerade eben</span>
+          `;
+          diagBtn.disabled = false;
+          diagBtn.classList.remove('opacity-75');
+          diagBtn.innerHTML = '<span class="material-symbols-outlined text-[18px]">wifi_tethering</span><span>Verbindungstest durchf&uuml;hren</span>';
+        }, 650);
+      });
+    }
+  })();
+</script></main></body></html>
