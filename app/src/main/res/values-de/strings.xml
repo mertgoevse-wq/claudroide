@@ -8,15 +8,17 @@
     <string name="nav_projects">Projekte</string>
     <string name="nav_settings">Einstellungen</string>
 
-    <!-- Disclaimer & Info -->
+    <!-- Disclaimer &amp; Info -->
     <string name="disclaimer_title">Unabhängiges Open-Source-Projekt</string>
     <string name="disclaimer_text">ClauDroide ist ein unabhängiges Open-Source-Projekt und steht in keiner geschäftlichen oder offiziellen Verbindung zu Anthropic, PBC. Claude ist eine eingetragene Marke von Anthropic. ClauDroide ermöglicht die Nutzung offizieller Schnittstellen auf Basis eigener API-Schlüssel (BYOK).</string>
 
     <!-- Empty States -->
     <string name="empty_chat_title">Keine aktiven Unterhaltungen</string>
     <string name="empty_chat_desc">Starte einen neuen Chat oder öffne ein lokales Projekt zur Bearbeitung.</string>
+    <string name="empty_chat_greeting">Guten Tag</string>
+    <string name="empty_chat_subtitle">Was möchten Sie heute bauen?</string>
     <string name="empty_project_title">Kein Projekt geöffnet</string>
-    <string name="empty_project_desc">Wähle einen Projektordner auf deinem Galaxy A56 aus, um Quellcode zu analysieren und zu bearbeiten.</string>
+    <string name="empty_project_desc">Wählen Sie einen Projektordner auf Ihrem Galaxy A56 aus, um Quellcode zu analysieren und zu bearbeiten.</string>
 
     <!-- Brand imagery (accessibility text) -->
     <string name="banner_alt_text">ClauDroide-Banner: eine grüne Android-Kuppel und ein Terminal-Bot nebeneinander, die sich an den Händen halten, neben dem Produktnamen.</string>
@@ -25,7 +27,7 @@
     <!-- Chat screen -->
     <string name="chat_session_title">Build-Sitzung</string>
     <string name="chat_local_only">Nur lokal</string>
-    <string name="chat_composer_hint">Frag etwas zu diesem Projekt…</string>
+    <string name="chat_composer_hint">Fragen Sie etwas zu diesem Projekt…</string>
     <string name="chat_composer_helper">Enter sendet · Shift+Enter neue Zeile</string>
     <string name="chat_composer_attachment">Anhang hinzufügen</string>
     <string name="chat_composer_mode">Kompositionsmodus</string>
@@ -36,5 +38,18 @@
     <string name="project_open_folder">Projektordner öffnen</string>
 
     <!-- Accessibility Service -->
-    <string name="accessibility_service_description">Ermöglicht ClauDroide die Prüfung des Bildschirminhalts und die Ausführung von Touch-Aktionen, um mobile Arbeitsabläufe für dich zu automatisieren.</string>
+    <string name="accessibility_service_description">Ermöglicht ClauDroide die Prüfung des Bildschirminhalts und die Ausführung von Touch-Aktionen, um mobile Arbeitsabläufe für Sie zu automatisieren.</string>
+
+    <!-- Navigation Drawer -->
+    <string name="nav_drawer_subtitle">Mert · Pro Plan</string>
+    <string name="nav_drawer_new_chat">Neuer Chat</string>
+    <string name="nav_drawer_close">Schließen</string>
+    <string name="nav_drawer_chats">Chats</string>
+    <string name="nav_drawer_projects">Projekte</string>
+    <string name="nav_drawer_code_mcp">Code &amp; MCP</string>
+    <string name="nav_drawer_artifacts">Artefakte</string>
+    <string name="nav_drawer_recent_chats">Letzte Chats</string>
+    <string name="nav_drawer_no_recent">Keine kürzlichen Unterhaltungen</string>
+    <string name="nav_drawer_docs">Dokumentation &amp; Shortcuts</string>
+    <string name="nav_drawer_subscribed">Subscribed</string>
 </resources>

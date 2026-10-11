@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -178,30 +179,38 @@ fun ChatScreen(
         ) {
             if (effectiveMessages.isEmpty()) {
                 Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                    EmptyState(
-                        icon = Icons.Default.ChatBubbleOutline,
-                        title = stringResource(R.string.empty_chat_title),
-                        description = stringResource(R.string.empty_chat_desc),
-                        action = {
-                            FilledIconButton(
-                                onClick = { viewModel?.newConversation() ?: onNewChatClick() },
-                                colors = IconButtonDefaults.filledIconButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                                ),
-                            ) {
-                                Icon(
-                                    Icons.Default.Add,
-                                    contentDescription = stringResource(R.string.chat_new_conversation),
-                                )
-                                Spacer(Modifier.width(8.dp))
-                                Text(
-                                    text = stringResource(R.string.chat_new_conversation),
-                                    style = TypeTokens.LabelLargeStyle,
-                                )
-                            }
-                        },
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(TypeTokens.SpacingMedium),
+                    ) {
+                        // Greeting centered and lower in the content area
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(TypeTokens.SpacingXSmall),
+                        ) {
+                            // Brand mark / spark icon
+                            Icon(
+                                imageVector = Icons.Default.AutoAwesome,
+                                contentDescription = null,
+                                modifier = Modifier.size(48.dp),
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                            Text(
+                                text = stringResource(R.string.empty_chat_greeting),
+                                style = TypeTokens.TitleLargeStyle,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            )
+                            Text(
+                                text = stringResource(R.string.empty_chat_subtitle),
+                                style = TypeTokens.BodyMediumStyle,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            )
+                        }
+                        // The composer is already at the bottom via Scaffold
+                        // No action cards - the chat box is the primary entry point
+                    }
                 }
             } else {
                 LazyColumn(

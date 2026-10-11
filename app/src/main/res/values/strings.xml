@@ -8,13 +8,15 @@
     <string name="nav_projects">Projects</string>
     <string name="nav_settings">Settings</string>
 
-    <!-- Disclaimer & Info -->
+    <!-- Disclaimer &amp; Info -->
     <string name="disclaimer_title">Independent Open-Source Project</string>
     <string name="disclaimer_text">ClauDroide is an independent open-source project and is not affiliated with or endorsed by Anthropic, PBC. Claude is a registered trademark of Anthropic. ClauDroide provides official API access using your own keys (BYOK).</string>
 
     <!-- Empty States -->
     <string name="empty_chat_title">No active conversations</string>
     <string name="empty_chat_desc">Start a new chat or open a local project to begin.</string>
+    <string name="empty_chat_greeting">Guten Tag</string>
+    <string name="empty_chat_subtitle">Was möchten Sie heute bauen?</string>
     <string name="empty_project_title">No project open</string>
     <string name="empty_project_desc">Select a project directory on your device to inspect and edit code.</string>
 
@@ -37,4 +39,17 @@
 
     <!-- Accessibility Service -->
     <string name="accessibility_service_description">Enables ClauDroide to inspect screen structure and dispatch touch gestures to automate mobile workflows on your behalf.</string>
+
+    <!-- Navigation Drawer -->
+    <string name="nav_drawer_subtitle">Mert · Pro Plan</string>
+    <string name="nav_drawer_new_chat">Neuer Chat</string>
+    <string name="nav_drawer_close">Schließen</string>
+    <string name="nav_drawer_chats">Chats</string>
+    <string name="nav_drawer_projects">Projekte</string>
+    <string name="nav_drawer_code_mcp">Code &amp; MCP</string>
+    <string name="nav_drawer_artifacts">Artefakte</string>
+    <string name="nav_drawer_recent_chats">Letzte Chats</string>
+    <string name="nav_drawer_no_recent">Keine kürzlichen Unterhaltungen</string>
+    <string name="nav_drawer_docs">Dokumentation &amp; Shortcuts</string>
+    <string name="nav_drawer_subscribed">Subscribed</string>
 </resources>
