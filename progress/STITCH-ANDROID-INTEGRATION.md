@@ -1,7 +1,7 @@
 # ClauDroide — Stitch Android Integration Progress
 
 **Started:** 2026-10-10
-**Branch:** feat/claudroide-next-architecture
+**Branch:** feat/claudroide-next-architecture (0c9fb36)
 **Baseline Commit:** e381795 (verified 2579 tests pass, secret gate clean, sync check OK)
 
 ## Stage 0 — Baseline Confirmed ✓
@@ -16,10 +16,10 @@
 ### Mapping from Stitch screens to existing code:
 | Stitch Screen | Status | Target Files |
 |---|---|---|
-| `claudroide_android_chat_interface` (empty chat) | **IN PROGRESS** | ChatScreen.kt, ChatViewModel.kt, ClaudroideComponents.kt |
+| `claudroide_android_chat_interface` (empty chat) | **DONE** | ChatScreen.kt, ChatViewModel.kt, ClaudroideComponents.kt |
 | `claudroide_aktive_konversation` (active chat) | PENDING | ChatScreen.kt, StreamingText.kt, MessageBubble |
 | `claudroide_anhang_men` (attachment bottom sheet) | PENDING | New AttachmentBottomSheet.kt |
-| `claudroide_navigation_drawer` (drawer/history) | PENDING | NavigationDrawer.kt, ChatHistoryScreen.kt |
+| `claudroide_navigation_drawer` (drawer/history) | **NEXT** | NavigationDrawer.kt, ChatHistoryScreen.kt |
 
 ### Design tokens to align with 02_NATIVE_DESIGN_SPEC.md:
 - Colors: Neutral surfaces + muted warm accent (not Terracotta everywhere)
@@ -33,8 +33,8 @@
 - [x] Update TypeTokens to match spec (16sp body, 20sp code, etc.)
 - [x] Fix TypeScaleContractTest and TypeAndSpacingTest to match new spec
 - [x] All 2579 tests pass, build clean
-- [ ] Refactor ChatScreen: empty state, message list, streaming indicator
-- [ ] Refactor MessageComposer: attachment button, mode selector, send/stop
+- [x] Refactor ChatScreen: empty state, message list, streaming indicator
+- [x] Refactor MessageComposer: attachment button, mode selector, send/stop
 - [ ] Implement StreamingText component for real token streaming
 - [ ] Implement AttachmentBottomSheet (modal, 84% width, grip handle)
 - [ ] Implement NavigationDrawer with recent chats, projects, settings
@@ -76,3 +76,29 @@
 - Added ChatViewModel methods: `onAttachmentClick()`, `onModeClick()`, `removeAttachment()` ✓
 - All 2579 tests pass ✓
 - Debug APK builds successfully ✓
+
+### 2026-10-11 — Handoff Note for Next Session
+**Git State:**
+- Branch: `feat/claudroide-next-architecture` (ahead of origin by 1 commit: 0c9fb36)
+- Working tree: clean (only untracked design/ folder and progress file)
+- Last commit: `0c9fb36` "feat(chat): implement Stage 1 core chat UI improvements"
+
+**Tests & Build:**
+- 2579 unit tests passing
+- Debug APK builds successfully (`./gradlew :app:assembleDebug`)
+
+**Completed Stage 1 Tasks:**
+- ✅ EmptyState with new conversation action button
+- ✅ TopAppBar with nav drawer icon + new chat action
+- ✅ MessageComposer: attachment (+), mode selector (code), send/stop
+- ✅ AttachmentPreviewRow component
+- ✅ ChatViewModel: onAttachmentClick, onModeClick, removeAttachment
+
+**Open Stage 1 Tasks (Priority Order):**
+1. **NavigationDrawer** - Implement 84%-width drawer with recent chats, projects, settings (per `claudroide_navigation_drawer` Stitch screen)
+2. **AttachmentBottomSheet** - Modal bottom sheet (84% width, grip handle) with file/code/photo/camera/project/logcat options (per `claudroide_anhang_men`)
+3. **StreamingText** - Real token-by-token streaming component (replace StreamingIndicator)
+4. **Connect drawer/sheet to ChatViewModel** - Wire open/close actions
+
+**Next Concrete Step:**
+Create `NavigationDrawer.kt` component following Stitch spec (84% width, left-aligned, brand mark, "Neuer Chat" primary pill, Chats/Projekte/Code-MCP/Artefakte nav, recent chats list, footer with settings/docs/account). Then hook drawer open from TopAppBar navigationIcon click.
