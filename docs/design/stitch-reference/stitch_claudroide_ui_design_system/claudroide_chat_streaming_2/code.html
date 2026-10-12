@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<meta content="mobile_tab" name="shell-type"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "anthropic-bg": "#141413",
+            "anthropic-surface": "#1a1917",
+            "anthropic-card": "#21201d",
+            "anthropic-card-alt": "#24221f",
+            "anthropic-light": "#FAF9F5",
+            "anthropic-muted": "#9e9a93",
+            "anthropic-subtle": "#66635e",
+            "terracotta": "#d97757",
+            "terracotta-hover": "#c86749",
+            "terracotta-soft": "rgba(217, 119, 87, 0.15)",
+            "code-bg": "#181715",
+            "border-subtle": "rgba(255, 255, 255, 0.07)"
+          },
+          fontFamily: {
+            sans: ["Inter", "system-ui", "-apple-system", "Roboto", "sans-serif"],
+            serif: ["Newsreader", "Georgia", "serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    @layer base {
+      html, body {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #141413;
+        color: #FAF9F5;
+        overscroll-behavior: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    pre, code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .material-symbols-filled {
+      font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+<body class="bg-anthropic-bg text-anthropic-light font-sans flex flex-col min-h-screen antialiased select-none selection:bg-terracotta/30">
+<!-- ================= NATIVE ANDROID STATUS BAR (Galaxy A56) ================= -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-[#141413]/90 backdrop-blur-md">
+<!-- Status bar icons & clock -->
+<div class="h-8 px-5 flex items-center justify-between text-xs font-medium text-anthropic-muted tracking-tight">
+<span class="text-anthropic-light text-[13px] font-semibold tracking-normal">14:32</span>
+<div class="flex items-center gap-2">
+<span class="text-[11px] font-mono font-medium text-anthropic-muted/80 tracking-tighter">5G</span>
+<span class="material-symbols-outlined text-[15px] text-anthropic-light leading-none">signal_cellular_alt</span>
+<span class="material-symbols-outlined text-[15px] text-anthropic-light leading-none">wifi</span>
+<div class="flex items-center gap-0.5 ml-0.5">
+<span class="text-[11px] font-mono text-anthropic-light font-normal">94%</span>
+<span class="material-symbols-outlined text-[15px] text-anthropic-light rotate-90 leading-none">battery_full</span>
+</div>
+</div>
+</div>
+<!-- Calm Native Top App Bar -->
+<div class="h-14 px-4 flex items-center justify-between border-b border-border-subtle/50">
+<div class="flex items-center gap-2.5 min-w-0">
+<!-- Claudroide Mascot / Wordmark -->
+<div class="w-8 h-8 rounded-full bg-anthropic-surface flex items-center justify-center border border-border-subtle flex-shrink-0">
+<img alt="Claudroide App Icon" class="h-5 w-5 object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wk3nRQ6wXTIBrMS30sqGpfSsgcb08rNf6nGozA55OfA52CoqluaQdWjyKOe-0IioPsnn0bD3Ftx-p2a10_QnXwF09oT2UNbrt0eYLao1n_vY92ofgeNFvZXGIm_zm0wDzZtd7XRm6G-YYen7X6F7MHipR6QzUBsOez8vFwoiZ30SUBoHnO4UydhEQWDEQBgLu4YXZul143T4ByQN-vnnDXxYLnjXuo2g5MQFeuZE8VIPSKHyJvsRJgR-GQ"/>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5 leading-none">
+<span class="font-serif italic font-medium text-[17px] text-anthropic-light tracking-tight">Claudroide</span>
+</div>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500/80"></span>
+<span class="font-mono text-[11px] text-anthropic-muted truncate">core • main</span>
+</div>
+</div>
+</div>
+<!-- Right Actions: Model Pill & Profile -->
+<div class="flex items-center gap-2 flex-shrink-0">
+<button class="h-8 px-2.5 rounded-full bg-anthropic-surface hover:bg-anthropic-card active:scale-95 transition-all flex items-center gap-1.5 border border-border-subtle text-anthropic-light">
+<span class="w-1.5 h-1.5 rounded-full bg-terracotta"></span>
+<span class="text-[12px] font-medium tracking-tight">Claude 3.7</span>
+<span class="material-symbols-outlined text-[16px] text-anthropic-muted">expand_more</span>
+</button>
+<button aria-label="Profil" class="w-8 h-8 rounded-full bg-anthropic-surface border border-border-subtle flex items-center justify-center text-anthropic-muted hover:text-anthropic-light active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px]">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- ================= SCROLLABLE CHAT CANVAS ================= -->
+<main class="flex-1 w-full pt-[92px] pb-[136px] px-4 flex flex-col gap-5 overflow-y-auto">
+<!-- USER MESSAGE BUBBLE (Android / One UI native flow) -->
+<div class="flex flex-col items-end w-full">
+<div class="max-w-[88%] bg-anthropic-card-alt text-anthropic-light rounded-[20px] rounded-tr-[6px] px-4 py-3 shadow-sm border border-white/[0.04]">
+<div class="flex items-center justify-between gap-3 mb-1 text-[11px]">
+<span class="text-terracotta font-mono font-medium tracking-wide">Du</span>
+<span class="text-anthropic-subtle font-mono">14:32</span>
+</div>
+<p class="text-[14.5px] leading-relaxed text-[#FAF9F5]/95 font-normal">
+          Optimiere den Room-DB-Worker in <code class="font-mono text-[12.5px] bg-[#1a1917] text-terracotta px-1.5 py-0.5 rounded border border-white/[0.06]">SyncRepository.kt</code> und füge automatische Retry-Backoffs mit Exponential Delay hinzu.
+        </p>
+</div>
+</div>
+<!-- AI ASSISTANT RESPONSE STREAM -->
+<div class="flex flex-col gap-3.5 w-full">
+<!-- Collapsible Reasoning (Authentic Claude Style) -->
+<div class="w-full bg-anthropic-surface rounded-xl border border-border-subtle overflow-hidden">
+<button class="w-full px-3.5 py-2.5 flex items-center justify-between text-left hover:bg-anthropic-card/60 transition-colors min-h-[44px]" id="thought-toggle">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-[18px] text-terracotta flex-shrink-0">psychology</span>
+<span class="text-[12.5px] font-medium text-anthropic-muted truncate">Gedankengang • 4.2s</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-anthropic-subtle flex-shrink-0 transition-transform duration-200" id="thought-icon">expand_more</span>
+</button>
+<div class="px-3.5 pb-3 pt-1 border-t border-border-subtle/50 hidden" id="thought-content">
+<div class="font-mono text-[11.5px] text-anthropic-muted/90 leading-relaxed space-y-1 bg-code-bg p-2.5 rounded-lg border border-border-subtle/40">
+<p>1. Analyse der SQLite Mutex-Architektur in <span class="text-anthropic-light">SyncRepository.kt</span></p>
+<p>2. Isolation von nebenläufigen Write-Locks über Room Transaktions-Dispatcher</p>
+<p>3. Exponential Backoff Formula: baseDelay × 2^(attempt) + Jitter</p>
+<p>4. Fangen spezifischer <span class="text-terracotta">SQLiteDatabaseLockedException</span> vor allgemeinem Abbruch</p>
+</div>
+</div>
+</div>
+<!-- Tool Execution Pill / Terminal Card -->
+<div class="w-full bg-[#181715] rounded-xl border border-border-subtle p-3 flex flex-col gap-2">
+<div class="flex items-center justify-between text-[11.5px]">
+<div class="flex items-center gap-2 font-mono text-anthropic-light min-w-0">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
+<span class="text-anthropic-subtle truncate">read_file(</span>
+<span class="text-terracotta font-medium truncate">SyncRepository.kt</span>
+<span class="text-anthropic-subtle">)</span>
+</div>
+<span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-medium">DONE</span>
+</div>
+<div class="bg-black/30 rounded-lg p-2 font-mono text-[11.5px] text-anthropic-muted overflow-x-auto leading-relaxed border border-white/[0.03]">
+<span class="text-anthropic-subtle">// Eingelesen: 142 Zeilen • RoomSyncDao Definition</span><br/>
+<span class="text-[#d97757]">val</span> syncFlow = database.roomSyncDao().observeStagedChanges()<br/>
+            .distinctUntilChanged().flowOn(Dispatchers.Default)
+        </div>
+</div>
+<!-- AI Text Body (Rich Newsreader Serif for high reading comfort) -->
+<div class="px-1 pt-1">
+<p class="font-serif text-[17px] leading-[26px] text-[#FAF9F5] font-normal tracking-[-0.01em]">
+          Ich habe den Worker in <code class="font-mono text-[13px] bg-anthropic-surface px-1.5 py-0.5 rounded border border-border-subtle text-terracotta">SyncRepository.kt</code> überarbeitet. Wir binden nun einen jittered Exponential Backoff ein, isolieren Room-Transaktionen sauber über einen Mutex und fangen <code class="font-mono text-[13px] bg-anthropic-surface px-1.5 py-0.5 rounded border border-border-subtle text-anthropic-light">SQLiteDatabaseLockedException</code> gezielt ab:
+        </p>
+</div>
+<!-- High-End Android Kotlin Code Block -->
+<div class="w-full bg-code-bg rounded-xl border border-border-subtle overflow-hidden">
+<!-- Header -->
+<div class="bg-anthropic-surface px-3 py-2 flex items-center justify-between border-b border-border-subtle">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-terracotta"></span>
+<span class="font-mono text-[11.5px] font-medium text-anthropic-light">SyncRepository.kt</span>
+<span class="font-mono text-[10px] text-anthropic-subtle px-1 rounded bg-black/20">Kotlin</span>
+</div>
+<div class="flex items-center gap-1.5">
+<button class="h-7 px-2 rounded bg-anthropic-card hover:bg-anthropic-card-alt text-anthropic-muted hover:text-anthropic-light text-[11px] font-mono flex items-center gap-1 transition-colors border border-border-subtle" id="copy-btn">
+<span class="material-symbols-outlined text-[13px]">content_copy</span>
+<span>Kopieren</span>
+</button>
+<button class="h-7 px-2 rounded bg-terracotta-soft text-terracotta text-[11px] font-mono flex items-center gap-1 hover:bg-terracotta/20 transition-colors">
+<span class="material-symbols-outlined text-[13px]">difference</span>
+<span>Diff</span>
+</button>
+</div>
+</div>
+<!-- Code Content with Line Numbers -->
+<div class="p-3 overflow-x-auto text-[12px] leading-5 font-mono">
+<table class="w-full border-collapse">
+<tbody>
+<tr><td class="select-none text-right pr-3 text-anthropic-subtle/50 w-6">1</td><td class="text-anthropic-light whitespace-pre"><span class="text-terracotta">suspend fun</span> <span class="text-[#FAF9F5] font-semibold">executeWithRetry</span>(</td></tr>
+<tr><td class="select-none text-right pr-3 text-anthropic-subtle/50 w-6">2</td><td class="text-anthropic-light whitespace-pre">    maxAttempts: <span class="text-amber-200/90">Int</span> = <span class="text-emerald-400">3</span>,</td></tr>
+<tr><td class="select-none text-right pr-3 text-anthropic-subtle/50 w-6">3</td><td class="text-anthropic-light whitespace-pre">    initialDelayMs: <span class="text-amber-200/90">Long</span> = <span class="text-emerald-400">500L</span></td></tr>
+<tr><td class="select-none text-right pr-3 text-anthropic-subtle/50 w-6">4</td><td class="text-anthropic-light whitespace-pre">): <span class="text-amber-200/90">SyncResult</span> = withContext(Dispatchers.IO) {</td></tr>
+<tr><td class="select-none text-right pr-3 text-anthropic-subtle/50 w-6">5</td><td class="text-anthropic-light whitespace-pre"> <span class="text-terracotta">var</span> currentDelay = initialDelayMs</td></tr>
+<tr><td class="select-none text-right pr-3 text-anthropic-subtle/50 w-6">6</td><td class="text-anthropic-light whitespace-pre">    repeat(maxAttempts - <span class="text-emerald-400">1</span>) {</td></tr>
+<tr><td class="select-none text-right pr-3 text-anthropic-subtle/50 w-6">7</td><td class="text-anthropic-light whitespace-pre"> <span class="text-terracotta">try</span> {</td></tr>
+<tr><td class="select-none text-right pr-3 text-anthropic-subtle/50 w-6">8</td><td class="text-anthropic-light whitespace-pre"> <span class="text-terracotta">return@withContext</span> syncDao.runInTransaction { commit() }</td></tr>
+<tr><td class="select-none text-right pr-3 text-anthropic-subtle/50 w-6">9</td><td class="text-anthropic-light whitespace-pre">        } <span class="text-terracotta">catch</span> (e: <span class="text-amber-200/90">SQLiteDatabaseLockedException</span>) {</td></tr>
+<tr><td class="select-none text-right pr-3 text-anthropic-subtle/50 w-6">10</td><td class="text-anthropic-light whitespace-pre">            delay(currentDelay + Random.nextLong(<span class="text-emerald-400">50L</span>, <span class="text-emerald-400">150L</span>))</td></tr>
+<tr><td class="select-none text-right pr-3 text-anthropic-subtle/50 w-6">11</td><td class="text-anthropic-light whitespace-pre">            currentDelay *= <span class="text-emerald-400">2</span></td></tr>
+<tr><td class="select-none text-right pr-3 text-anthropic-subtle/50 w-6">12</td><td class="text-anthropic-light whitespace-pre">        }</td></tr>
+<tr><td class="select-none text-right pr-3 text-anthropic-subtle/50 w-6">13</td><td class="text-anthropic-light whitespace-pre">    }</td></tr>
+<tr><td class="select-none text-right pr-3 text-anthropic-subtle/50 w-6">14</td><td class="text-anthropic-light whitespace-pre">    syncDao.runInTransaction { commit() }</td></tr>
+<tr><td class="select-none text-right pr-3 text-anthropic-subtle/50 w-6">15</td><td class="text-anthropic-light whitespace-pre">}</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Quick Action Pills -->
+<div class="flex items-center gap-2 overflow-x-auto py-1 no-scrollbar">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-anthropic-surface hover:bg-anthropic-card text-[12px] text-anthropic-light border border-border-subtle active:scale-95 transition-all flex-shrink-0">
+<span class="material-symbols-outlined text-[15px] text-emerald-400">play_arrow</span>
+<span>Unit-Test ausführen</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-anthropic-surface hover:bg-anthropic-card text-[12px] text-anthropic-light border border-border-subtle active:scale-95 transition-all flex-shrink-0">
+<span class="material-symbols-outlined text-[15px] text-terracotta">commit</span>
+<span>Commit erstellen</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-anthropic-surface hover:bg-anthropic-card text-[12px] text-anthropic-light border border-border-subtle active:scale-95 transition-all flex-shrink-0">
+<span class="material-symbols-outlined text-[15px] text-anthropic-muted">fork_right</span>
+<span>Branch pushen</span>
+</button>
+</div>
+</div>
+</main>
+<!-- ================= BOTTOM COMPOSER & METRICS BAR (Thumb-Zone) ================= -->
+<div class="fixed bottom-[68px] left-0 right-0 z-40 bg-gradient-to-t from-anthropic-bg via-[#141413]/95 to-transparent px-3 pb-2 pt-4">
+<!-- Subtile Kontext-Info über der Input-Bar -->
+<div class="flex items-center justify-between px-2 mb-1.5 text-[11px] font-mono text-anthropic-muted">
+<div class="flex items-center gap-1.5 truncate">
+<span class="w-1.5 h-1.5 rounded-full bg-terracotta"></span>
+<span class="truncate">branch: <span class="text-anthropic-light">feature/room-backoff</span></span>
+</div>
+<span class="flex-shrink-0 text-anthropic-subtle">4.8k / 200k tok</span>
+</div>
+<!-- Composer Input Bar (48dp Touch Targets, Claude Terrakotta Send Button) -->
+<div class="bg-anthropic-card rounded-2xl p-1.5 flex items-center gap-1.5 border border-border-subtle shadow-lg">
+<!-- Attachment (48x48 min touch target) -->
+<button aria-label="Datei anhängen" class="w-12 h-12 rounded-xl flex items-center justify-center text-anthropic-muted hover:text-anthropic-light active:bg-anthropic-surface transition-colors flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">attach_file</span>
+</button>
+<!-- Multiline Text Input Area -->
+<div class="flex-1 min-w-0 py-1">
+<textarea class="w-full bg-transparent text-anthropic-light text-[14px] placeholder:text-anthropic-subtle focus:outline-none resize-none leading-5 block py-1.5" id="composer-input" placeholder="Claudroide fragen oder Code einfügen..." rows="1"></textarea>
+</div>
+<!-- Voice Input (48x48 min touch target) -->
+<button aria-label="Spracheingabe" class="w-12 h-12 rounded-xl flex items-center justify-center text-anthropic-muted hover:text-anthropic-light active:bg-anthropic-surface transition-colors flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">mic</span>
+</button>
+<!-- Send Action (Terracotta Pill Button, 48x48 min target) -->
+<button aria-label="Senden" class="w-12 h-12 rounded-xl bg-terracotta hover:bg-terracotta-hover active:scale-95 text-[#FAF9F5] flex items-center justify-center transition-all flex-shrink-0 shadow-md">
+<span class="material-symbols-outlined text-[22px] font-semibold">arrow_upward</span>
+</button>
+</div>
+</div>
+<!-- ================= NATIVE ANDROID BOTTOM BAR & GESTURE PILL ================= -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#141413] border-t border-border-subtle">
+<!-- M3 / Compose Styled Tabs -->
+<div class="h-14 px-2 flex items-center justify-around">
+<!-- Tab 1: Chat (Active) -->
+<a class="flex flex-col items-center justify-center min-w-[64px] h-12 text-terracotta transition-colors" href="#">
+<span class="material-symbols-filled text-[22px]">chat_bubble</span>
+<span class="text-[11px] font-medium tracking-tight mt-0.5">Chat</span>
+</a>
+<!-- Tab 2: Skills -->
+<a class="flex flex-col items-center justify-center min-w-[64px] h-12 text-anthropic-muted hover:text-anthropic-light transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">extension</span>
+<span class="text-[11px] font-medium tracking-tight mt-0.5">Skills</span>
+</a>
+<!-- Tab 3: Files & Diff -->
+<a class="flex flex-col items-center justify-center min-w-[64px] h-12 text-anthropic-muted hover:text-anthropic-light transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">folder_open</span>
+<span class="text-[11px] font-medium tracking-tight mt-0.5">Files</span>
+</a>
+<!-- Tab 4: Terminal -->
+<a class="flex flex-col items-center justify-center min-w-[64px] h-12 text-anthropic-muted hover:text-anthropic-light transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">terminal</span>
+<span class="text-[11px] font-medium tracking-tight mt-0.5">Terminal</span>
+</a>
+</div>
+<!-- Android Native Gesture Pill Indicator (Galaxy A56) -->
+<div class="w-full h-4 flex items-center justify-center pb-1">
+<div class="w-32 h-1 rounded-full bg-white/20"></div>
+</div>
+</nav>
+<!-- ================= SCRIPTS ================= -->
+<script>
+    // Thought process accordion toggle
+    const thoughtToggle = document.getElementById('thought-toggle');
+    const thoughtContent = document.getElementById('thought-content');
+    const thoughtIcon = document.getElementById('thought-icon');
+
+    if (thoughtToggle && thoughtContent && thoughtIcon) {
+      thoughtToggle.addEventListener('click', () => {
+        const isHidden = thoughtContent.classList.contains('hidden');
+        if (isHidden) {
+          thoughtContent.classList.remove('hidden');
+          thoughtIcon.style.transform = 'rotate(180deg)';
+        } else {
+          thoughtContent.classList.add('hidden');
+          thoughtIcon.style.transform = 'rotate(0deg)';
+        }
+      });
+    }
+
+    // Auto-expanding textarea up to 4 lines
+    const composerInput = document.getElementById('composer-input');
+    if (composerInput) {
+      composerInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+      });
+    }
+
+    // Copy button feedback
+    const copyBtn = document.getElementById('copy-btn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        const textSpan = copyBtn.querySelector('span:nth-child(2)');
+        const originalText = textSpan.textContent;
+        textSpan.textContent = 'Kopiert!';
+        copyBtn.classList.add('text-emerald-400');
+        setTimeout(() => {
+          textSpan.textContent = originalText;
+          copyBtn.classList.remove('text-emerald-400');
+        }, 1600);
+      });
+    }
+  </script>
+</body></html>

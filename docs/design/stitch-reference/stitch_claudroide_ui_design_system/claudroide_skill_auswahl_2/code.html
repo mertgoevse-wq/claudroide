@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<meta content="mobile_tab" name="shell-type"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface": "#121210",
+            "surface-dim": "#121210",
+            "surface-container-lowest": "#0c0c0b",
+            "surface-container-low": "#161513",
+            "surface-container": "#191816",
+            "surface-container-high": "#201f1c",
+            "surface-container-highest": "#282623",
+            "card-border": "#262421",
+            "search-bg": "#1c1b18",
+            "terracotta": "#d97757",
+            "terracotta-dark": "#332119",
+            "terracotta-light": "#E88968",
+            "primary": "#ffb59e",
+            "primary-container": "#d97757",
+            "on-primary": "#5c1902",
+            "on-primary-container": "#390b00",
+            "secondary": "#b9ccb0",
+            "secondary-container": "#1C2820",
+            "on-surface": "#edebe8",
+            "on-surface-variant": "#a69f98",
+            "outline": "#78726b",
+            "outline-variant": "#383531"
+          },
+          fontFamily: {
+            sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "Roboto", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    @layer base {
+      html, body {
+        width: 100vw;
+        margin: 0;
+        padding: 0;
+        background-color: #121210;
+        color: #edebe8;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+      }
+      body {
+        overscroll-behavior: none;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    }
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface flex flex-col min-h-screen antialiased selection:bg-terracotta/30 selection:text-terracotta-light">
+<!-- Android Native Status Bar (Galaxy A56) -->
+<header class="fixed top-0 inset-x-0 z-50 bg-[#121210]/95 backdrop-blur-md border-b border-[#201f1c]/50">
+<!-- Status Row -->
+<div class="h-8 px-5 pt-1.5 flex items-center justify-between text-xs font-medium tracking-tight text-[#c8c4be]">
+<span>14:32</span>
+<div class="flex items-center gap-1.5 text-[13px]">
+<span class="text-[10px] font-mono font-semibold px-0.5 rounded bg-surface-container-highest tracking-tighter text-[#c8c4be]">5G</span>
+<span class="material-symbols-outlined text-[15px] leading-none">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[15px] leading-none">wifi</span>
+<div class="flex items-center gap-0.5 ml-0.5">
+<span class="text-[11px] font-medium">84%</span>
+<span class="material-symbols-outlined text-[17px] leading-none">battery_full</span>
+</div>
+</div>
+</div>
+<!-- App Bar & Repository Info -->
+<div class="h-14 px-4 flex items-center justify-between">
+<div class="flex items-center gap-3 min-w-0">
+<div class="w-9 h-9 rounded-xl bg-[#1c1b18] border border-card-border flex items-center justify-center flex-shrink-0">
+<img alt="Claudroide App Icon" class="h-5 w-5 object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wk3nRQ6wXTIBrMS30sqGpfSsgcb08rNf6nGozA55OfA52CoqluaQdWjyKOe-0IioPsnn0bD3Ftx-p2a10_QnXwF09oT2UNbrt0eYLao1n_vY92ofgeNFvZXGIm_zm0wDzZtd7XRm6G-YYen7X6F7MHipR6QzUBsOez8vFwoiZ30SUBoHnO4UydhEQWDEQBgLu4YXZul143T4ByQN-vnnDXxYLnjXuo2g5MQFeuZE8VIPSKHyJvsRJgR-GQ"/>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-mono text-[11px] text-terracotta-light font-medium tracking-tight truncate">claudroide-core</span>
+<span class="text-[#59544e] text-[11px]">/</span>
+<span class="font-mono text-[11px] text-[#90A4AE] truncate">main</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-[17px] font-semibold tracking-tight text-on-surface">Claudroide</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-950/40 text-[10px] text-emerald-400 font-mono border border-emerald-800/30">
+<span class="w-1 h-1 rounded-full bg-emerald-400"></span> Online
+            </span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button aria-label="Benutzerprofil" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container active:scale-95 transition-all">
+<div class="w-8 h-8 rounded-full bg-[#201f1c] border border-card-border flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px] text-terracotta-light">person</span>
+</div>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 w-full pt-24 pb-28 px-4 flex flex-col">
+<!-- Header: Fähigkeiten & Tools mit aktiver Statusanzeige -->
+<div class="flex items-baseline justify-between mt-2 mb-3 px-1">
+<h1 class="text-xl font-bold tracking-tight text-on-surface">Fähigkeiten &amp; Tools</h1>
+<div class="flex items-center gap-1.5 font-mono text-[12px] text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+<span class="text-on-surface font-medium" id="active-counter">4 aktiv</span>
+</div>
+</div>
+<!-- M3 Search Bar (48dp height, #1c1b18) -->
+<div class="relative w-full mb-3">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#78726b] text-[20px] pointer-events-none">search</span>
+<input class="w-full h-12 pl-11 pr-10 bg-search-bg border border-card-border/80 text-on-surface placeholder:text-[#6e6862] text-[14px] rounded-full outline-none focus:border-terracotta/60 focus:bg-[#1f1e1a] transition-all" id="skill-search" placeholder="Skills &amp; Erweiterungen suchen..." type="search"/>
+<button aria-label="Suche löschen" class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full flex items-center justify-center text-[#78726b] hover:text-on-surface transition-colors" id="clear-search">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<!-- Filter Pills (Horizontal Scrollable) -->
+<div class="flex items-center gap-2 overflow-x-auto pb-1.5 -mx-4 px-4 no-scrollbar mb-3">
+<button class="filter-pill active-pill px-3.5 py-1.5 rounded-full text-[12px] font-medium shrink-0 transition-colors bg-terracotta text-white shadow-sm" data-filter="all">
+        Alle (5)
+      </button>
+<button class="filter-pill px-3.5 py-1.5 rounded-full text-[12px] font-medium shrink-0 transition-colors bg-[#1c1b18] text-[#a69f98] border border-card-border hover:text-on-surface" data-filter="installed">
+        Aktiviert (4)
+      </button>
+<button class="filter-pill px-3.5 py-1.5 rounded-full text-[12px] font-medium shrink-0 transition-colors bg-[#1c1b18] text-[#a69f98] border border-card-border hover:text-on-surface" data-filter="recommended">
+        Empfohlen
+      </button>
+<button class="filter-pill px-3.5 py-1.5 rounded-full text-[12px] font-medium shrink-0 transition-colors bg-[#1c1b18] text-[#a69f98] border border-card-border hover:text-on-surface" data-filter="community">
+        Community
+      </button>
+</div>
+<!-- Skill Cards List (One UI Flat Style) -->
+<div class="flex flex-col gap-2.5" id="skills-list">
+<!-- Card 1: Anthropic Claude -->
+<div class="skill-card bg-surface-container border border-card-border rounded-2xl p-3.5 transition-colors" data-category="installed recommended" data-title="Android Jetpack Compose Expert">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#332119] text-[#E88968] font-mono text-[10.5px] font-medium tracking-wide">
+<span class="w-1.5 h-1.5 rounded-full bg-[#E88968]"></span>
+              Anthropic Claude
+            </span>
+<span class="font-mono text-[11px] text-[#78726b]">v2.1.0</span>
+</div>
+<div class="flex items-center gap-1">
+<button aria-label="Konfiguration für Android Jetpack Compose Expert" class="config-btn w-8 h-8 rounded-full flex items-center justify-center text-[#8e8780] hover:text-on-surface hover:bg-surface-container-high transition-colors" title="Konfigurieren">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+</button>
+<!-- Native M3 Switch (48dp Touch Zone) -->
+<button aria-checked="true" aria-label="Android Jetpack Compose Expert aktivieren" class="toggle-btn w-12 h-8 flex items-center justify-center shrink-0" data-skill-id="compose-expert" role="switch">
+<div class="toggle-track w-11 h-6 rounded-full bg-terracotta p-0.5 transition-colors duration-200 flex items-center">
+<div class="toggle-knob w-5 h-5 rounded-full bg-[#121210] translate-x-5 transition-transform duration-200 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[13px] text-terracotta font-bold">check</span>
+</div>
+</div>
+</button>
+</div>
+</div>
+<h2 class="text-[15px] font-semibold text-on-surface tracking-tight mb-1">Android Jetpack Compose Expert</h2>
+<p class="text-[13px] text-on-surface-variant leading-relaxed mb-2.5">Generiert idiomatischen Compose-Code mit M3 und Glance Widgets</p>
+<div class="flex items-center gap-1.5 text-[11.5px] font-mono text-[#78726b] pt-1 border-t border-[#23211e]">
+<span class="material-symbols-outlined text-[15px] text-[#81C784]">memory</span>
+<span>Core Agent Pipeline</span>
+</div>
+</div>
+<!-- Card 2: Lokaler Skill -->
+<div class="skill-card bg-surface-container border border-card-border rounded-2xl p-3.5 transition-colors" data-category="installed" data-title="Git Submodule Manager">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#1E232A] text-[#90A4AE] font-mono text-[10.5px] font-medium tracking-wide">
+<span class="w-1.5 h-1.5 rounded-full bg-[#90A4AE]"></span>
+              Lokaler Skill
+            </span>
+<span class="font-mono text-[11px] text-[#78726b]">v1.4.0</span>
+</div>
+<div class="flex items-center gap-1">
+<button aria-label="Konfiguration für Git Submodule Manager" class="config-btn w-8 h-8 rounded-full flex items-center justify-center text-[#8e8780] hover:text-on-surface hover:bg-surface-container-high transition-colors" title="Konfigurieren">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+</button>
+<button aria-checked="true" aria-label="Git Submodule Manager aktivieren" class="toggle-btn w-12 h-8 flex items-center justify-center shrink-0" data-skill-id="git-submodule" role="switch">
+<div class="toggle-track w-11 h-6 rounded-full bg-terracotta p-0.5 transition-colors duration-200 flex items-center">
+<div class="toggle-knob w-5 h-5 rounded-full bg-[#121210] translate-x-5 transition-transform duration-200 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[13px] text-terracotta font-bold">check</span>
+</div>
+</div>
+</button>
+</div>
+</div>
+<h2 class="text-[15px] font-semibold text-on-surface tracking-tight mb-1">Git Submodule Manager</h2>
+<p class="text-[13px] text-on-surface-variant leading-relaxed mb-2.5">Verwaltet lokale Submodule und cherry-picks</p>
+<div class="flex items-center gap-1.5 text-[11.5px] font-mono text-[#78726b] pt-1 border-t border-[#23211e]">
+<span class="material-symbols-outlined text-[15px] text-[#78726b]">terminal</span>
+<span>posix-spawn / sandbox</span>
+</div>
+</div>
+<!-- Card 3: Persönlicher Skill -->
+<div class="skill-card bg-surface-container border border-card-border rounded-2xl p-3.5 transition-colors" data-category="installed" data-title="Galaxy A56 Display Profiler">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#1C2820] text-[#81C784] font-mono text-[10.5px] font-medium tracking-wide">
+<span class="w-1.5 h-1.5 rounded-full bg-[#81C784]"></span>
+              Persönlicher Skill
+            </span>
+<span class="font-mono text-[11px] text-[#78726b]">v0.9.4</span>
+</div>
+<div class="flex items-center gap-1">
+<button aria-label="Konfiguration für Galaxy A56 Display Profiler" class="config-btn w-8 h-8 rounded-full flex items-center justify-center text-[#8e8780] hover:text-on-surface hover:bg-surface-container-high transition-colors" title="Konfigurieren">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+</button>
+<button aria-checked="true" aria-label="Galaxy A56 Display Profiler aktivieren" class="toggle-btn w-12 h-8 flex items-center justify-center shrink-0" data-skill-id="galaxy-profiler" role="switch">
+<div class="toggle-track w-11 h-6 rounded-full bg-terracotta p-0.5 transition-colors duration-200 flex items-center">
+<div class="toggle-knob w-5 h-5 rounded-full bg-[#121210] translate-x-5 transition-transform duration-200 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[13px] text-terracotta font-bold">check</span>
+</div>
+</div>
+</button>
+</div>
+</div>
+<h2 class="text-[15px] font-semibold text-on-surface tracking-tight mb-1">Galaxy A56 Display Profiler</h2>
+<p class="text-[13px] text-on-surface-variant leading-relaxed mb-2.5">Testet 120Hz Bildraten und Super AMOLED Kontrastwerte</p>
+<div class="flex items-center gap-1.5 text-[11.5px] font-mono text-[#78726b] pt-1 border-t border-[#23211e]">
+<span class="material-symbols-outlined text-[15px] text-[#81C784]">phone_android</span>
+<span>Hardware Bridge v4 (120Hz)</span>
+</div>
+</div>
+<!-- Card 4: Marketplace -->
+<div class="skill-card bg-surface-container border border-card-border rounded-2xl p-3.5 transition-colors" data-category="installed recommended" data-title="PostgreSQL Query Optimizer">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#222438] text-[#9FA8DA] font-mono text-[10.5px] font-medium tracking-wide">
+<span class="w-1.5 h-1.5 rounded-full bg-[#9FA8DA]"></span>
+              Marketplace
+            </span>
+<span class="font-mono text-[11px] text-[#78726b]">v1.2.8</span>
+</div>
+<div class="flex items-center gap-1">
+<button aria-label="Konfiguration für PostgreSQL Query Optimizer" class="config-btn w-8 h-8 rounded-full flex items-center justify-center text-[#8e8780] hover:text-on-surface hover:bg-surface-container-high transition-colors" title="Konfigurieren">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+</button>
+<button aria-checked="true" aria-label="PostgreSQL Query Optimizer aktivieren" class="toggle-btn w-12 h-8 flex items-center justify-center shrink-0" data-skill-id="postgres-optimizer" role="switch">
+<div class="toggle-track w-11 h-6 rounded-full bg-terracotta p-0.5 transition-colors duration-200 flex items-center">
+<div class="toggle-knob w-5 h-5 rounded-full bg-[#121210] translate-x-5 transition-transform duration-200 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[13px] text-terracotta font-bold">check</span>
+</div>
+</div>
+</button>
+</div>
+</div>
+<h2 class="text-[15px] font-semibold text-on-surface tracking-tight mb-1">PostgreSQL Query Optimizer</h2>
+<p class="text-[13px] text-on-surface-variant leading-relaxed mb-2.5">Erklärt Ausführungspläne und Indizes</p>
+<div class="flex items-center gap-1.5 text-[11.5px] font-mono text-[#78726b] pt-1 border-t border-[#23211e]">
+<span class="material-symbols-outlined text-[15px] text-[#E88968]">database</span>
+<span>EXPLAIN (ANALYZE, BUFFERS)</span>
+</div>
+</div>
+<!-- Card 5: GitHub (Deaktiviert) -->
+<div class="skill-card bg-surface-container/70 border border-card-border/80 rounded-2xl p-3.5 transition-colors opacity-80" data-category="community" data-title="GitHub PR Reviewer">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#281F2D] text-[#CE93D8] font-mono text-[10.5px] font-medium tracking-wide">
+<span class="w-1.5 h-1.5 rounded-full bg-[#CE93D8]"></span>
+              GitHub
+            </span>
+<span class="font-mono text-[11px] text-[#78726b]">v1.1.2</span>
+</div>
+<div class="flex items-center gap-1">
+<button aria-label="Konfiguration für GitHub PR Reviewer" class="config-btn w-8 h-8 rounded-full flex items-center justify-center text-[#8e8780] hover:text-on-surface hover:bg-surface-container-high transition-colors" title="Konfigurieren">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+</button>
+<button aria-checked="false" aria-label="GitHub PR Reviewer aktivieren" class="toggle-btn w-12 h-8 flex items-center justify-center shrink-0" data-skill-id="github-pr-reviewer" role="switch">
+<div class="toggle-track w-11 h-6 rounded-full bg-[#2a2825] p-0.5 transition-colors duration-200 flex items-center">
+<div class="toggle-knob w-5 h-5 rounded-full bg-[#6e6862] translate-x-0 transition-transform duration-200 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[13px] text-[#2a2825]">remove</span>
+</div>
+</div>
+</button>
+</div>
+</div>
+<h2 class="text-[15px] font-semibold text-on-surface tracking-tight mb-1">GitHub PR Reviewer</h2>
+<p class="text-[13px] text-on-surface-variant leading-relaxed mb-2.5">Analysiert Diff-Trees und PR-Checks</p>
+<div class="flex items-center gap-1.5 text-[11.5px] font-mono text-[#78726b] pt-1 border-t border-[#23211e]">
+<span class="material-symbols-outlined text-[15px] text-[#78726b]">sync_alt</span>
+<span>gh-cli Token Auth</span>
+</div>
+</div>
+</div>
+<!-- Empty State -->
+<div class="hidden py-14 flex flex-col items-center justify-center text-center" id="empty-state">
+<div class="w-12 h-12 rounded-full bg-surface-container border border-card-border flex items-center justify-center mb-2.5">
+<span class="material-symbols-outlined text-outline text-[22px]">filter_list_off</span>
+</div>
+<span class="text-[15px] font-semibold text-on-surface mb-0.5">Keine Skills gefunden</span>
+<p class="text-[13px] text-on-surface-variant max-w-xs">
+        Passe deinen Suchbegriff an oder importiere einen neuen Skill.
+      </p>
+</div>
+<!-- Bottom Action Button: Import Skill -->
+<div class="mt-4 mb-2">
+<button class="w-full min-h-[48px] py-3 px-4 rounded-xl bg-[#191816] hover:bg-[#201f1c] active:bg-[#262421] border border-card-border text-on-surface flex items-center justify-center gap-2 transition-all" id="add-skill-button">
+<span class="material-symbols-outlined text-[18px] text-terracotta">add_link</span>
+<span class="font-mono text-[12.5px] text-on-surface font-medium truncate">
+          + Eigenen Skill importieren (Git URL oder Manifest)
+        </span>
+</button>
+</div>
+</main>
+<!-- Android Bottom Navigation Bar (M3/Galaxy One UI) -->
+<nav aria-label="Hauptnavigation" class="fixed bottom-0 inset-x-0 z-50 bg-[#121210]/95 backdrop-blur-xl border-t border-[#201f1c] pb-safe">
+<div class="flex justify-around items-center h-16 px-2">
+<!-- Chat -->
+<a class="flex flex-col items-center justify-center gap-1 min-w-[64px] min-h-[48px] text-[#8e8780] hover:text-on-surface transition-colors" data-path="chat" href="#">
+<div class="w-12 h-7 rounded-full flex items-center justify-center transition-all">
+<span class="material-symbols-outlined text-[22px]">forum</span>
+</div>
+<span class="text-[11px] font-medium tracking-tight">Chat</span>
+</a>
+<!-- Skills (Active) -->
+<a aria-current="page" class="flex flex-col items-center justify-center gap-1 min-w-[64px] min-h-[48px] text-on-surface transition-colors" data-path="skills" href="#">
+<div class="w-12 h-7 rounded-full bg-[#332119] flex items-center justify-center text-terracotta-light transition-all">
+<span class="material-symbols-outlined text-[22px] font-semibold">extension</span>
+</div>
+<span class="text-[11px] font-semibold tracking-tight text-terracotta-light">Skills</span>
+</a>
+<!-- Files & Diff -->
+<a class="flex flex-col items-center justify-center gap-1 min-w-[64px] min-h-[48px] text-[#8e8780] hover:text-on-surface transition-colors" data-path="files" href="#">
+<div class="w-12 h-7 rounded-full flex items-center justify-center transition-all">
+<span class="material-symbols-outlined text-[22px]">difference</span>
+</div>
+<span class="text-[11px] font-medium tracking-tight">Files</span>
+</a>
+<!-- Terminal -->
+<a class="flex flex-col items-center justify-center gap-1 min-w-[64px] min-h-[48px] text-[#8e8780] hover:text-on-surface transition-colors" data-path="terminal" href="#">
+<div class="w-12 h-7 rounded-full flex items-center justify-center transition-all">
+<span class="material-symbols-outlined text-[22px]">terminal</span>
+</div>
+<span class="text-[11px] font-medium tracking-tight">Terminal</span>
+</a>
+</div>
+</nav>
+<!-- Quick Feedback Toast -->
+<div class="fixed bottom-20 left-1/2 -translate-x-1/2 px-4 py-2 bg-[#201f1c] border border-card-border rounded-full shadow-lg flex items-center gap-2 opacity-0 pointer-events-none transition-opacity duration-200 z-50" id="feedback-toast">
+<span class="material-symbols-outlined text-[16px] text-emerald-400" id="toast-icon">check_circle</span>
+<span class="font-mono text-[12px] text-on-surface" id="toast-text">Skill aktualisiert</span>
+</div>
+<script>
+    (function initSkillManager() {
+      const searchInput = document.getElementById('skill-search');
+      const clearSearch = document.getElementById('clear-search');
+      const filterPills = document.querySelectorAll('.filter-pill');
+      const skillCards = document.querySelectorAll('.skill-card');
+      const emptyState = document.getElementById('empty-state');
+      const activeCounter = document.getElementById('active-counter');
+      const toast = document.getElementById('feedback-toast');
+      const toastText = document.getElementById('toast-text');
+      const toastIcon = document.getElementById('toast-icon');
+
+      let currentFilter = 'all';
+      let currentQuery = '';
+
+      function showToast(text, isPositive = true) {
+        if (!toast) return;
+        toastText.textContent = text;
+        toastIcon.textContent = isPositive ? 'check_circle' : 'info';
+        toastIcon.className = `material-symbols-outlined text-[16px] ${isPositive ? 'text-emerald-400' : 'text-terracotta-light'}`;
+        toast.classList.remove('opacity-0');
+        toast.classList.add('opacity-100');
+        clearTimeout(window._toastTimeout);
+        window._toastTimeout = setTimeout(() => {
+          toast.classList.remove('opacity-100');
+          toast.classList.add('opacity-0');
+        }, 1800);
+      }
+
+      function updateActiveCount() {
+        const activeToggles = document.querySelectorAll('.toggle-btn[aria-checked="true"]');
+        if (activeCounter) {
+          activeCounter.textContent = `${activeToggles.length} aktiv`;
+        }
+      }
+
+      function applyFilterAndSearch() {
+        let visibleCount = 0;
+        const q = currentQuery.toLowerCase().trim();
+
+        skillCards.forEach(card => {
+          const title = (card.dataset.title || '').toLowerCase();
+          const categories = (card.dataset.category || '').split(' ');
+          
+          const matchesSearch = !q || title.includes(q);
+          const matchesFilter = currentFilter === 'all' || categories.includes(currentFilter);
+
+          if (matchesSearch && matchesFilter) {
+            card.classList.remove('hidden');
+            visibleCount++;
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+
+        if (emptyState) {
+          if (visibleCount === 0) {
+            emptyState.classList.remove('hidden');
+          } else {
+            emptyState.classList.add('hidden');
+          }
+        }
+      }
+
+      // Search listeners
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          currentQuery = e.target.value;
+          if (clearSearch) {
+            if (currentQuery.length > 0) {
+              clearSearch.classList.remove('hidden');
+            } else {
+              clearSearch.classList.add('hidden');
+            }
+          }
+          applyFilterAndSearch();
+        });
+      }
+
+      if (clearSearch) {
+        clearSearch.addEventListener('click', () => {
+          searchInput.value = '';
+          currentQuery = '';
+          clearSearch.classList.add('hidden');
+          searchInput.focus();
+          applyFilterAndSearch();
+        });
+      }
+
+      // Filter Pill handler
+      filterPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          filterPills.forEach(p => {
+            p.classList.remove('bg-terracotta', 'text-white', 'shadow-sm');
+            p.classList.add('bg-[#1c1b18]', 'text-[#a69f98]', 'border', 'border-card-border');
+          });
+
+          pill.classList.remove('bg-[#1c1b18]', 'text-[#a69f98]', 'border', 'border-card-border');
+          pill.classList.add('bg-terracotta', 'text-white', 'shadow-sm');
+
+          currentFilter = pill.dataset.filter || 'all';
+          applyFilterAndSearch();
+        });
+      });
+
+      // Toggle switch logic
+      document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isChecked = btn.getAttribute('aria-checked') === 'true';
+          const newChecked = !isChecked;
+          btn.setAttribute('aria-checked', String(newChecked));
+
+          const track = btn.querySelector('.toggle-track');
+          const knob = btn.querySelector('.toggle-knob');
+          const icon = knob.querySelector('.material-symbols-outlined');
+          const card = btn.closest('.skill-card');
+
+          if (newChecked) {
+            track.classList.remove('bg-[#2a2825]');
+            track.classList.add('bg-terracotta');
+            knob.classList.remove('translate-x-0', 'bg-[#6e6862]');
+            knob.classList.add('translate-x-5', 'bg-[#121210]');
+            icon.textContent = 'check';
+            icon.className = 'material-symbols-outlined text-[13px] text-terracotta font-bold';
+            if (card) {
+              card.classList.remove('opacity-80', 'bg-surface-container/70');
+              card.classList.add('bg-surface-container');
+              if (card.dataset.category) {
+                card.dataset.category = card.dataset.category + ' installed';
+              }
+            }
+            showToast('Skill aktiviert', true);
+          } else {
+            track.classList.remove('bg-terracotta');
+            track.classList.add('bg-[#2a2825]');
+            knob.classList.remove('translate-x-5', 'bg-[#121210]');
+            knob.classList.add('translate-x-0', 'bg-[#6e6862]');
+            icon.textContent = 'remove';
+            icon.className = 'material-symbols-outlined text-[13px] text-[#2a2825]';
+            if (card) {
+              card.classList.add('opacity-80', 'bg-surface-container/70');
+              card.classList.remove('bg-surface-container');
+              if (card.dataset.category) {
+                card.dataset.category = card.dataset.category.replace('installed', '').trim();
+              }
+            }
+            showToast('Skill deaktiviert', false);
+          }
+
+          updateActiveCount();
+        });
+      });
+
+      // Settings Click
+      document.querySelectorAll('.config-btn').forEach(gearBtn => {
+        gearBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const card = gearBtn.closest('.skill-card');
+          const title = card ? card.dataset.title : 'Skill';
+          showToast(`Optionen für "${title}" geöffnet`, true);
+        });
+      });
+
+      // Add Skill Button
+      const addBtn = document.getElementById('add-skill-button');
+      if (addBtn) {
+        addBtn.addEventListener('click', () => {
+          showToast('Git / Manifest Import wird vorbereitet...', true);
+        });
+      }
+    })();
+  </script>
+</body></html>

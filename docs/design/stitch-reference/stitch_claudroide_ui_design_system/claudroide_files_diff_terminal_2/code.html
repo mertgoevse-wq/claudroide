@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<meta content="mobile_tab" name="shell-type"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-base": "#141413",
+            "surface-card": "#1b1a17",
+            "code-bg": "#22201d",
+            "primary-cta": "#d97757",
+            "on-primary-cta": "#2a0f07",
+            "diff-del-bg": "#2a1616",
+            "diff-del-text": "#f87171",
+            "diff-add-bg": "#14281c",
+            "diff-add-text": "#4ade80",
+            "text-muted": "#9e9a92",
+            "text-bright": "#edebe8"
+          },
+          fontFamily: {
+            mono: ["JetBrains Mono", "monospace"],
+            sans: ["Inter", "sans-serif"],
+            serif: ["Newsreader", "serif"]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    @layer base {
+      html, body {
+        width: 100vw;
+        margin: 0;
+        padding: 0;
+        background-color: #141413;
+        color: #edebe8;
+      }
+      body {
+        overscroll-behavior: none;
+      }
+      .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      .pt-safe {
+        padding-top: env(safe-area-inset-top, 0px);
+      }
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    .touch-target {
+      min-height: 48px;
+    }
+  </style>
+</head>
+<body class="bg-surface-base text-text-bright font-sans flex flex-col min-h-screen select-none">
+<!-- Android Native Status Bar (Galaxy A56 style) -->
+<div class="fixed top-0 left-0 right-0 z-50 bg-[#141413] pt-safe px-5 h-10 flex items-center justify-between text-xs font-sans text-text-muted select-none">
+<span class="font-medium text-text-bright tracking-tight text-[13px]">12:45</span>
+<div class="flex items-center gap-2 text-text-bright">
+<span class="material-symbols-outlined text-[15px]">wifi</span>
+<span class="material-symbols-outlined text-[15px]">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[15px]">battery_charging_full</span>
+</div>
+</div>
+<!-- Android One UI App Bar -->
+<header class="fixed top-10 left-0 right-0 z-40 bg-[#141413] border-b border-[#252320] px-4 py-2 flex items-center justify-between">
+<div class="flex items-center gap-3 min-w-0">
+<div class="w-9 h-9 rounded-xl bg-surface-card border border-[#2c2a26] flex items-center justify-center flex-shrink-0">
+<img alt="Claudroide App Icon" class="h-6 w-6 object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wk3nRQ6wXTIBrMS30sqGpfSsgcb08rNf6nGozA55OfA52CoqluaQdWjyKOe-0IioPsnn0bD3Ftx-p2a10_QnXwF09oT2UNbrt0eYLao1n_vY92ofgeNFvZXGIm_zm0wDzZtd7XRm6G-YYen7X6F7MHipR6QzUBsOez8vFwoiZ30SUBoHnO4UydhEQWDEQBgLu4YXZul143T4ByQN-vnnDXxYLnjXuo2g5MQFeuZE8VIPSKHyJvsRJgR-GQ"/>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-mono text-xs font-semibold text-primary-cta tracking-tight">claudroide-core</span>
+<span class="text-text-muted text-xs">/</span>
+<span class="font-mono text-xs text-text-muted truncate">feature/room-backoff</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-diff-add-text flex-shrink-0"></span>
+<span class="font-sans text-[15px] font-semibold text-text-bright tracking-tight">Files, Diff &amp; Terminal</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button aria-label="Branch Switcher" class="w-10 h-10 flex items-center justify-center rounded-full active:bg-[#252320] text-text-muted" type="button">
+<span class="material-symbols-outlined text-[20px]">fork_right</span>
+</button>
+<button aria-label="Profile" class="w-9 h-9 rounded-full bg-surface-card border border-[#2c2a26] flex items-center justify-center text-text-bright" type="button">
+<span class="material-symbols-outlined text-[19px]">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Scrollable Workspace -->
+<main class="flex flex-col flex-1 pt-24 pb-36 px-3 bg-surface-base w-full max-w-md mx-auto">
+<!-- 2. Segmented Buttons (Android Material 3 / One UI style, 48dp Touch Targets) -->
+<div class="w-full mt-2 mb-3">
+<div class="grid grid-cols-3 p-1 bg-surface-card rounded-2xl border border-[#262420]">
+<!-- Code & Diff (Active) -->
+<button class="touch-target flex items-center justify-center gap-1.5 px-2 rounded-xl bg-[#2b2824] text-primary-cta font-mono text-[12px] font-semibold shadow-sm active:scale-[0.98] transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">difference</span>
+<span>Code &amp; Diff</span>
+</button>
+<!-- Live Preview -->
+<button class="touch-target flex items-center justify-center gap-1.5 px-2 rounded-xl text-text-muted hover:text-text-bright font-mono text-[12px] font-medium active:scale-[0.98] transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">preview</span>
+<span>Live Preview</span>
+</button>
+<!-- Terminal -->
+<button class="touch-target flex items-center justify-center gap-1.5 px-2 rounded-xl text-text-muted hover:text-text-bright font-mono text-[12px] font-medium active:scale-[0.98] transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+<span>Terminal</span>
+</button>
+</div>
+</div>
+<!-- 3. Diff-Header Card -->
+<div class="w-full bg-surface-card rounded-2xl p-3 border border-[#262420] mb-3">
+<div class="flex items-center justify-between gap-2 mb-2">
+<div class="flex items-center gap-2 min-w-0 flex-1">
+<span class="material-symbols-outlined text-primary-cta text-[20px] flex-shrink-0">description</span>
+<span class="font-mono text-[13px] font-medium text-text-bright truncate" title="app/src/main/java/SyncRepository.kt">
+            app/src/main/java/SyncRepository.kt
+          </span>
+</div>
+<!-- Diff-Statistik-Pill (+18 / -7) -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#141413] border border-[#2b2824] flex-shrink-0">
+<span class="font-mono text-xs font-semibold text-diff-add-text">+18</span>
+<span class="text-text-muted font-mono text-xs">/</span>
+<span class="font-mono text-xs font-semibold text-diff-del-text">-7</span>
+</div>
+</div>
+<!-- Controls: Switch Unified / Split & Kotlin indicator -->
+<div class="flex items-center justify-between pt-1 border-t border-[#252320]">
+<div class="inline-flex p-0.5 bg-[#141413] rounded-lg border border-[#262420]">
+<button class="px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold bg-[#2b2824] text-text-bright transition-all" id="btn-unified" type="button">
+            Unified
+          </button>
+<button class="px-2.5 py-1 rounded-md text-[11px] font-mono font-medium text-text-muted hover:text-text-bright transition-all" id="btn-split" type="button">
+            Split
+          </button>
+</div>
+<div class="flex items-center gap-1.5 text-text-muted font-mono text-[11px] px-2 py-1 rounded-md bg-[#141413] border border-[#262420]">
+<span class="w-2 h-2 rounded-full bg-primary-cta"></span>
+<span>Kotlin 2.0</span>
+<span class="material-symbols-outlined text-[14px]">expand_more</span>
+</div>
+</div>
+</div>
+<!-- 4. Code-Diff-Viewer (Mobil-optimiert, saubere Hunk-Ansicht, kein Horizontal-Scroll-Bruch) -->
+<div class="w-full bg-code-bg rounded-2xl overflow-hidden border border-[#2c2a26] mb-3 shadow-sm">
+<!-- Buffer Header Strip -->
+<div class="flex items-center justify-between px-3 py-2 bg-[#1b1a17] border-b border-[#2a2824] text-text-muted">
+<div class="flex items-center gap-2 min-w-0">
+<span class="w-2 h-2 rounded-full bg-primary-cta"></span>
+<span class="font-mono text-[11px] text-text-bright truncate">@@ -42,7 +42,18 @@ fun executeWithRetry()</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="w-7 h-7 flex items-center justify-center rounded text-text-muted hover:text-text-bright" title="Fold / Unfold">
+<span class="material-symbols-outlined text-[16px]">unfold_more</span>
+</button>
+<button class="w-7 h-7 flex items-center justify-center rounded text-text-muted hover:text-text-bright" title="Copy Patch">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+</button>
+</div>
+</div>
+<!-- Diff Lines Container -->
+<div class="w-full font-mono text-[11.5px] leading-5 select-text overflow-x-hidden">
+<!-- Unmodified Line 40 -->
+<div class="flex items-start w-full border-b border-[#252320]/60 hover:bg-[#272522]">
+<div class="w-7 py-0.5 text-right pr-1 text-[#66635d] select-none flex-shrink-0 text-[10px]">40</div>
+<div class="w-7 py-0.5 text-right pr-1 text-[#66635d] select-none flex-shrink-0 text-[10px]">40</div>
+<div class="w-4 py-0.5 text-center text-[#66635d] select-none flex-shrink-0"> </div>
+<div class="py-0.5 pr-2 text-text-muted break-all flex-1">suspend fun syncPayload(job: SyncJob): Result&lt;Unit&gt; {</div>
+</div>
+<!-- Unmodified Line 41 -->
+<div class="flex items-start w-full border-b border-[#252320]/60 hover:bg-[#272522]">
+<div class="w-7 py-0.5 text-right pr-1 text-[#66635d] select-none flex-shrink-0 text-[10px]">41</div>
+<div class="w-7 py-0.5 text-right pr-1 text-[#66635d] select-none flex-shrink-0 text-[10px]">41</div>
+<div class="w-4 py-0.5 text-center text-[#66635d] select-none flex-shrink-0"> </div>
+<div class="py-0.5 pr-2 text-text-muted break-all flex-1">  var attempts = 0</div>
+</div>
+<!-- Deletions (-) Background #2a1616, Text #f87171 -->
+<div class="flex items-start w-full bg-diff-del-bg text-diff-del-text border-b border-[#3b1d1d]/40">
+<div class="w-7 py-0.5 text-right pr-1 text-diff-del-text/60 select-none flex-shrink-0 text-[10px]">42</div>
+<div class="w-7 py-0.5 text-right pr-1 text-transparent select-none flex-shrink-0 text-[10px]">.</div>
+<div class="w-4 py-0.5 text-center font-bold text-diff-del-text select-none flex-shrink-0">-</div>
+<div class="py-0.5 pr-2 break-all flex-1 font-medium">  while (attempts &lt; MAX_RETRIES) {</div>
+</div>
+<div class="flex items-start w-full bg-diff-del-bg text-diff-del-text border-b border-[#3b1d1d]/40">
+<div class="w-7 py-0.5 text-right pr-1 text-diff-del-text/60 select-none flex-shrink-0 text-[10px]">43</div>
+<div class="w-7 py-0.5 text-right pr-1 text-transparent select-none flex-shrink-0 text-[10px]">.</div>
+<div class="w-4 py-0.5 text-center font-bold text-diff-del-text select-none flex-shrink-0">-</div>
+<div class="py-0.5 pr-2 break-all flex-1">    try {</div>
+</div>
+<div class="flex items-start w-full bg-diff-del-bg text-diff-del-text border-b border-[#3b1d1d]/40">
+<div class="w-7 py-0.5 text-right pr-1 text-diff-del-text/60 select-none flex-shrink-0 text-[10px]">44</div>
+<div class="w-7 py-0.5 text-right pr-1 text-transparent select-none flex-shrink-0 text-[10px]">.</div>
+<div class="w-4 py-0.5 text-center font-bold text-diff-del-text select-none flex-shrink-0">-</div>
+<div class="py-0.5 pr-2 break-all flex-1">      Thread.sleep(FIXED_TIMEOUT_MS)</div>
+</div>
+<div class="flex items-start w-full bg-diff-del-bg text-diff-del-text border-b border-[#3b1d1d]/40">
+<div class="w-7 py-0.5 text-right pr-1 text-diff-del-text/60 select-none flex-shrink-0 text-[10px]">45</div>
+<div class="w-7 py-0.5 text-right pr-1 text-transparent select-none flex-shrink-0 text-[10px]">.</div>
+<div class="w-4 py-0.5 text-center font-bold text-diff-del-text select-none flex-shrink-0">-</div>
+<div class="py-0.5 pr-2 break-all flex-1">      return client.push(job.payload)</div>
+</div>
+<!-- Additions (+) Background #14281c, Text #4ade80 -->
+<div class="flex items-start w-full bg-diff-add-bg text-diff-add-text border-b border-[#1b3d28]/40">
+<div class="w-7 py-0.5 text-right pr-1 text-transparent select-none flex-shrink-0 text-[10px]">.</div>
+<div class="w-7 py-0.5 text-right pr-1 text-diff-add-text/70 select-none flex-shrink-0 text-[10px]">42</div>
+<div class="w-4 py-0.5 text-center font-bold text-diff-add-text select-none flex-shrink-0">+</div>
+<div class="py-0.5 pr-2 break-all flex-1 font-semibold">  return flow {</div>
+</div>
+<div class="flex items-start w-full bg-diff-add-bg text-diff-add-text border-b border-[#1b3d28]/40">
+<div class="w-7 py-0.5 text-right pr-1 text-transparent select-none flex-shrink-0 text-[10px]">.</div>
+<div class="w-7 py-0.5 text-right pr-1 text-diff-add-text/70 select-none flex-shrink-0 text-[10px]">43</div>
+<div class="w-4 py-0.5 text-center font-bold text-diff-add-text select-none flex-shrink-0">+</div>
+<div class="py-0.5 pr-2 break-all flex-1">    var currentDelay = 100L</div>
+</div>
+<div class="flex items-start w-full bg-diff-add-bg text-diff-add-text border-b border-[#1b3d28]/40">
+<div class="w-7 py-0.5 text-right pr-1 text-transparent select-none flex-shrink-0 text-[10px]">.</div>
+<div class="w-7 py-0.5 text-right pr-1 text-diff-add-text/70 select-none flex-shrink-0 text-[10px]">44</div>
+<div class="w-4 py-0.5 text-center font-bold text-diff-add-text select-none flex-shrink-0">+</div>
+<div class="py-0.5 pr-2 break-all flex-1">    while (currentCoroutineContext().isActive) {</div>
+</div>
+<div class="flex items-start w-full bg-diff-add-bg text-diff-add-text border-b border-[#1b3d28]/40">
+<div class="w-7 py-0.5 text-right pr-1 text-transparent select-none flex-shrink-0 text-[10px]">.</div>
+<div class="w-7 py-0.5 text-right pr-1 text-diff-add-text/70 select-none flex-shrink-0 text-[10px]">45</div>
+<div class="w-4 py-0.5 text-center font-bold text-diff-add-text select-none flex-shrink-0">+</div>
+<div class="py-0.5 pr-2 break-all flex-1">      runCatching { client.push(job.payload) }</div>
+</div>
+<div class="flex items-start w-full bg-diff-add-bg text-diff-add-text border-b border-[#1b3d28]/40">
+<div class="w-7 py-0.5 text-right pr-1 text-transparent select-none flex-shrink-0 text-[10px]">.</div>
+<div class="w-7 py-0.5 text-right pr-1 text-diff-add-text/70 select-none flex-shrink-0 text-[10px]">46</div>
+<div class="w-4 py-0.5 text-center font-bold text-diff-add-text select-none flex-shrink-0">+</div>
+<div class="py-0.5 pr-2 break-all flex-1">        .onSuccess { emit(Result.success(Unit)); return@flow }</div>
+</div>
+<div class="flex items-start w-full bg-diff-add-bg text-diff-add-text border-b border-[#1b3d28]/40">
+<div class="w-7 py-0.5 text-right pr-1 text-transparent select-none flex-shrink-0 text-[10px]">.</div>
+<div class="w-7 py-0.5 text-right pr-1 text-diff-add-text/70 select-none flex-shrink-0 text-[10px]">47</div>
+<div class="w-4 py-0.5 text-center font-bold text-diff-add-text select-none flex-shrink-0">+</div>
+<div class="py-0.5 pr-2 break-all flex-1">        .onFailure { error -&gt;</div>
+</div>
+<div class="flex items-start w-full bg-diff-add-bg text-diff-add-text border-b border-[#1b3d28]/40">
+<div class="w-7 py-0.5 text-right pr-1 text-transparent select-none flex-shrink-0 text-[10px]">.</div>
+<div class="w-7 py-0.5 text-right pr-1 text-diff-add-text/70 select-none flex-shrink-0 text-[10px]">48</div>
+<div class="w-4 py-0.5 text-center font-bold text-diff-add-text select-none flex-shrink-0">+</div>
+<div class="py-0.5 pr-2 break-all flex-1">          val backoff = (currentDelay * 1.5).toLong()</div>
+</div>
+<div class="flex items-start w-full bg-diff-add-bg text-diff-add-text border-b border-[#1b3d28]/40">
+<div class="w-7 py-0.5 text-right pr-1 text-transparent select-none flex-shrink-0 text-[10px]">.</div>
+<div class="w-7 py-0.5 text-right pr-1 text-diff-add-text/70 select-none flex-shrink-0 text-[10px]">49</div>
+<div class="w-4 py-0.5 text-center font-bold text-diff-add-text select-none flex-shrink-0">+</div>
+<div class="py-0.5 pr-2 break-all flex-1 font-semibold">          delay(backoff.coerceAtMost(MAX_DELAY))</div>
+</div>
+<!-- Unmodified Close -->
+<div class="flex items-start w-full hover:bg-[#272522]">
+<div class="w-7 py-0.5 text-right pr-1 text-[#66635d] select-none flex-shrink-0 text-[10px]">49</div>
+<div class="w-7 py-0.5 text-right pr-1 text-[#66635d] select-none flex-shrink-0 text-[10px]">55</div>
+<div class="w-4 py-0.5 text-center text-[#66635d] select-none flex-shrink-0"> </div>
+<div class="py-0.5 pr-2 text-text-muted break-all flex-1">}</div>
+</div>
+</div>
+</div>
+<!-- 5. Integrierter Terminal-Kompakt-Bereich ("Mini-Terminal") -->
+<div class="w-full bg-surface-card rounded-2xl overflow-hidden border border-[#262420] mb-4">
+<!-- Shell-Header mit Status IDLE & Chevron -->
+<button class="w-full px-3 py-2.5 bg-[#1f1e1a] border-b border-[#292723] flex items-center justify-between active:bg-[#262420] transition-colors" id="terminal-drawer-btn" type="button">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-cta text-[18px]">terminal</span>
+<span class="font-mono text-xs font-semibold text-text-bright">Mini-Terminal</span>
+<span class="px-2 py-0.5 rounded-full bg-diff-add-bg border border-diff-add-text/30 text-diff-add-text font-mono text-[10px] font-bold tracking-wider">PASS</span>
+<span class="px-1.5 py-0.5 rounded bg-[#141413] text-text-muted font-mono text-[10px]">IDLE</span>
+</div>
+<div class="flex items-center gap-1.5 text-text-muted">
+<span class="font-mono text-[11px]">v8.4.1</span>
+<span class="material-symbols-outlined text-[18px] transition-transform duration-200" id="terminal-caret">expand_more</span>
+</div>
+</button>
+<!-- Terminal Output Body -->
+<div class="p-3 bg-[#111110] font-mono text-xs space-y-1.5" id="terminal-content">
+<!-- Executed Command -->
+<div class="flex items-start gap-1.5 text-text-muted">
+<span class="text-primary-cta select-none font-bold">$</span>
+<span class="text-text-bright break-all">./gradlew testDebugUnitTest --continue</span>
+</div>
+<!-- Build Output Flow -->
+<div class="pl-3 border-l border-[#262420] space-y-0.5 text-text-muted text-[11px]">
+<div>&gt; Task :app:compileDebugKotlin UP-TO-DATE</div>
+<div>&gt; Task :app:testDebugUnitTest</div>
+<div class="text-diff-add-text font-medium flex items-center gap-1 py-0.5">
+<span class="material-symbols-outlined text-[15px]">check_circle</span>
+<span>BUILD SUCCESSFUL in 3.4s</span>
+</div>
+<div class="text-[#7a7770]">42 actionable tasks: 1 executed, 41 up-to-date</div>
+</div>
+<!-- Cursor Prompt -->
+<div class="flex items-center gap-1 text-[11.5px] pt-1">
+<span class="text-primary-cta font-medium">claudroide:</span>
+<span class="text-text-muted">feature/room-backoff</span>
+<span class="text-text-bright font-bold">$</span>
+<span class="inline-block w-2 h-3.5 bg-primary-cta animate-pulse ml-0.5"></span>
+</div>
+</div>
+</div>
+</main>
+<!-- 6. Unten fixierter primärer Action-Button (Docked Floating Bar, 52dp Touch) -->
+<div class="fixed bottom-16 left-0 right-0 z-40 px-4 py-2 bg-gradient-to-t from-[#141413] via-[#141413]/90 to-transparent flex justify-center">
+<button class="w-full max-w-md h-[52px] px-5 rounded-2xl bg-primary-cta text-on-primary-cta font-sans font-bold text-[14px] flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(217,119,87,0.35)] active:scale-[0.98] transition-all" id="apply-diff-pill" type="button">
+<span class="material-symbols-outlined text-[20px] font-bold">done_all</span>
+<span>Diff anwenden &amp; committen</span>
+</button>
+</div>
+<!-- 7. Android Bottom Navigation Bar (One UI 4-Tab Bar) -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 h-16 bg-[#171614] border-t border-[#252320] pb-safe flex items-center justify-around px-2 select-none">
+<!-- Chat -->
+<a class="flex flex-col items-center justify-center gap-0.5 min-w-[64px] h-full text-text-muted hover:text-text-bright active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined text-[22px]">forum</span>
+<span class="font-sans text-[11px] font-medium tracking-tight">Chat</span>
+</a>
+<!-- Skills -->
+<a class="flex flex-col items-center justify-center gap-0.5 min-w-[64px] h-full text-text-muted hover:text-text-bright active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined text-[22px]">extension</span>
+<span class="font-sans text-[11px] font-medium tracking-tight">Skills</span>
+</a>
+<!-- Files & Diff (Active) -->
+<a aria-current="page" class="flex flex-col items-center justify-center gap-0.5 min-w-[64px] h-full text-primary-cta active:scale-95 transition-all font-semibold" href="#">
+<div class="px-3 py-0.5 rounded-full bg-primary-cta/15 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">difference</span>
+</div>
+<span class="font-sans text-[11px] tracking-tight">Files &amp; Diff</span>
+</a>
+<!-- Terminal -->
+<a class="flex flex-col items-center justify-center gap-0.5 min-w-[64px] h-full text-text-muted hover:text-text-bright active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined text-[22px]">terminal</span>
+<span class="font-sans text-[11px] font-medium tracking-tight">Terminal</span>
+</a>
+</nav>
+<script>
+    (function () {
+      // Toggle Mini-Terminal Collapsible Drawer
+      const drawerBtn = document.getElementById('terminal-drawer-btn');
+      const content = document.getElementById('terminal-content');
+      const caret = document.getElementById('terminal-caret');
+
+      if (drawerBtn && content && caret) {
+        drawerBtn.addEventListener('click', () => {
+          const isHidden = content.classList.contains('hidden');
+          if (isHidden) {
+            content.classList.remove('hidden');
+            caret.style.transform = 'rotate(0deg)';
+          } else {
+            content.classList.add('hidden');
+            caret.style.transform = 'rotate(180deg)';
+          }
+        });
+      }
+
+      // Unified vs Split Toggle buttons
+      const btnUnified = document.getElementById('btn-unified');
+      const btnSplit = document.getElementById('btn-split');
+      if (btnUnified && btnSplit) {
+        btnUnified.addEventListener('click', () => {
+          btnUnified.className = 'px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold bg-[#2b2824] text-text-bright transition-all';
+          btnSplit.className = 'px-2.5 py-1 rounded-md text-[11px] font-mono font-medium text-text-muted hover:text-text-bright transition-all';
+        });
+        btnSplit.addEventListener('click', () => {
+          btnSplit.className = 'px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold bg-[#2b2824] text-text-bright transition-all';
+          btnUnified.className = 'px-2.5 py-1 rounded-md text-[11px] font-mono font-medium text-text-muted hover:text-text-bright transition-all';
+        });
+      }
+
+      // Action Button Feedback (Samsung/Android Haptic Sim)
+      const commitBtn = document.getElementById('apply-diff-pill');
+      if (commitBtn) {
+        commitBtn.addEventListener('click', () => {
+          const original = commitBtn.innerHTML;
+          commitBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">sync</span><span>Wird committet...</span>';
+          setTimeout(() => {
+            commitBtn.innerHTML = '<span class="material-symbols-outlined text-[20px]">check</span><span>Branch aktualisiert!</span>';
+            commitBtn.classList.replace('bg-primary-cta', 'bg-diff-add-bg');
+            commitBtn.classList.replace('text-on-primary-cta', 'text-diff-add-text');
+            setTimeout(() => {
+              commitBtn.innerHTML = original;
+              commitBtn.classList.replace('bg-diff-add-bg', 'bg-primary-cta');
+              commitBtn.classList.replace('text-diff-add-text', 'text-on-primary-cta');
+            }, 2000);
+          }, 800);
+        });
+      }
+    })();
+  </script>
+</body></html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-dim": "#141413",
+            "sheet-bg": "#1c1b18",
+            "item-hover": "#24221f",
+            "claude-accent": "#d97757",
+            "claude-accent-subtle": "rgba(217, 119, 87, 0.15)",
+            "on-surface": "#e6e2de",
+            "on-surface-variant": "#a69f98",
+            "outline-subtle": "rgba(255, 255, 255, 0.08)"
+          },
+          fontFamily: {
+            "sans": ["Inter", "sans-serif"],
+            "mono": ["JetBrains Mono", "monospace"],
+            "serif": ["Newsreader", "serif"]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    @layer base {
+      html, body {
+        width: 100vw;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #141413;
+        color: #e6e2de;
+        font-family: 'Inter', sans-serif;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    }
+  </style>
+</head>
+<body class="bg-surface-dim text-on-surface flex flex-col h-screen overflow-hidden antialiased select-none">
+<!-- Android 14 / One UI 6 Native Status Bar (Galaxy A56) -->
+<header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 pt-2 pb-1.5 text-xs text-on-surface select-none pointer-events-none">
+<div class="flex items-center gap-1.5 font-medium tracking-tight">
+<span class="text-[13px] font-semibold">14:30</span>
+</div>
+<!-- Kamera-Punchhole Aussparung zentriert (virtuelle Präsenz) -->
+<div class="w-3.5 h-3.5 rounded-full bg-black/40 border border-white/5 mx-auto"></div>
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-[15px]">wifi</span>
+<span class="material-symbols-outlined text-[15px]">signal_cellular_4_bar</span>
+<div class="flex items-center gap-0.5">
+<span class="text-[11px] font-medium font-mono">88%</span>
+<span class="material-symbols-outlined text-[16px]">battery_full</span>
+</div>
+</div>
+</header>
+<!-- Passiver Chat-Hintergrund (gedimmt durch authentischen 60% Scrim) -->
+<main class="flex-1 flex flex-col pt-12 px-4 pb-20 overflow-hidden relative">
+<!-- App Top Bar (abgedunkelt im Hintergrund) -->
+<div class="flex items-center justify-between py-2 border-b border-white/5 opacity-50">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-[#201e1b] flex items-center justify-center text-claude-accent border border-white/10">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+</div>
+<div>
+<div class="text-[11px] font-mono text-on-surface-variant flex items-center gap-1">
+<span class="text-claude-accent font-medium">claudroide-core</span>
+<span>/</span>
+<span class="text-emerald-400">main</span>
+</div>
+<div class="text-[15px] font-semibold text-on-surface leading-tight">Chat</div>
+</div>
+</div>
+<div class="w-8 h-8 rounded-full bg-claude-accent/20 text-claude-accent flex items-center justify-center text-xs font-medium">
+        U
+      </div>
+</div>
+<!-- Nachrichten-Verlauf im Hintergrund -->
+<div class="flex-1 py-4 space-y-4 opacity-40">
+<div class="max-w-[85%] bg-[#1c1b18] p-3.5 rounded-2xl border border-white/5">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[10px] font-mono uppercase tracking-wider text-claude-accent font-semibold">Claude 3.7 Sonnet</span>
+<span class="text-[10px] text-on-surface-variant font-mono">14:28</span>
+</div>
+<p class="text-sm text-on-surface leading-relaxed">
+          Ich habe die Logik für den Hintergrund-Sync in <code class="font-mono text-xs text-claude-accent bg-black/30 px-1 py-0.5 rounded">SyncWorker.kt</code> vorbereitet. Welche Datei soll als Nächstes angepasst werden?
+        </p>
+</div>
+<div class="max-w-[80%] ml-auto bg-[#262420] p-3.5 rounded-2xl border border-white/5">
+<div class="text-right text-[10px] text-on-surface-variant font-mono mb-1">14:29</div>
+<p class="text-sm text-on-surface leading-relaxed">
+          Lass uns die Retrofit-Interceptor prüfen und eventuell den Token-Refresh aktualisieren.
+        </p>
+</div>
+</div>
+</main>
+<!-- Android Scrim Backdrop (#000000 60%) -->
+<div class="fixed inset-0 bg-black/60 z-30 transition-opacity"></div>
+<!-- NATIVES JETPACK COMPOSE MODAL BOTTOM SHEET (Samsung One UI 6) -->
+<div class="fixed inset-x-0 bottom-0 z-40 flex flex-col bg-sheet-bg rounded-t-[28px] border-t border-white/[0.06] shadow-2xl overflow-hidden max-h-[85vh]">
+<!-- Drag Handle / Drag Pill (Compose ModalBottomSheet standard: 32x4dp dezent grau) -->
+<div class="w-full flex items-center justify-center pt-3 pb-2 flex-shrink-0 cursor-grab active:cursor-grabbing">
+<div class="w-8 h-1 rounded-full bg-white/20"></div>
+</div>
+<!-- Sheet Content / Flat One UI List Items (min 48dp - 56dp Touch-Höhe) -->
+<div class="px-3 pt-1 pb-2 space-y-1 overflow-y-auto no-scrollbar">
+<!-- 1. Bild auswählen -->
+<button class="w-full min-h-[56px] px-3 py-2 rounded-2xl flex items-center gap-3.5 text-left bg-transparent hover:bg-item-hover active:bg-item-hover transition-colors group" type="button">
+<div class="w-10 h-10 rounded-xl bg-item-hover group-hover:bg-[#2c2a26] flex items-center justify-center text-[#faba79] flex-shrink-0 transition-colors">
+<span class="material-symbols-outlined text-[22px]">photo_library</span>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="text-[15px] font-medium text-on-surface leading-tight truncate">Bild auswählen</span>
+<span class="text-[12px] text-on-surface-variant mt-0.5 truncate">Screenshots, UI-Designs, Diagramme</span>
+</div>
+<span class="material-symbols-outlined text-white/20 text-[18px]">chevron_right</span>
+</button>
+<!-- 2. Kamera -->
+<button class="w-full min-h-[56px] px-3 py-2 rounded-2xl flex items-center gap-3.5 text-left bg-transparent hover:bg-item-hover active:bg-item-hover transition-colors group" type="button">
+<div class="w-10 h-10 rounded-xl bg-item-hover group-hover:bg-[#2c2a26] flex items-center justify-center text-emerald-300 flex-shrink-0 transition-colors">
+<span class="material-symbols-outlined text-[22px]">photo_camera</span>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="text-[15px] font-medium text-on-surface leading-tight truncate">Kamera</span>
+<span class="text-[12px] text-on-surface-variant mt-0.5 truncate">Whiteboard, Skizze oder Code abfotografieren</span>
+</div>
+<span class="material-symbols-outlined text-white/20 text-[18px]">chevron_right</span>
+</button>
+<!-- 3. Sprachnotiz aufnehmen -->
+<button class="w-full min-h-[56px] px-3 py-2 rounded-2xl flex items-center gap-3.5 text-left bg-transparent hover:bg-item-hover active:bg-item-hover transition-colors group" type="button">
+<div class="w-10 h-10 rounded-xl bg-item-hover group-hover:bg-[#2c2a26] flex items-center justify-center text-claude-accent flex-shrink-0 transition-colors">
+<span class="material-symbols-outlined text-[22px]">graphic_eq</span>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="text-[15px] font-medium text-on-surface leading-tight truncate">Sprachnotiz aufnehmen</span>
+<span class="text-[12px] text-on-surface-variant mt-0.5 truncate">Audio-Kontext und Briefing</span>
+</div>
+<span class="material-symbols-outlined text-white/20 text-[18px]">chevron_right</span>
+</button>
+<!-- 4. Projektdateien & Repositories -->
+<button class="w-full min-h-[56px] px-3 py-2 rounded-2xl flex items-center gap-3.5 text-left bg-transparent hover:bg-item-hover active:bg-item-hover transition-colors group" type="button">
+<div class="w-10 h-10 rounded-xl bg-item-hover group-hover:bg-[#2c2a26] flex items-center justify-center text-amber-200/90 flex-shrink-0 transition-colors">
+<span class="material-symbols-outlined text-[22px]">folder_copy</span>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="text-[15px] font-medium text-on-surface leading-tight truncate">Projektdateien &amp; Repositories</span>
+<span class="text-[12px] text-on-surface-variant mt-0.5 truncate">Dateibaum aus aktuellem Branch</span>
+</div>
+<span class="material-symbols-outlined text-white/20 text-[18px]">chevron_right</span>
+</button>
+<!-- Schnellauswahl: Zuletzt bearbeitet (One UI Horizontal Chip Row) -->
+<div class="pt-2.5 pb-1 px-1">
+<div class="flex items-center justify-between pb-2 px-1">
+<span class="text-[11px] font-mono tracking-wider text-on-surface-variant uppercase font-medium">Zuletzt bearbeitet</span>
+<span class="text-[11px] font-mono text-on-surface-variant/70">branch: main</span>
+</div>
+<div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+<!-- Chip 1 -->
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-item-hover hover:bg-[#2c2a26] active:scale-95 text-on-surface border border-white/5 transition-all flex-shrink-0" type="button">
+<span class="material-symbols-outlined text-[15px] text-[#faba79]">code</span>
+<span class="text-[12px] font-mono">SyncRepository.kt</span>
+<span class="material-symbols-outlined text-[13px] text-on-surface-variant">add</span>
+</button>
+<!-- Chip 2 -->
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-item-hover hover:bg-[#2c2a26] active:scale-95 text-on-surface border border-white/5 transition-all flex-shrink-0" type="button">
+<span class="material-symbols-outlined text-[15px] text-emerald-400">terminal</span>
+<span class="text-[12px] font-mono">AndroidManifest.xml</span>
+<span class="material-symbols-outlined text-[13px] text-on-surface-variant">add</span>
+</button>
+<!-- Chip 3 -->
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-item-hover hover:bg-[#2c2a26] active:scale-95 text-on-surface border border-white/5 transition-all flex-shrink-0" type="button">
+<span class="material-symbols-outlined text-[15px] text-claude-accent">data_object</span>
+<span class="text-[12px] font-mono">build.gradle.kts</span>
+<span class="material-symbols-outlined text-[13px] text-on-surface-variant">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Nahtlos integrierter Composer-Eingabebereich mit aktivem Terrakotta-Zustand -->
+<div class="p-3 bg-[#171614] border-t border-white/[0.06] flex-shrink-0">
+<div class="flex items-center gap-2 bg-[#201f1c] rounded-2xl p-1.5 border border-white/[0.05]">
+<!-- Aktive Büroklammer (Terrakotta #d97757 Zustand) -->
+<button aria-label="Anhang geöffnet" class="w-10 h-10 rounded-xl bg-claude-accent text-[#3b1204] flex items-center justify-center flex-shrink-0 shadow-sm active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-[20px] rotate-45" style="font-variation-settings: 'FILL' 1;">attach_file</span>
+</button>
+<!-- Texteingabe-Zeile -->
+<div class="flex-1 min-w-0 px-2 py-1 flex items-center">
+<span class="text-[14px] text-on-surface-variant truncate">Kontext wählen oder tippen...</span>
+<span class="w-1.5 h-4 bg-claude-accent animate-pulse rounded-full ml-1"></span>
+</div>
+<!-- Sende-Button -->
+<button aria-label="Nachricht senden" class="w-10 h-10 rounded-xl bg-[#2b2926] text-on-surface-variant hover:text-on-surface flex items-center justify-center flex-shrink-0 active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-[19px]">arrow_upward</span>
+</button>
+</div>
+<!-- Mikroskopische Statusleiste unterhalb des Inputs -->
+<div class="flex items-center justify-between px-2 pt-2 text-[11px] font-mono text-on-surface-variant">
+<span class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+<span>Claude 3.7 Sonnet (Thinking)</span>
+</span>
+<span class="text-white/40">Max: 100 MB</span>
+</div>
+</div>
+<!-- Android System Gestenleiste (Gesture navigation bar pill) -->
+<div class="w-full h-6 pb-2 pt-1 flex items-center justify-center bg-[#171614] flex-shrink-0">
+<div class="w-28 h-1 rounded-full bg-white/35"></div>
+</div>
+</div>
+</body></html>
