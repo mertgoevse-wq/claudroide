@@ -1,0 +1,105 @@
+name: android
+
+# One pipeline for the app:
+#   build     unit tests that provably ran (JUnit XML is counted, not the
+#             Gradle log line), then the debug APK as an artifact
+#   ui-smoke  installs exactly that APK on an Android 15 emulator, walks the
+#             main screens in light and dark mode and keeps every screenshot.
+#             A crash fails the job; the screenshots are the visual QA record.
+
+on:
+  push:
+    branches: [feat/claudroide-next-architecture]
+    paths:
+      - 'app/**'
+      - 'gradle/**'
+      - '*.gradle.kts'
+      - 'gradle.properties'
+      - 'tools/ui_smoke.py'
+      - 'tools/junit_summary.py'
+      - '.github/workflows/android.yml'
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Unit tests and debug APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      # --rerun-tasks: a cached UP-TO-DATE run would also print BUILD SUCCESSFUL.
+      - name: Unit tests
+        run: ./gradlew :app:testDebugUnitTest --rerun-tasks --continue
+
+      - name: Count JUnit results
+        if: always()
+        run: python3 tools/junit_summary.py app/build/test-results/testDebugUnitTest
+
+      - name: Debug APK
+        run: ./gradlew :app:assembleDebug
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: claudroide-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 14
+
+      - uses: actions/upload-artifact@v6
+        if: failure()
+        with:
+          name: unit-test-report
+          path: app/build/reports/tests/testDebugUnitTest/
+          retention-days: 7
+
+  ui-smoke:
+    name: Emulator smoke test and screenshots
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/download-artifact@v7
+        with:
+          name: claudroide-debug-apk
+          path: apk
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # Android 15 is what the Galaxy A56 ships with; edge-to-edge is enforced
+      # there for targetSdk 35, so this is the version that has to look right.
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          target: google_apis
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          script: python3 tools/ui_smoke.py --apk apk/app-debug.apk --out ui-smoke
+
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: ui-smoke-screenshots
+          path: ui-smoke/
+          retention-days: 30

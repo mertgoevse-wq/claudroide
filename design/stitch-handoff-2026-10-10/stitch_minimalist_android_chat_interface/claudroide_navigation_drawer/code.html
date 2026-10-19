@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>ClauDroide Mobile Workspace</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script data-purpose="tailwind-config" id="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#C85A32',
+              hover: '#B54E29',
+              subtle: '#FAF0EB',
+              surface: '#FDFCFB'
+            },
+            canvas: '#F9F9F8',
+            panel: '#FFFFFF',
+            border: '#E8E8E6',
+            'border-subtle': '#F0EFEF',
+            charcoal: {
+              900: '#171717',
+              800: '#262626',
+              600: '#525252',
+              400: '#A3A3A3',
+              200: '#E5E5E5'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'Inter', 'Roboto', 'system-ui', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif']
+          },
+          boxShadow: {
+            'elevation-sm': '0 2px 8px -2px rgba(17, 24, 39, 0.05), 0 1px 3px -1px rgba(17, 24, 39, 0.03)',
+            'composer': '0 8px 30px -6px rgba(17, 24, 39, 0.07), 0 2px 8px -2px rgba(17, 24, 39, 0.04)'
+          }
+        }
+      }
+    };
+  </script>
+<!-- Typography & Component Micro-adjustments -->
+<style data-purpose="custom-enhancements">
+    /* Native tap highlight suppression */
+    * {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    input, textarea {
+      user-select: text;
+    }
+    /* Smooth transition presets */
+    .transition-interactive {
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
+<meta content="web_standard" name="shell-type"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-neutral-100 flex items-center justify-center min-h-screen p-0 sm:p-4 text-charcoal-900 font-sans antialiased">
+<!-- BEGIN: PhoneShellContainer -->
+<!-- Constrains layout to typical modern Android proportions (~412px wide, 20:9 ratio) -->
+<div class="relative w-full max-w-[420px] h-[884px] max-h-[920px] bg-canvas flex flex-col justify-between overflow-hidden sm:rounded-[44px] sm:shadow-2xl sm:ring-1 sm:ring-black/10">
+<!-- BEGIN: AndroidStatusBar -->
+<!-- Authentic Android 14/15 top bar with carrier, time, and system glyphs -->
+<header class="w-full pt-3 px-6 pb-2 flex items-center justify-between z-30 shrink-0 text-charcoal-900 select-none">
+<!-- System Clock -->
+<span class="text-[13.5px] font-semibold tracking-tight tabular-nums pl-0.5">13:38</span>
+<!-- System Status Indicators (Right) -->
+<div aria-label="System status" class="flex items-center space-x-2 text-charcoal-800">
+<!-- VoLTE / 5G -->
+<span class="text-[10px] font-bold tracking-tighter uppercase px-1 py-0.2 bg-black/5 rounded">5G</span>
+<!-- Cellular Signal Strength -->
+<svg class="w-3.5 h-3.5" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 3L2 21h20L12 3zm0 4.2L18.8 19H5.2L12 7.2z"></path>
+</svg>
+<!-- Wi-Fi Icon -->
+<svg class="w-3.5 h-3.5" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4zm0 3.3c3.48 0 6.66 1.34 9.07 3.53L12 19.82 2.93 10.83C5.34 8.64 8.52 7.3 12 7.3z"></path>
+</svg>
+<!-- Battery Level Indicator -->
+<div class="flex items-center space-x-0.5 pl-0.5">
+<span class="text-[11px] font-medium tabular-nums mr-0.5">85%</span>
+<div class="w-4.5 h-2.5 border border-charcoal-900 rounded-[2.5px] p-[1px] flex items-center relative">
+<div class="w-2.5 h-full bg-charcoal-900 rounded-[1px]"></div>
+<div class="w-[1.5px] h-1 bg-charcoal-900 absolute -right-[2.5px] rounded-r-xs"></div>
+</div>
+</div>
+</div>
+</header>
+<!-- END: AndroidStatusBar -->
+<!-- BEGIN: TopAppBar -->
+<!-- Minimal developer workspace navigation -->
+<nav aria-label="Top navigation" class="w-full px-4 py-2 flex items-center justify-between z-20 shrink-0">
+<!-- Left: Navigation Drawer Toggle -->
+<button aria-label="Open menu" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 active:bg-black/10 transition-interactive text-charcoal-800" type="button">
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewbox="0 0 24 24">
+<line x1="3.5" x2="20.5" y1="7" y2="7"></line>
+<line x1="3.5" x2="16.5" y1="12" y2="12"></line>
+<line x1="3.5" x2="13" y1="17" y2="17"></line>
+</svg>
+</button>
+<!-- Center: Model / Workspace Switcher Pill -->
+<button aria-label="Select AI Model" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-panel border border-border shadow-elevation-sm hover:border-charcoal-400 active:scale-95 transition-interactive text-charcoal-900" type="button">
+<span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+<span class="text-xs font-semibold tracking-tight text-charcoal-800">ClauDroide</span>
+<span class="text-[11px] text-charcoal-400 font-normal">· Sonnet 3.7</span>
+<svg class="w-3.5 h-3.5 text-charcoal-400 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<polyline points="6 9 12 15 18 9"></polyline>
+</svg>
+</button>
+<!-- Right: Action Buttons (New Chat & Profile) -->
+<div class="flex items-center space-x-0.5">
+<button aria-label="New chat" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 active:bg-black/10 transition-interactive text-charcoal-800" type="button">
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewbox="0 0 24 24">
+<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+</svg>
+</button>
+</div>
+</nav>
+<!-- END: TopAppBar -->
+<!-- BEGIN: MainContentArea -->
+<!-- Scrollable central canvas with brand hallmark and developer prompts -->
+<main class="flex-1 flex flex-col justify-center items-center px-6 overflow-y-auto z-10 -mt-10"><div class="flex flex-col w-full relative -mx-6 h-full min-h-[580px] overflow-hidden select-none" id="drawer-container">
+<!-- Backdrop scrim overlay simulating Android modal drawer behavior -->
+<div class="absolute inset-0 bg-charcoal-900/40 backdrop-blur-[2px] z-10 transition-opacity duration-300" id="drawer-scrim" onclick="toggleDrawerState()"></div>
+<!-- Main Drawer Panel (occupies 84% width from left, grounded on surface-container-lowest) -->
+<aside aria-label="Hauptnavigation" class="relative z-20 w-[84%] max-w-[340px] h-full bg-surface-container-lowest shadow-2xl flex flex-col justify-between overflow-y-auto">
+<!-- Top & Scrollable Nav Hub -->
+<div class="flex flex-col p-4 space-y-4">
+<!-- Drawer Header: Brand Glyph, Identity & Quick Action -->
+<div class="flex flex-col space-y-3.5 pt-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2.5">
+<!-- Brand Glyph: Terracotta Spark / Star -->
+<div class="w-9 h-9 rounded-xl bg-primary-container flex items-center justify-center text-on-primary shadow-sm">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z"></path>
+</svg>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface tracking-tight leading-tight">ClauDroide</span>
+<span class="font-label-mono text-label-mono text-secondary tracking-normal">Mert · Pro Plan</span>
+</div>
+</div>
+<!-- Close toggle -->
+<button aria-label="Schließen" class="w-8 h-8 rounded-full flex items-center justify-center text-secondary hover:bg-surface-container-high transition-colors" onclick="toggleDrawerState()" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<!-- Prominent Pill: Neuer Chat -->
+<button class="w-full h-11 bg-primary hover:bg-primary-container text-on-primary rounded-full flex items-center justify-center space-x-2 shadow-sm active:scale-[0.98] transition-transform" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span class="font-label-md text-label-md tracking-wide">Neuer Chat</span>
+</button>
+</div>
+<!-- Core Navigation List -->
+<nav aria-label="Hauptmenü" class="flex flex-col space-y-1 pt-1">
+<!-- Chats (Aktiv) -->
+<a class="flex items-center justify-between px-3 py-2.5 rounded-xl bg-primary-fixed text-on-primary-fixed font-medium group transition-colors" href="#chats">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-[20px] text-primary" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<span class="font-body-md text-body-md text-on-primary-fixed font-semibold">Chats</span>
+</div>
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+</a>
+<!-- Projekte with Badge -->
+<a class="flex items-center justify-between px-3 py-2 rounded-xl text-on-surface hover:bg-surface-container-low transition-colors group" href="#projekte">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-[20px] text-secondary group-hover:text-on-surface">folder</span>
+<span class="font-body-md text-body-md text-on-surface">Projekte</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-mono text-[10px] font-bold">4</span>
+</a>
+<!-- Code & MCP -->
+<a class="flex items-center justify-between px-3 py-2 rounded-xl text-on-surface hover:bg-surface-container-low transition-colors group" href="#code-mcp">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-[20px] text-secondary group-hover:text-on-surface">terminal</span>
+<span class="font-body-md text-body-md text-on-surface">Code &amp; MCP</span>
+</div>
+<span class="font-label-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-surface-container text-secondary">Host</span>
+</a>
+<!-- Artefakte -->
+<a class="flex items-center space-x-3 px-3 py-2 rounded-xl text-on-surface hover:bg-surface-container-low transition-colors group" href="#artefakte">
+<span class="material-symbols-outlined text-[20px] text-secondary group-hover:text-on-surface">description</span>
+<span class="font-body-md text-body-md text-on-surface">Artefakte</span>
+</a>
+</nav>
+<!-- Section: Letzte Chats (Recent Conversations) -->
+<div class="flex flex-col pt-3 space-y-2">
+<div class="flex items-center justify-between px-2">
+<span class="font-label-mono text-label-mono text-secondary tracking-wider uppercase font-semibold">Letzte Chats</span>
+<span class="font-label-mono text-[10px] text-secondary">5 / 32</span>
+</div>
+<div class="flex flex-col space-y-0.5">
+<!-- Item 1 -->
+<a class="flex items-center space-x-2.5 px-2.5 py-2 rounded-lg text-on-surface hover:bg-surface-container-low transition-colors group" href="#chat-audio">
+<span class="material-symbols-outlined text-[16px] text-secondary shrink-0">history</span>
+<span class="font-body-sm text-body-sm text-on-surface truncate">Foreground Service Audio...</span>
+</a>
+<!-- Item 2 -->
+<a class="flex items-center space-x-2.5 px-2.5 py-2 rounded-lg text-on-surface hover:bg-surface-container-low transition-colors group" href="#chat-arch">
+<span class="material-symbols-outlined text-[16px] text-secondary shrink-0">history</span>
+<span class="font-body-sm text-body-sm text-on-surface truncate">Inspect Android Architecture</span>
+</a>
+<!-- Item 3 -->
+<a class="flex items-center space-x-2.5 px-2.5 py-2 rounded-lg text-on-surface hover:bg-surface-container-low transition-colors group" href="#chat-room">
+<span class="material-symbols-outlined text-[16px] text-secondary shrink-0">history</span>
+<span class="font-body-sm text-body-sm text-on-surface truncate">Debug Stack Trace Room DB</span>
+</a>
+<!-- Item 4 -->
+<a class="flex items-center space-x-2.5 px-2.5 py-2 rounded-lg text-on-surface hover:bg-surface-container-low transition-colors group" href="#chat-compose">
+<span class="material-symbols-outlined text-[16px] text-secondary shrink-0">history</span>
+<span class="font-body-sm text-body-sm text-on-surface truncate">Compose Navigation 2.8</span>
+</a>
+<!-- Item 5 -->
+<a class="flex items-center space-x-2.5 px-2.5 py-2 rounded-lg text-on-surface hover:bg-surface-container-low transition-colors group" href="#chat-npu">
+<span class="material-symbols-outlined text-[16px] text-secondary shrink-0">history</span>
+<span class="font-body-sm text-body-sm text-on-surface truncate">NPU lokal einbinden</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Footer / Sticky Profile & Utility Panel -->
+<div class="flex flex-col p-3 bg-surface-container-low space-y-3 shrink-0">
+<!-- Utility Links -->
+<div class="flex flex-col space-y-0.5">
+<a class="flex items-center space-x-3 px-2 py-1.5 rounded-lg text-on-surface hover:bg-surface-container-high transition-colors" href="#settings">
+<span class="material-symbols-outlined text-[18px] text-secondary">settings</span>
+<span class="font-body-sm text-body-sm text-on-surface">Einstellungen</span>
+</a>
+<a class="flex items-center space-x-3 px-2 py-1.5 rounded-lg text-on-surface hover:bg-surface-container-high transition-colors" href="#docs">
+<span class="material-symbols-outlined text-[18px] text-secondary">menu_book</span>
+<span class="font-body-sm text-body-sm text-on-surface">Dokumentation &amp; Shortcuts</span>
+</a>
+</div>
+<!-- Account Profile Card -->
+<div class="pt-2 flex items-center justify-between px-1">
+<div class="flex items-center space-x-2.5 min-w-0">
+<!-- User Avatar MZ -->
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-mono text-[11px] font-bold shrink-0">
+            MZ
+          </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface truncate">mert.govse.neu@gmail.com</span>
+<div class="flex items-center space-x-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>
+<span class="font-label-mono text-[10px] text-secondary leading-none">Subscribed · v3.7</span>
+</div>
+</div>
+</div>
+<!-- Status / Upgrade Pill -->
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-[10px] font-semibold shrink-0">
+          PRO
+        </span>
+</div>
+</div>
+</aside>
+</div>
+<script>
+  function toggleDrawerState() {
+    const container = document.getElementById('drawer-container');
+    if (container) {
+      container.classList.toggle('opacity-0');
+      container.classList.toggle('pointer-events-none');
+    }
+  }
+</script></main>
+<!-- END: MainContentArea -->
+<!-- BEGIN: BottomInputSection -->
+<!-- Floating elevated multi-purpose composer card -->
+<div class="w-full px-4 pb-2 z-20">
+<!-- Composer Card Container -->
+<div class="w-full bg-panel border border-border rounded-2xl shadow-composer p-3 flex flex-col space-y-2.5 focus-within:border-charcoal-400 transition-interactive">
+<!-- Textarea input field -->
+<textarea aria-label="Message prompt input" class="w-full resize-none border-0 p-0 text-sm placeholder:text-charcoal-400 text-charcoal-900 focus:ring-0 bg-transparent leading-relaxed" placeholder="Ask ClauDroide anything..." rows="2" style="min-height: 48px; max-height: 120px;"></textarea>
+<!-- Composer Bottom Action Bar -->
+<div class="flex items-center justify-between pt-1">
+<!-- Left: Attachment and Model Context Pill -->
+<div class="flex items-center space-x-2">
+<!-- Add Media / File Button -->
+<button aria-label="Add attachment or code snippet" class="w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 active:scale-95 flex items-center justify-center text-charcoal-600 transition-interactive" type="button">
+<svg class="w-4 h-4 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<line x1="12" x2="12" y1="5" y2="19"></line>
+<line x1="5" x2="19" y1="12" y2="12"></line>
+</svg>
+</button>
+<!-- Mode Selector Capsule -->
+<button aria-label="Context configuration" class="px-2.5 py-1 rounded-full bg-neutral-100 hover:bg-neutral-200 text-[11px] font-medium text-charcoal-700 flex items-center space-x-1.5 transition-interactive" type="button">
+<svg class="w-3 h-3 text-brand" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<polyline points="4 17 10 11 4 5"></polyline>
+<line x1="12" x2="20" y1="19" y2="19"></line>
+</svg>
+<span>Code Mode</span>
+</button>
+</div>
+<!-- Right: Audio and Primary Submit Buttons -->
+<div class="flex items-center space-x-1.5">
+<!-- Voice Input Button -->
+<button aria-label="Use voice input" class="w-8 h-8 rounded-full hover:bg-neutral-100 active:bg-neutral-200 flex items-center justify-center text-charcoal-600 transition-interactive" type="button">
+<svg class="w-4 h-4 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+<path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+<line x1="12" x2="12" y1="19" y2="23"></line>
+<line x1="8" x2="16" y1="23" y2="23"></line>
+</svg>
+</button>
+<!-- Primary Send Action Button (Anthropic Terracotta Accent) -->
+<button aria-label="Send message" class="w-8 h-8 rounded-full bg-brand hover:bg-brand-hover active:scale-95 text-white flex items-center justify-center shadow-sm transition-interactive" type="button">
+<svg class="w-4 h-4 stroke-[2.2] translate-y-[-0.5px]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<line x1="12" x2="12" y1="19" y2="5"></line>
+<polyline points="5 12 12 5 19 12"></polyline>
+</svg>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- END: BottomInputSection -->
+<!-- BEGIN: AndroidNavigationPill -->
+<!-- Standard Android gesture navigation bar indicator -->
+<footer aria-label="System navigation" class="w-full h-5 flex items-center justify-center shrink-0 mb-1">
+<div class="w-32 h-1 bg-charcoal-900/30 rounded-full"></div>
+</footer>
+<!-- END: AndroidNavigationPill -->
+</div>
+<!-- END: PhoneShellContainer -->
+</body></html>

@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# ClauDroide Tmux Workspace Manager — Samsung Galaxy A56
+# ==============================================================================
+SESSION="claudroide"
+ROOT="/home/mert/claudroide-next"
+
+if ! command -v tmux &>/dev/null; then
+  echo "tmux ist nicht installiert." >&2
+  exit 1
+fi
+
+if tmux has-session -t "$SESSION" 2>/dev/null; then
+  echo "Session '$SESSION' existiert bereits. Verbinde..."
+  exec tmux attach-session -t "$SESSION"
+fi
+
+echo "Erstelle neue ClauDroide-Entwicklersitzung '$SESSION'..."
+
+# Fenster 1: Claude / Main
+tmux new-session -d -s "$SESSION" -n "dev" -c "$ROOT"
+
+# Fenster 2: Build & Test
+tmux new-window -t "$SESSION:1" -n "build" -c "$ROOT"
+
+# Fenster 3: Monitor / Logs
+tmux new-window -t "$SESSION:2" -n "monitor" -c "$ROOT"
+tmux send-keys -t "$SESSION:2" "cdx status" C-m
+
+# Zurück zu Fenster 0
+tmux select-window -t "$SESSION:0"
+
+# Statusleiste für Smartphone-Display optimieren
+tmux set-option -t "$SESSION" status-style "bg=#1e1e2e,fg=#cdd6f4"
+tmux set-option -t "$SESSION" status-left "#[bold,fg=#89b4fa] 🤖 ClauDroide #[default]| "
+tmux set-option -t "$SESSION" status-right "#[fg=#a6e3a1]%H:%M #[default]"
+
+echo "Sitzung '$SESSION' gestartet. Verbinde..."
+exec tmux attach-session -t "$SESSION"

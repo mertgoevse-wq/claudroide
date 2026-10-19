@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+/env/
+/venv/
+/.venv/
+
+# Secrets & Environment
+*.env
+*.env.*
+!.env.example
+*.pem
+*.key
+*.token
+# Signing (generated outside the repo tree; properties file references host paths)
+keystore.properties
+*.release.keystore
+
+# OS & Editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# Android / Build (future)
+.gradle/
+# Anchored: an unanchored `build/` also hid app/src/.../distro/build/*.kt
+/build/
+/app/build/
+*.apk
+*.aab
+
+# Machine-specific Android SDK path — never commit
+local.properties
+
+# Kotlin build session data
+.kotlin/
+
+# Scratch: text-measurement probe from tools/banner.py, not a shipped asset
+assets/brand/.build/.measure/
+_sources/
+
+# Local visual-QA captures (Playwright MCP)
+.playwright-mcp/

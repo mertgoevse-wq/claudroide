@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>ClauDroide Mobile Workspace</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script data-purpose="tailwind-config" id="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#C85A32',
+              hover: '#B54E29',
+              subtle: '#FAF0EB',
+              surface: '#FDFCFB'
+            },
+            canvas: '#F9F9F8',
+            panel: '#FFFFFF',
+            border: '#E8E8E6',
+            'border-subtle': '#F0EFEF',
+            charcoal: {
+              900: '#171717',
+              800: '#262626',
+              600: '#525252',
+              400: '#A3A3A3',
+              200: '#E5E5E5'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'Inter', 'Roboto', 'system-ui', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif']
+          },
+          boxShadow: {
+            'elevation-sm': '0 2px 8px -2px rgba(17, 24, 39, 0.05), 0 1px 3px -1px rgba(17, 24, 39, 0.03)',
+            'composer': '0 8px 30px -6px rgba(17, 24, 39, 0.07), 0 2px 8px -2px rgba(17, 24, 39, 0.04)'
+          }
+        }
+      }
+    };
+  </script>
+<!-- Typography & Component Micro-adjustments -->
+<style data-purpose="custom-enhancements">
+    /* Native tap highlight suppression */
+    * {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    input, textarea {
+      user-select: text;
+    }
+    /* Smooth transition presets */
+    .transition-interactive {
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
+<meta content="web_standard" name="shell-type"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-neutral-100 flex items-center justify-center min-h-screen p-0 sm:p-4 text-charcoal-900 font-sans antialiased">
+<!-- BEGIN: PhoneShellContainer -->
+<!-- Constrains layout to typical modern Android proportions (~412px wide, 20:9 ratio) -->
+<div class="relative w-full max-w-[420px] h-[884px] max-h-[920px] bg-canvas flex flex-col justify-between overflow-hidden sm:rounded-[44px] sm:shadow-2xl sm:ring-1 sm:ring-black/10">
+<!-- BEGIN: AndroidStatusBar -->
+<!-- Authentic Android 14/15 top bar with carrier, time, and system glyphs -->
+<header class="w-full pt-3 px-6 pb-2 flex items-center justify-between z-30 shrink-0 text-charcoal-900 select-none">
+<!-- System Clock -->
+<span class="text-[13.5px] font-semibold tracking-tight tabular-nums pl-0.5">13:38</span>
+<!-- System Status Indicators (Right) -->
+<div aria-label="System status" class="flex items-center space-x-2 text-charcoal-800">
+<!-- VoLTE / 5G -->
+<span class="text-[10px] font-bold tracking-tighter uppercase px-1 py-0.2 bg-black/5 rounded">5G</span>
+<!-- Cellular Signal Strength -->
+<svg class="w-3.5 h-3.5" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 3L2 21h20L12 3zm0 4.2L18.8 19H5.2L12 7.2z"></path>
+</svg>
+<!-- Wi-Fi Icon -->
+<svg class="w-3.5 h-3.5" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4zm0 3.3c3.48 0 6.66 1.34 9.07 3.53L12 19.82 2.93 10.83C5.34 8.64 8.52 7.3 12 7.3z"></path>
+</svg>
+<!-- Battery Level Indicator -->
+<div class="flex items-center space-x-0.5 pl-0.5">
+<span class="text-[11px] font-medium tabular-nums mr-0.5">85%</span>
+<div class="w-4.5 h-2.5 border border-charcoal-900 rounded-[2.5px] p-[1px] flex items-center relative">
+<div class="w-2.5 h-full bg-charcoal-900 rounded-[1px]"></div>
+<div class="w-[1.5px] h-1 bg-charcoal-900 absolute -right-[2.5px] rounded-r-xs"></div>
+</div>
+</div>
+</div>
+</header>
+<!-- END: AndroidStatusBar -->
+<!-- BEGIN: TopAppBar -->
+<!-- Minimal developer workspace navigation -->
+<nav aria-label="Top navigation" class="w-full px-4 py-2 flex items-center justify-between z-20 shrink-0">
+<!-- Left: Navigation Drawer Toggle -->
+<button aria-label="Open menu" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 active:bg-black/10 transition-interactive text-charcoal-800" type="button">
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewbox="0 0 24 24">
+<line x1="3.5" x2="20.5" y1="7" y2="7"></line>
+<line x1="3.5" x2="16.5" y1="12" y2="12"></line>
+<line x1="3.5" x2="13" y1="17" y2="17"></line>
+</svg>
+</button>
+<!-- Center: Model / Workspace Switcher Pill -->
+<button aria-label="Select AI Model" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-panel border border-border shadow-elevation-sm hover:border-charcoal-400 active:scale-95 transition-interactive text-charcoal-900" type="button">
+<span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+<span class="text-xs font-semibold tracking-tight text-charcoal-800">ClauDroide</span>
+<span class="text-[11px] text-charcoal-400 font-normal">· Sonnet 3.7</span>
+<svg class="w-3.5 h-3.5 text-charcoal-400 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<polyline points="6 9 12 15 18 9"></polyline>
+</svg>
+</button>
+<!-- Right: Action Buttons (New Chat & Profile) -->
+<div class="flex items-center space-x-0.5">
+<button aria-label="New chat" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 active:bg-black/10 transition-interactive text-charcoal-800" type="button">
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewbox="0 0 24 24">
+<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+</svg>
+</button>
+</div>
+</nav>
+<!-- END: TopAppBar -->
+<!-- BEGIN: MainContentArea -->
+<!-- Scrollable central canvas with brand hallmark and developer prompts -->
+<main class="flex-1 flex flex-col justify-center items-center px-6 overflow-y-auto z-10 -mt-10"><div class="flex flex-col w-full space-y-5 pb-3">
+<!-- Metadata Sub-bar: Active context indicators & ADB link -->
+<div class="flex items-center justify-between px-1 text-on-surface-variant font-label-mono text-label-mono">
+<div class="flex items-center space-x-2">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-container text-on-surface text-label-mono font-label-mono">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+        Pixel 8 Pro · API 34
+      </span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-low text-secondary text-label-mono font-label-mono">
+        app/services
+      </span>
+</div>
+<span class="text-secondary text-label-mono font-label-mono tracking-tight">Thread #1084</span>
+</div>
+<!-- User Prompt Message Card -->
+<div class="flex justify-end w-full pl-6">
+<div class="bg-surface-container-low text-on-surface rounded-2xl rounded-tr-sm p-3.5 shadow-sm space-y-1.5 max-w-[92%] transition-interactive">
+<div class="flex items-center justify-between text-secondary">
+<span class="text-label-mono font-label-mono text-[10px] uppercase tracking-wider font-semibold">Du</span>
+<span class="text-label-mono font-label-mono text-[10px] text-secondary">13:37</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface leading-snug">
+        Wie implementiere ich am besten einen Foreground Service mit Coroutines in Jetpack Compose für Audioaufnahmen im Hintergrund?
+      </p>
+</div>
+</div>
+<!-- Assistant Response Section -->
+<div class="w-full flex flex-col space-y-3">
+<!-- Assistant Avatar & Attribution Header -->
+<div class="flex items-center space-x-2 px-1">
+<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-on-primary shadow-sm shrink-0">
+<!-- Anthropic Terracotta Spark / Star Icon -->
+<svg class="w-3.5 h-3.5 fill-current" viewbox="0 0 24 24">
+<path d="M12 2L14.2 9.8L22 12L14.2 14.2L12 22L9.8 14.2L2 12L9.8 9.8L12 2Z"></path>
+</svg>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">ClauDroide</span>
+<span class="text-secondary font-label-mono text-label-mono">· gerade eben</span>
+</div>
+<!-- Editorial Prose Response Content -->
+<div class="space-y-3 px-1 text-on-surface">
+<p class="font-body-md text-body-md leading-relaxed">
+        Für Audioaufnahmen im Hintergrund unter modernen Android-Versionen (API 34+) empfiehlt sich die Kombination aus einem <code class="px-1.5 py-0.5 rounded bg-surface-container text-primary font-code-sm text-code-sm">ForegroundService</code> mit dem Service-Typ <code class="px-1.5 py-0.5 rounded bg-surface-container text-primary font-code-sm text-code-sm">microphone</code> und einem gebundenen CoroutineScope.
+      </p>
+<!-- Structured Architectural Guidance -->
+<div class="space-y-2 py-0.5 font-body-md text-body-md leading-relaxed">
+<div class="flex items-start space-x-2.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0"></span>
+<p>
+<strong class="font-semibold text-on-surface">Service-Deklaration</strong>: Deklariere <code class="px-1 py-0.5 rounded bg-surface-container font-code-sm text-code-sm text-on-surface">android:foregroundServiceType="microphone"</code> und <code class="px-1 py-0.5 rounded bg-surface-container font-code-sm text-code-sm text-on-surface">POST_NOTIFICATIONS</code> im Manifest.
+          </p>
+</div>
+<div class="flex items-start space-x-2.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0"></span>
+<p>
+<strong class="font-semibold text-on-surface">Notification</strong>: Erstelle eine persistente Notification mit Stop-/Pause-Intents.
+          </p>
+</div>
+<div class="flex items-start space-x-2.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0"></span>
+<p>
+<strong class="font-semibold text-on-surface">Lifecycle</strong>: Starte den Scope mit <code class="px-1 py-0.5 rounded bg-surface-container font-code-sm text-code-sm text-on-surface">ServiceLifecycleDispatcher</code> oder verwalte einen eigenen <code class="px-1 py-0.5 rounded bg-surface-container font-code-sm text-code-sm text-on-surface">SupervisorJob()</code>.
+          </p>
+</div>
+</div>
+</div>
+<!-- IDE Code Container with Syntax Highlighting and Copy Action -->
+<div class="w-full rounded-xl bg-surface-container-high overflow-hidden shadow-sm">
+<!-- File Strip Header -->
+<div class="flex items-center justify-between px-3.5 py-2 bg-surface-container border-b-0 text-secondary">
+<div class="flex items-center space-x-2">
+<!-- Kotlin Badge Glyph -->
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-label-mono text-label-mono font-medium text-on-surface">AudioRecordingService.kt</span>
+</div>
+<button aria-label="Code kopieren" class="flex items-center space-x-1.5 px-2 py-0.5 rounded bg-surface hover:bg-surface-container text-on-surface font-label-mono text-label-mono transition-interactive active:scale-95" id="copyBtn" onclick="navigator.clipboard?.writeText(document.getElementById('codeSample').innerText); const l = document.getElementById('copyLabel'); l.innerText = 'Kopiert!'; setTimeout(() =&gt; l.innerText = 'Kopieren', 2000);" type="button">
+<svg class="w-3.5 h-3.5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<rect height="13" rx="2" ry="2" width="13" x="9" y="9"></rect>
+<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+</svg>
+<span id="copyLabel">Kopieren</span>
+</button>
+</div>
+<!-- Syntax Highlighted Code Canvas -->
+<pre class="p-3.5 overflow-x-auto font-code-sm text-code-sm text-on-surface leading-relaxed select-text"><code id="codeSample"><span class="text-primary font-semibold">class</span> <span class="text-tertiary font-semibold">AudioRecordingService</span> : <span class="text-on-surface-variant">Service</span>() {
+    <span class="text-primary font-semibold">private val</span> serviceJob = <span class="text-tertiary">SupervisorJob</span>()
+    <span class="text-primary font-semibold">private val</span> serviceScope = <span class="text-tertiary">CoroutineScope</span>(<span class="text-on-surface-variant">Dispatchers</span>.Default + serviceJob)
+    
+    <span class="text-primary font-semibold">override fun</span> <span class="text-tertiary">onStartCommand</span>(intent: <span class="text-on-surface-variant">Intent</span>?, flags: <span class="text-on-surface-variant">Int</span>, startId: <span class="text-on-surface-variant">Int</span>): <span class="text-on-surface-variant">Int</span> {
+        <span class="text-primary font-semibold">val</span> notification = createRecordingNotification()
+        startForeground(NOTIFICATION_ID, notification, FOREGROUND_SERVICE_TYPE_MICROPHONE)
+        <span class="text-primary font-semibold">return</span> START_STICKY
+    }
+}</code></pre>
+</div>
+<!-- Official Documentation Source Tag -->
+<div class="px-1 pt-0.5">
+<div class="inline-flex items-center space-x-2 px-3 py-2 rounded-xl bg-surface-container text-on-surface-variant font-body-sm text-body-sm">
+<svg class="w-4 h-4 text-primary shrink-0 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+<path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+</svg>
+<span class="text-secondary text-label-mono text-label-mono truncate">
+          Referenz: Android Developers Guide – Foreground Services &amp; Background Processing (Android 14+)
+        </span>
+</div>
+</div>
+<!-- Interactive Quick Feedback Pill Row -->
+<div class="flex items-center space-x-2 px-1 pt-1 text-secondary">
+<button class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-surface-container hover:bg-surface-container-high text-label-mono font-label-mono text-on-surface transition-interactive" type="button">
+<svg class="w-3.5 h-3.5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+</svg>
+<span>Hilfreich</span>
+</button>
+<button class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-surface-container hover:bg-surface-container-high text-label-mono font-label-mono text-on-surface transition-interactive" type="button">
+<svg class="w-3.5 h-3.5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<polyline points="16 3 21 3 21 8"></polyline>
+<line x1="4" x2="21" y1="20" y2="3"></line>
+<polyline points="21 16 21 21 16 21"></polyline>
+<line x1="15" x2="21" y1="15" y2="21"></line>
+<line x1="4" x2="9" y1="4" y2="9"></line>
+</svg>
+<span>Im Projekt anwenden</span>
+</button>
+</div>
+</div>
+</div></main>
+<!-- END: MainContentArea -->
+<!-- BEGIN: BottomInputSection -->
+<!-- Floating elevated multi-purpose composer card -->
+<div class="w-full px-4 pb-2 z-20">
+<!-- Composer Card Container -->
+<div class="w-full bg-panel border border-border rounded-2xl shadow-composer p-3 flex flex-col space-y-2.5 focus-within:border-charcoal-400 transition-interactive">
+<!-- Textarea input field -->
+<textarea aria-label="Message prompt input" class="w-full resize-none border-0 p-0 text-sm placeholder:text-charcoal-400 text-charcoal-900 focus:ring-0 bg-transparent leading-relaxed" placeholder="Ask ClauDroide anything..." rows="2" style="min-height: 48px; max-height: 120px;"></textarea>
+<!-- Composer Bottom Action Bar -->
+<div class="flex items-center justify-between pt-1">
+<!-- Left: Attachment and Model Context Pill -->
+<div class="flex items-center space-x-2">
+<!-- Add Media / File Button -->
+<button aria-label="Add attachment or code snippet" class="w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 active:scale-95 flex items-center justify-center text-charcoal-600 transition-interactive" type="button">
+<svg class="w-4 h-4 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<line x1="12" x2="12" y1="5" y2="19"></line>
+<line x1="5" x2="19" y1="12" y2="12"></line>
+</svg>
+</button>
+<!-- Mode Selector Capsule -->
+<button aria-label="Context configuration" class="px-2.5 py-1 rounded-full bg-neutral-100 hover:bg-neutral-200 text-[11px] font-medium text-charcoal-700 flex items-center space-x-1.5 transition-interactive" type="button">
+<svg class="w-3 h-3 text-brand" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<polyline points="4 17 10 11 4 5"></polyline>
+<line x1="12" x2="20" y1="19" y2="19"></line>
+</svg>
+<span>Code Mode</span>
+</button>
+</div>
+<!-- Right: Audio and Primary Submit Buttons -->
+<div class="flex items-center space-x-1.5">
+<!-- Voice Input Button -->
+<button aria-label="Use voice input" class="w-8 h-8 rounded-full hover:bg-neutral-100 active:bg-neutral-200 flex items-center justify-center text-charcoal-600 transition-interactive" type="button">
+<svg class="w-4 h-4 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+<path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+<line x1="12" x2="12" y1="19" y2="23"></line>
+<line x1="8" x2="16" y1="23" y2="23"></line>
+</svg>
+</button>
+<!-- Primary Send Action Button (Anthropic Terracotta Accent) -->
+<button aria-label="Send message" class="w-8 h-8 rounded-full bg-brand hover:bg-brand-hover active:scale-95 text-white flex items-center justify-center shadow-sm transition-interactive" type="button">
+<svg class="w-4 h-4 stroke-[2.2] translate-y-[-0.5px]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<line x1="12" x2="12" y1="19" y2="5"></line>
+<polyline points="5 12 12 5 19 12"></polyline>
+</svg>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- END: BottomInputSection -->
+<!-- BEGIN: AndroidNavigationPill -->
+<!-- Standard Android gesture navigation bar indicator -->
+<footer aria-label="System navigation" class="w-full h-5 flex items-center justify-center shrink-0 mb-1">
+<div class="w-32 h-1 bg-charcoal-900/30 rounded-full"></div>
+</footer>
+<!-- END: AndroidNavigationPill -->
+</div>
+<!-- END: PhoneShellContainer -->
+</body></html>

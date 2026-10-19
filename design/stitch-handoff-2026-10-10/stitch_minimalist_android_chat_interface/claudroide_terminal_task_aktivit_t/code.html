@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface": "#f9f9f8", "on-secondary": "#ffffff", "surface-tint": "#a23e18", "on-secondary-fixed": "#121c2a", "on-error-container": "#93000a", "on-secondary-container": "#596373", "surface-bright": "#f9f9f8", "inverse-surface": "#2f3130", "error": "#ba1a1a", "surface-variant": "#e2e2e2", "on-tertiary-container": "#fffbff", "surface-container-highest": "#e2e2e2", "secondary-fixed": "#d9e3f6", "tertiary-fixed-dim": "#c3c0ff", "on-primary-fixed-variant": "#822801", "tertiary": "#4b41e1", "on-primary-fixed": "#390c00", "inverse-primary": "#ffb59c", "outline": "#8a726a", "secondary-container": "#d6e0f3", "on-tertiary": "#ffffff", "on-surface": "#1a1c1c", "surface-container": "#eeeeed", "tertiary-fixed": "#e2dfff", "on-tertiary-fixed": "#0f0069", "primary-container": "#bf542c", "on-error": "#ffffff", "on-primary-container": "#fffbff", "primary-fixed": "#ffdbcf", "inverse-on-surface": "#f1f1f0", "surface-dim": "#dadad9", "primary-fixed-dim": "#ffb59c", "surface-container-high": "#e8e8e7", "on-primary": "#ffffff", "on-secondary-fixed-variant": "#3d4756", "surface-container-lowest": "#ffffff", "outline-variant": "#dec0b7", "on-surface-variant": "#57423b", "surface-container-low": "#f3f4f3", "secondary-fixed-dim": "#bdc7d9", "primary": "#9f3c16", "error-container": "#ffdad6", "secondary": "#555f6f", "on-tertiary-fixed-variant": "#3323cc", "on-background": "#1a1c1c", "background": "#f9f9f8", "tertiary-container": "#645efb" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "gutter-tablet": "1.5rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "gutter-desktop": "2rem", "margin": "1rem", "space-lg": "1.5rem", "space-md": "1rem", "space-xl": "2.5rem", "margin-desktop": "2.5rem", "gutter": "1rem", "margin-tablet": "1.5rem" }, fontFamily: { "code-sm": ["JetBrains Mono"], "code-md": ["JetBrains Mono"], "headline-lg": ["Inter"], "headline-xl": ["Inter"], "body-sm": ["Inter"], "body-md": ["Inter"], "body-lg": ["Inter"], "label-md": ["Inter"], "label-mono": ["JetBrains Mono"], "headline-md": ["Inter"] }, fontSize: { "code-sm": ["12px", { lineHeight: "18px", fontWeight: "400" }], "code-md": ["13.5px", { lineHeight: "22px", fontWeight: "450" }], "headline-lg": ["24px", { lineHeight: "32px", letterSpacing: "-0.015em", fontWeight: "600" }], "headline-xl": ["32px", { lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "600" }], "body-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }], "body-md": ["14px", { lineHeight: "22px", fontWeight: "400" }], "body-lg": ["16px", { lineHeight: "26px", letterSpacing: "-0.005em", fontWeight: "400" }], "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500" }], "label-mono": ["11px", { lineHeight: "14px", letterSpacing: "0.04em", fontWeight: "500" }], "headline-md": ["20px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "600" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-gutter flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0"><button aria-label="Navigate back" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container transition-colors" onclick="history.back()"><span class="material-symbols-outlined text-[22px]">arrow_back</span></button><div class="flex flex-col min-w-0"><div class="flex items-center gap-space-xs"><span class="text-label-mono font-label-mono text-on-surface-variant truncate">FlyLab Android Client</span><span class="text-label-mono font-label-mono text-primary bg-primary-fixed px-1.5 py-0.5 rounded-full">main</span></div><h1 class="text-headline-md font-headline-md text-on-surface truncate">Terminal And Task Activity</h1></div></div><div class="flex items-center gap-space-xs shrink-0"><button aria-label="More workspace actions" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col relative w-full pt-16 bg-surface min-h-screen pb-safe"><div class="flex flex-col w-full pb-24">
+<!-- Active Task Status Header Card -->
+<div class="px-margin pt-space-sm flex flex-col gap-space-sm">
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-md">
+<!-- Top info bar with pulsing status -->
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs mb-1">
+<span class="relative flex h-2.5 w-2.5 items-center justify-center">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="text-label-mono font-label-mono text-primary font-semibold">Wird ausgeführt…</span>
+<span class="text-label-mono font-label-mono text-on-surface-variant">• Laufzeit: <span id="timer-counter">00:42 Min</span></span>
+</div>
+<code class="text-code-sm font-code-sm text-on-surface bg-surface-container px-2 py-1 rounded select-all break-all leading-tight">
+            ./gradlew :app:assembleDebug -Dorg.gradle.parallel=true
+          </code>
+</div>
+<div class="shrink-0 flex items-center bg-surface-container-low px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-[16px] text-primary animate-spin mr-1">sync</span>
+<span class="text-label-mono font-label-mono text-on-surface-variant">Task #142</span>
+</div>
+</div>
+<!-- Environment Badges / Spec Info -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<div class="bg-surface-container-low px-2 py-0.5 rounded text-label-mono font-label-mono text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-secondary">terminal</span>
+          Gradle 8.5
+        </div>
+<div class="bg-surface-container-low px-2 py-0.5 rounded text-label-mono font-label-mono text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-secondary">coffee</span>
+          JDK 17 (Temurin)
+        </div>
+<div class="bg-surface-container-low px-2 py-0.5 rounded text-label-mono font-label-mono text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-secondary">memory</span>
+          NDK r26b
+        </div>
+<div class="bg-secondary-container px-2 py-0.5 rounded text-label-mono font-label-mono text-on-secondary-fixed flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>
+          Pixel 8 Pro (ADB)
+        </div>
+</div>
+<!-- Quick Controls Row -->
+<div class="flex items-center justify-between gap-space-sm pt-space-xs">
+<div class="flex items-center gap-space-xs">
+<button class="h-9 px-3 rounded-lg bg-error-container text-on-error-container flex items-center gap-1.5 active:opacity-80 transition-opacity" id="btn-stop-task">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">stop</span>
+<span class="text-label-md font-label-md font-semibold">Prozess stoppen</span>
+</button>
+<button class="h-9 px-2.5 rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface active:bg-surface-container-high transition-colors flex items-center gap-1" id="btn-clear-console">
+<span class="material-symbols-outlined text-[16px]">delete_sweep</span>
+<span class="text-label-md font-label-md">Leeren</span>
+</button>
+</div>
+<button class="h-9 px-2.5 rounded-lg bg-primary-fixed text-on-primary-fixed flex items-center gap-1 active:opacity-90 transition-opacity" id="toggle-autoscroll">
+<span class="material-symbols-outlined text-[15px]">vertical_align_bottom</span>
+<span class="text-label-mono font-label-mono">Autoscroll: Ein</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Structured Task Steps -->
+<div class="px-margin pt-space-md flex flex-col gap-space-xs">
+<div class="flex items-center justify-between px-1 mb-1">
+<span class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Build-Pipelineschritte</span>
+<span class="text-label-mono font-label-mono text-primary font-medium">3 / 4 Abgeschlossen</span>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-space-sm shadow-sm flex flex-col divide-y divide-surface-container-low">
+<!-- Step 1: Initialized -->
+<div class="flex items-center justify-between py-2 px-space-xs">
+<div class="flex items-center gap-2.5 min-w-0">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[15px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<span class="text-body-sm font-body-sm font-medium text-on-surface truncate">Gradle Daemon initialisiert</span>
+</div>
+<span class="text-label-mono font-label-mono text-on-surface-variant shrink-0 ml-2">2.1s</span>
+</div>
+<!-- Step 2: C++ NDK -->
+<div class="flex items-center justify-between py-2 px-space-xs">
+<div class="flex items-center gap-2.5 min-w-0">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[15px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-body-sm font-body-sm font-medium text-on-surface truncate">C++ NDK / CMake Kompilierung</span>
+<span class="text-label-mono font-label-mono text-on-surface-variant truncate">target: libaudioengine.so</span>
+</div>
+</div>
+<span class="text-label-mono font-label-mono text-on-surface-variant shrink-0 ml-2">14.8s</span>
+</div>
+<!-- Step 3: Kotlin KSP -->
+<div class="flex items-center justify-between py-2 px-space-xs">
+<div class="flex items-center gap-2.5 min-w-0">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[15px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<span class="text-body-sm font-body-sm font-medium text-on-surface truncate">Kotlin KSP Code-Generierung</span>
+</div>
+<span class="text-label-mono font-label-mono text-on-surface-variant shrink-0 ml-2">8.4s</span>
+</div>
+<!-- Step 4: Dex transformation (In Progress) -->
+<div class="flex items-center justify-between py-2 px-space-xs bg-primary-fixed/20 rounded-lg">
+<div class="flex items-center gap-2.5 min-w-0">
+<div class="w-6 h-6 rounded-full bg-primary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[15px] text-primary animate-spin">progress_activity</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-body-sm font-body-sm font-semibold text-primary truncate">Dex-Transformation &amp; Resource Packaging</span>
+<span class="text-label-mono font-label-mono text-primary truncate">D8 Dexer parallel processing</span>
+</div>
+</div>
+<span class="text-label-mono font-label-mono text-primary font-medium shrink-0 ml-2">16.2s...</span>
+</div>
+</div>
+</div>
+<!-- Terminal Output Console -->
+<div class="px-margin pt-space-md flex flex-col gap-space-xs">
+<!-- Log Filter Pills Header -->
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-1.5">
+<span class="text-label-md font-label-md text-on-surface-variant">Filter:</span>
+<button class="px-2 py-0.5 rounded-full text-label-mono font-label-mono bg-surface-container-highest text-on-surface font-semibold shadow-xs" id="btn-filter-all" onclick="filterLogs('all')">
+          Alle (9)
+        </button>
+<button class="px-2 py-0.5 rounded-full text-label-mono font-label-mono bg-surface-container text-on-surface-variant flex items-center gap-1" id="btn-filter-warn" onclick="filterLogs('warn')">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+          Warnungen (1)
+        </button>
+<button class="px-2 py-0.5 rounded-full text-label-mono font-label-mono bg-surface-container text-on-surface-variant flex items-center gap-1" id="btn-filter-err" onclick="filterLogs('err')">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+          Fehler (0)
+        </button>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" onclick="copyLogs()" title="Logs kopieren">
+<span class="material-symbols-outlined text-[17px]">content_copy</span>
+</button>
+</div>
+</div>
+<!-- Dark Terminal Canvas -->
+<div class="bg-inverse-surface rounded-xl p-3.5 shadow-md flex flex-col min-h-[280px] max-h-[360px] overflow-hidden">
+<!-- Window controls mock / terminal mini bar -->
+<div class="flex items-center justify-between pb-2 mb-2 border-b border-surface-variant/10 text-surface-dim">
+<div class="flex items-center gap-1.5">
+<div class="w-2.5 h-2.5 rounded-full bg-error/80"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-primary-fixed-dim/80"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-secondary-fixed-dim/80"></div>
+<span class="ml-2 text-label-mono font-label-mono text-surface-variant/70 text-[10px]">bash · flylab-build-worker-01</span>
+</div>
+<span class="text-label-mono font-label-mono text-surface-variant/70 text-[10px]">UTF-8</span>
+</div>
+<!-- Log Content Container (scrollable) -->
+<div class="flex flex-col gap-1 overflow-y-auto overscroll-contain pr-1 font-code-sm text-code-sm leading-relaxed" id="terminal-stream">
+<div class="log-entry log-info text-surface-dim flex items-start gap-2">
+<span class="text-surface-variant/40 shrink-0 select-none">10:41:02</span>
+<span><span class="text-secondary-fixed">&gt; Task</span> <span class="text-surface-bright">:app:preBuild</span> <span class="text-surface-variant/60">UP-TO-DATE</span></span>
+</div>
+<div class="log-entry log-info text-surface-dim flex items-start gap-2">
+<span class="text-surface-variant/40 shrink-0 select-none">10:41:03</span>
+<span><span class="text-secondary-fixed">&gt; Task</span> <span class="text-surface-bright">:app:generateDebugResValues</span> <span class="text-surface-variant/60">UP-TO-DATE</span></span>
+</div>
+<div class="log-entry log-info text-surface-dim flex items-start gap-2">
+<span class="text-surface-variant/40 shrink-0 select-none">10:41:05</span>
+<span class="text-surface-variant"><span class="text-inverse-primary">[CMake]</span> Building CXX object CMakeFiles/audioengine.dir/native-lib.cpp.o</span>
+</div>
+<div class="log-entry log-info text-surface-dim flex items-start gap-2">
+<span class="text-surface-variant/40 shrink-0 select-none">10:41:17</span>
+<span class="text-surface-variant"><span class="text-inverse-primary">[CMake]</span> Linking CXX shared library <span class="text-surface-bright font-medium">libaudioengine.so</span> <span class="text-secondary-fixed-dim">[100%]</span></span>
+</div>
+<div class="log-entry log-info text-surface-dim flex items-start gap-2">
+<span class="text-surface-variant/40 shrink-0 select-none">10:41:19</span>
+<span class="text-secondary-fixed"><span class="text-secondary-fixed font-semibold">[INFO]</span> NPU Hexagon delegate linked via QNN SDK 2.18</span>
+</div>
+<div class="log-entry log-info text-surface-dim flex items-start gap-2">
+<span class="text-surface-variant/40 shrink-0 select-none">10:41:22</span>
+<span><span class="text-secondary-fixed">&gt; Task</span> <span class="text-surface-bright">:app:compileDebugKotlin</span></span>
+</div>
+<!-- Warning line -->
+<div class="log-entry log-warn bg-primary-container/20 -mx-2 px-2 py-0.5 rounded flex items-start gap-2 text-primary-fixed">
+<span class="text-surface-variant/40 shrink-0 select-none">10:41:29</span>
+<div class="flex items-start gap-1">
+<span class="text-primary-fixed-dim font-bold shrink-0">w:</span>
+<span>/AudioRecordingService.kt: (34, 12): Parameter 'flags' is unused</span>
+</div>
+</div>
+<div class="log-entry log-info text-surface-dim flex items-start gap-2">
+<span class="text-surface-variant/40 shrink-0 select-none">10:41:31</span>
+<span><span class="text-secondary-fixed">&gt; Task</span> <span class="text-surface-bright">:app:mergeDebugNativeLibs</span> <span class="text-primary font-semibold">[RUNNING]</span></span>
+</div>
+<div class="log-entry log-info text-surface-dim flex items-start gap-2">
+<span class="text-surface-variant/40 shrink-0 select-none">10:41:44</span>
+<span><span class="text-secondary-fixed">&gt; Task</span> <span class="text-surface-bright">:app:dexBuilderDebug</span> <span class="text-inverse-primary">Dexing 48 class directories...</span></span>
+</div>
+<!-- Live pulsing cursor at end of stream -->
+<div class="flex items-center gap-2 pt-1">
+<span class="text-surface-variant/40 select-none text-[10px]">10:41:45</span>
+<span class="text-inverse-primary font-bold">&gt;</span>
+<span class="w-2 h-4 bg-primary inline-block animate-pulse"></span>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Command Assist Chips -->
+<div class="px-margin pt-space-sm flex items-center gap-space-xs overflow-x-auto pb-1">
+<button class="h-7 px-2.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant text-label-mono font-label-mono shrink-0 flex items-center gap-1" onclick="setCommand('adb logcat -v time | grep FlyLab')">
+<span class="text-primary text-[10px]">$</span>
+<span>adb logcat | grep</span>
+</button>
+<button class="h-7 px-2.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant text-label-mono font-label-mono shrink-0 flex items-center gap-1" onclick="setCommand('./gradlew --stop')">
+<span class="text-primary text-[10px]">$</span>
+<span>gradlew --stop</span>
+</button>
+<button class="h-7 px-2.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant text-label-mono font-label-mono shrink-0 flex items-center gap-1" onclick="setCommand('./gradlew testDebugUnitTest')">
+<span class="text-primary text-[10px]">$</span>
+<span>testDebugUnitTest</span>
+</button>
+</div>
+<!-- Sticky Command Input Dock -->
+<div class="fixed bottom-0 left-0 right-0 p-space-sm bg-surface/90 backdrop-blur-xl shadow-lg z-40">
+<div class="flex items-center gap-space-xs bg-surface-container-lowest rounded-xl p-1.5 shadow-sm">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary font-code-md text-code-md font-bold shrink-0">
+        $
+      </div>
+<input autocomplete="off" class="w-full bg-transparent px-2 text-on-surface font-code-sm text-code-sm focus:outline-none placeholder:text-outline-variant" id="cmd-input" placeholder="adb logcat | grep FlyLab..." spellcheck="false" type="text" value="adb logcat | grep FlyLab"/>
+<button aria-label="Befehl ausführen" class="w-10 h-10 rounded-lg bg-primary hover:bg-primary-container text-on-primary flex items-center justify-center shrink-0 transition-colors shadow-xs" id="btn-submit-cmd">
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+  // Simple Micro-interactions & State
+  let autoscroll = true;
+  let timerSeconds = 42;
+
+  // Timer simulation
+  setInterval(() => {
+    timerSeconds++;
+    const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+    const secs = String(timerSeconds % 60).padStart(2, '0');
+    const el = document.getElementById('timer-counter');
+    if (el) el.textContent = `${mins}:${secs} Min`;
+  }, 1000);
+
+  // Command Helper
+  function setCommand(cmd) {
+    const input = document.getElementById('cmd-input');
+    if (input) {
+      input.value = cmd;
+      input.focus();
+    }
+  }
+
+  // Filter interaction
+  function filterLogs(type) {
+    const stream = document.getElementById('terminal-stream');
+    const entries = stream.querySelectorAll('.log-entry');
+    
+    // reset button styling
+    ['btn-filter-all', 'btn-filter-warn', 'btn-filter-err'].forEach(id => {
+      const b = document.getElementById(id);
+      if (b) {
+        b.classList.remove('bg-surface-container-highest', 'text-on-surface', 'font-semibold');
+        b.classList.add('bg-surface-container', 'text-on-surface-variant');
+      }
+    });
+
+    const activeBtn = document.getElementById(`btn-filter-${type}`);
+    if (activeBtn) {
+      activeBtn.classList.add('bg-surface-container-highest', 'text-on-surface', 'font-semibold');
+      activeBtn.classList.remove('bg-surface-container', 'text-on-surface-variant');
+    }
+
+    entries.forEach(entry => {
+      if (type === 'all') {
+        entry.style.display = 'flex';
+      } else if (type === 'warn') {
+        entry.style.display = entry.classList.contains('log-warn') ? 'flex' : 'none';
+      } else if (type === 'err') {
+        entry.style.display = entry.classList.contains('log-err') ? 'flex' : 'none';
+      }
+    });
+  }
+
+  // Toggle autoscroll
+  const toggleBtn = document.getElementById('toggle-autoscroll');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      autoscroll = !autoscroll;
+      toggleBtn.innerHTML = `
+        <span class="material-symbols-outlined text-[15px]">${autoscroll ? 'vertical_align_bottom' : 'pause'}</span>
+        <span class="text-label-mono font-label-mono">Autoscroll: ${autoscroll ? 'Ein' : 'Aus'}</span>
+      `;
+      if (!autoscroll) {
+        toggleBtn.classList.remove('bg-primary-fixed', 'text-on-primary-fixed');
+        toggleBtn.classList.add('bg-surface-container', 'text-on-surface-variant');
+      } else {
+        toggleBtn.classList.add('bg-primary-fixed', 'text-on-primary-fixed');
+        toggleBtn.classList.remove('bg-surface-container', 'text-on-surface-variant');
+      }
+    });
+  }
+
+  // Stop process button state
+  const stopBtn = document.getElementById('btn-stop-task');
+  if (stopBtn) {
+    stopBtn.addEventListener('click', () => {
+      stopBtn.innerHTML = `
+        <span class="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+        <span class="text-label-md font-label-md font-semibold">Wird abgebrochen…</span>
+      `;
+      stopBtn.classList.add('opacity-70');
+      setTimeout(() => {
+        stopBtn.innerHTML = `
+          <span class="material-symbols-outlined text-[16px]">cancel</span>
+          <span class="text-label-md font-label-md font-semibold">Gestoppt</span>
+        `;
+      }, 1200);
+    });
+  }
+
+  // Clear console
+  const clearBtn = document.getElementById('btn-clear-console');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      const stream = document.getElementById('terminal-stream');
+      if (stream) {
+        stream.innerHTML = `
+          <div class="text-surface-variant/40 italic py-2">-- Terminal zurückgesetzt --</div>
+          <div class="flex items-center gap-2 pt-1">
+            <span class="text-inverse-primary font-bold">&gt;</span>
+            <span class="w-2 h-4 bg-primary inline-block animate-pulse"></span>
+          </div>
+        `;
+      }
+    });
+  }
+
+  // Copy logs simulation
+  function copyLogs() {
+    navigator.clipboard?.writeText(document.getElementById('terminal-stream')?.innerText || '');
+  }
+
+  // Submit mock command
+  const submitBtn = document.getElementById('btn-submit-cmd');
+  const inputEl = document.getElementById('cmd-input');
+  function executeCmd() {
+    if (!inputEl || !inputEl.value.trim()) return;
+    const stream = document.getElementById('terminal-stream');
+    if (stream) {
+      const newDiv = document.createElement('div');
+      newDiv.className = 'log-entry text-inverse-primary flex items-start gap-2 pt-1';
+      newDiv.innerHTML = `
+        <span class="text-surface-variant/40 select-none text-[10px]">JETZT</span>
+        <span><span class="text-primary font-bold">$</span> ${inputEl.value}</span>
+      `;
+      stream.appendChild(newDiv);
+      if (autoscroll) stream.scrollTop = stream.scrollHeight;
+      inputEl.value = '';
+    }
+  }
+
+  submitBtn?.addEventListener('click', executeCmd);
+  inputEl?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') executeCmd();
+  });
+</script></main></body></html>

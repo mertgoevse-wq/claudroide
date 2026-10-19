@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>ClauDroide Mobile Workspace</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script data-purpose="tailwind-config" id="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#C85A32',
+              hover: '#B54E29',
+              subtle: '#FAF0EB',
+              surface: '#FDFCFB'
+            },
+            canvas: '#F9F9F8',
+            panel: '#FFFFFF',
+            border: '#E8E8E6',
+            'border-subtle': '#F0EFEF',
+            charcoal: {
+              900: '#171717',
+              800: '#262626',
+              600: '#525252',
+              400: '#A3A3A3',
+              200: '#E5E5E5'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'Inter', 'Roboto', 'system-ui', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif']
+          },
+          boxShadow: {
+            'elevation-sm': '0 2px 8px -2px rgba(17, 24, 39, 0.05), 0 1px 3px -1px rgba(17, 24, 39, 0.03)',
+            'composer': '0 8px 30px -6px rgba(17, 24, 39, 0.07), 0 2px 8px -2px rgba(17, 24, 39, 0.04)'
+          }
+        }
+      }
+    };
+  </script>
+<!-- Typography & Component Micro-adjustments -->
+<style data-purpose="custom-enhancements">
+    /* Native tap highlight suppression */
+    * {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    input, textarea {
+      user-select: text;
+    }
+    /* Smooth transition presets */
+    .transition-interactive {
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
+<meta content="web_standard" name="shell-type"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-neutral-100 flex items-center justify-center min-h-screen p-0 sm:p-4 text-charcoal-900 font-sans antialiased">
+<!-- BEGIN: PhoneShellContainer -->
+<!-- Constrains layout to typical modern Android proportions (~412px wide, 20:9 ratio) -->
+<div class="relative w-full max-w-[420px] h-[884px] max-h-[920px] bg-canvas flex flex-col justify-between overflow-hidden sm:rounded-[44px] sm:shadow-2xl sm:ring-1 sm:ring-black/10">
+<!-- BEGIN: AndroidStatusBar -->
+<!-- Authentic Android 14/15 top bar with carrier, time, and system glyphs -->
+<header class="w-full pt-3 px-6 pb-2 flex items-center justify-between z-30 shrink-0 text-charcoal-900 select-none">
+<!-- System Clock -->
+<span class="text-[13.5px] font-semibold tracking-tight tabular-nums pl-0.5">13:38</span>
+<!-- System Status Indicators (Right) -->
+<div aria-label="System status" class="flex items-center space-x-2 text-charcoal-800">
+<!-- VoLTE / 5G -->
+<span class="text-[10px] font-bold tracking-tighter uppercase px-1 py-0.2 bg-black/5 rounded">5G</span>
+<!-- Cellular Signal Strength -->
+<svg class="w-3.5 h-3.5" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 3L2 21h20L12 3zm0 4.2L18.8 19H5.2L12 7.2z"></path>
+</svg>
+<!-- Wi-Fi Icon -->
+<svg class="w-3.5 h-3.5" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4zm0 3.3c3.48 0 6.66 1.34 9.07 3.53L12 19.82 2.93 10.83C5.34 8.64 8.52 7.3 12 7.3z"></path>
+</svg>
+<!-- Battery Level Indicator -->
+<div class="flex items-center space-x-0.5 pl-0.5">
+<span class="text-[11px] font-medium tabular-nums mr-0.5">85%</span>
+<div class="w-4.5 h-2.5 border border-charcoal-900 rounded-[2.5px] p-[1px] flex items-center relative">
+<div class="w-2.5 h-full bg-charcoal-900 rounded-[1px]"></div>
+<div class="w-[1.5px] h-1 bg-charcoal-900 absolute -right-[2.5px] rounded-r-xs"></div>
+</div>
+</div>
+</div>
+</header>
+<!-- END: AndroidStatusBar -->
+<!-- BEGIN: TopAppBar -->
+<!-- Minimal developer workspace navigation -->
+<nav aria-label="Top navigation" class="w-full px-4 py-2 flex items-center justify-between z-20 shrink-0">
+<!-- Left: Navigation Drawer Toggle -->
+<button aria-label="Open menu" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 active:bg-black/10 transition-interactive text-charcoal-800" type="button">
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewbox="0 0 24 24">
+<line x1="3.5" x2="20.5" y1="7" y2="7"></line>
+<line x1="3.5" x2="16.5" y1="12" y2="12"></line>
+<line x1="3.5" x2="13" y1="17" y2="17"></line>
+</svg>
+</button>
+<!-- Center: Model / Workspace Switcher Pill -->
+<button aria-label="Select AI Model" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-panel border border-border shadow-elevation-sm hover:border-charcoal-400 active:scale-95 transition-interactive text-charcoal-900" type="button">
+<span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+<span class="text-xs font-semibold tracking-tight text-charcoal-800">ClauDroide</span>
+<span class="text-[11px] text-charcoal-400 font-normal">· Sonnet 3.7</span>
+<svg class="w-3.5 h-3.5 text-charcoal-400 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<polyline points="6 9 12 15 18 9"></polyline>
+</svg>
+</button>
+<!-- Right: Action Buttons (New Chat & Profile) -->
+<div class="flex items-center space-x-0.5">
+<button aria-label="New chat" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 active:bg-black/10 transition-interactive text-charcoal-800" type="button">
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewbox="0 0 24 24">
+<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+</svg>
+</button>
+</div>
+</nav>
+<!-- END: TopAppBar -->
+<!-- BEGIN: MainContentArea -->
+<!-- Scrollable central canvas with brand hallmark and developer prompts -->
+<main class="flex-1 flex flex-col justify-center items-center px-6 overflow-y-auto z-10 -mt-10"><div class="flex flex-col w-full relative">
+<!-- Backdrop Background State: Simulated Quiet Workspace Preview behind active context modal -->
+<div class="w-full flex flex-col space-y-space-md opacity-40 transition-interactive pointer-events-none select-none">
+<!-- Greeting & Architectural Copilot Prompt Badge -->
+<div class="flex items-center space-x-space-sm bg-surface-container-low px-3 py-2 rounded-xl self-start shadow-sm">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-wider">Workspace: :app:feature-auth</span>
+</div>
+<!-- Empty State Illustration & Spark: Android Architecture -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm flex flex-col space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-md text-headline-md text-on-surface">Bereit für Refactoring</span>
+<span class="material-symbols-outlined text-primary text-xl">terminal</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+        Verknüpfe dein Gradle-Modul oder hänge Logcat-Traces an, um Coroutines-Deadlocks und Compose Recompositions zu analysieren.
+      </p>
+<!-- Snippet Pills Mock -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="px-2 py-1 rounded bg-surface-container text-on-surface-variant font-label-mono text-label-mono">Gradle 8.5</span>
+<span class="px-2 py-1 rounded bg-surface-container text-on-surface-variant font-label-mono text-label-mono">Kotlin 2.0</span>
+<span class="px-2 py-1 rounded bg-surface-container text-on-surface-variant font-label-mono text-label-mono">Pixel 8 Pro (ADB)</span>
+</div>
+</div>
+<!-- Ambient Micro Preview Card -->
+<div class="bg-surface-container-low p-space-sm rounded-xl flex items-center space-x-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">history</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface truncate">Letzte Sitzung: AuthRepositoryImpl.kt</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant truncate">Vor 18 Minuten archiviert</span>
+</div>
+</div>
+</div>
+<!-- Dimmer Layer Over Main View Slot -->
+<div class="absolute inset-0 bg-on-surface/10 backdrop-blur-[2px] rounded-2xl transition-interactive z-20" id="modal-scrim"></div>
+<!-- Material 3 Attachment Bottom Sheet / Context Palette (Pops right above Composer) -->
+<div class="relative z-30 w-full mt-auto pt-4">
+<div class="w-full bg-surface-container-lowest rounded-2xl shadow-xl overflow-hidden flex flex-col transition-interactive transform translate-y-0">
+<!-- Top Grip Pill & Modal Header -->
+<div class="w-full flex flex-col items-center pt-2.5 pb-2 px-space-md bg-surface-container-lowest">
+<div class="w-8 h-1 rounded-full bg-outline-variant mb-2.5"></div>
+<div class="w-full flex items-center justify-between">
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-primary text-base">attachment</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface uppercase tracking-wider">Kontext &amp; Anhang</span>
+</div>
+<button class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant active:scale-90 transition-interactive" id="close-sheet-btn" type="button">
+<span class="material-symbols-outlined text-xs">close</span>
+</button>
+</div>
+</div>
+<!-- Context Options (Interactive tactile list and quick-actions) -->
+<div class="p-2.5 flex flex-col space-y-1.5 bg-surface-container-lowest">
+<!-- Option 1: Dateien & Code -->
+<button class="group w-full flex items-center p-2 rounded-xl bg-surface-container-lowest hover:bg-surface-container-low active:bg-surface-container transition-interactive text-left" type="button">
+<div class="w-10 h-10 rounded-xl bg-surface-container-low group-hover:bg-primary/10 flex items-center justify-center shrink-0 transition-interactive">
+<span class="material-symbols-outlined text-primary text-xl">folder_code</span>
+</div>
+<div class="ml-3 flex flex-col min-w-0 flex-1">
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-interactive">Dateien &amp; Code</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant bg-surface-container-high px-1.5 py-0.5 rounded">.kt, .json</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Quelldateien, Gradle-Builds oder Logs anhängen</span>
+</div>
+</button>
+<!-- Option 2: Fotos & Dokumente -->
+<button class="group w-full flex items-center p-2 rounded-xl bg-surface-container-lowest hover:bg-surface-container-low active:bg-surface-container transition-interactive text-left" type="button">
+<div class="w-10 h-10 rounded-xl bg-surface-container-low group-hover:bg-primary/10 flex items-center justify-center shrink-0 transition-interactive">
+<span class="material-symbols-outlined text-primary text-xl">photo_library</span>
+</div>
+<div class="ml-3 flex flex-col min-w-0 flex-1">
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-interactive">Fotos &amp; Dokumente</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Screenshots aus Galerie oder Figma-Exporte</span>
+</div>
+</button>
+<!-- Option 3: Kamera -->
+<button class="group w-full flex items-center p-2 rounded-xl bg-surface-container-lowest hover:bg-surface-container-low active:bg-surface-container transition-interactive text-left" type="button">
+<div class="w-10 h-10 rounded-xl bg-surface-container-low group-hover:bg-primary/10 flex items-center justify-center shrink-0 transition-interactive">
+<span class="material-symbols-outlined text-primary text-xl">photo_camera</span>
+</div>
+<div class="ml-3 flex flex-col min-w-0 flex-1">
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-interactive">Kamera</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Architektur-Skizze oder Monitor direkt scannen</span>
+</div>
+</button>
+<!-- Option 4: Projekt-Kontext (Featured IDE Link) -->
+<button class="group w-full flex items-center p-2 rounded-xl bg-surface-container-lowest hover:bg-surface-container-low active:bg-surface-container transition-interactive text-left" type="button">
+<div class="w-10 h-10 rounded-xl bg-primary-fixed group-hover:bg-primary-container flex items-center justify-center shrink-0 transition-interactive">
+<span class="material-symbols-outlined text-on-primary-fixed-variant group-hover:text-on-primary text-xl">account_tree</span>
+</div>
+<div class="ml-3 flex flex-col min-w-0 flex-1">
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-interactive">Projekt-Kontext</span>
+<span class="font-label-mono text-label-mono text-primary font-bold">Lokal</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Android-Repository, Modul oder Git-Branch verknüpfen</span>
+</div>
+</button>
+<!-- Option 5: Logcat einfügen (Senior Android Workflow Essential) -->
+<button class="group w-full flex items-center p-2 rounded-xl bg-surface-container-lowest hover:bg-surface-container-low active:bg-surface-container transition-interactive text-left" type="button">
+<div class="w-10 h-10 rounded-xl bg-secondary-fixed flex items-center justify-center shrink-0 group-hover:bg-secondary transition-interactive">
+<span class="material-symbols-outlined text-on-secondary-fixed group-hover:text-on-secondary text-xl">bug_report</span>
+</div>
+<div class="ml-3 flex flex-col min-w-0 flex-1">
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-interactive">Logcat einfügen</span>
+<span class="font-label-mono text-label-mono text-on-secondary-container bg-secondary-container/40 px-1.5 py-0.5 rounded">ADB aktiv</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Crashlog, ANR-Trace oder Stacktrace analysieren</span>
+</div>
+</button>
+</div>
+<!-- Quick Context Preload Bar -->
+<div class="px-space-md py-2 bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-xs text-on-surface-variant">memory</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant">Kontext-Speicher: 42k / 200k Token frei</span>
+</div>
+<span class="font-label-mono text-label-mono text-primary font-medium hover:underline cursor-pointer">Verwalten</span>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    const closeBtn = document.getElementById('close-sheet-btn');
+    const scrim = document.getElementById('modal-scrim');
+    
+    function dismissSheet() {
+      if (!scrim) return;
+      scrim.style.opacity = '0';
+      const sheet = scrim.nextElementSibling?.firstElementChild;
+      if (sheet) {
+        sheet.style.transform = 'translateY(12px)';
+        sheet.style.opacity = '0';
+      }
+      setTimeout(() => {
+        window.history.length > 1 ? window.history.back() : null;
+      }, 180);
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', dismissSheet);
+    if (scrim) scrim.addEventListener('click', dismissSheet);
+  })();
+</script></main>
+<!-- END: MainContentArea -->
+<!-- BEGIN: BottomInputSection -->
+<!-- Floating elevated multi-purpose composer card -->
+<div class="w-full px-4 pb-2 z-20">
+<!-- Composer Card Container -->
+<div class="w-full bg-panel border border-border rounded-2xl shadow-composer p-3 flex flex-col space-y-2.5 focus-within:border-charcoal-400 transition-interactive">
+<!-- Textarea input field -->
+<textarea aria-label="Message prompt input" class="w-full resize-none border-0 p-0 text-sm placeholder:text-charcoal-400 text-charcoal-900 focus:ring-0 bg-transparent leading-relaxed" placeholder="Ask ClauDroide anything..." rows="2" style="min-height: 48px; max-height: 120px;"></textarea>
+<!-- Composer Bottom Action Bar -->
+<div class="flex items-center justify-between pt-1">
+<!-- Left: Attachment and Model Context Pill -->
+<div class="flex items-center space-x-2">
+<!-- Add Media / File Button -->
+<button aria-label="Add attachment or code snippet" class="w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 active:scale-95 flex items-center justify-center text-charcoal-600 transition-interactive" type="button">
+<svg class="w-4 h-4 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<line x1="12" x2="12" y1="5" y2="19"></line>
+<line x1="5" x2="19" y1="12" y2="12"></line>
+</svg>
+</button>
+<!-- Mode Selector Capsule -->
+<button aria-label="Context configuration" class="px-2.5 py-1 rounded-full bg-neutral-100 hover:bg-neutral-200 text-[11px] font-medium text-charcoal-700 flex items-center space-x-1.5 transition-interactive" type="button">
+<svg class="w-3 h-3 text-brand" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<polyline points="4 17 10 11 4 5"></polyline>
+<line x1="12" x2="20" y1="19" y2="19"></line>
+</svg>
+<span>Code Mode</span>
+</button>
+</div>
+<!-- Right: Audio and Primary Submit Buttons -->
+<div class="flex items-center space-x-1.5">
+<!-- Voice Input Button -->
+<button aria-label="Use voice input" class="w-8 h-8 rounded-full hover:bg-neutral-100 active:bg-neutral-200 flex items-center justify-center text-charcoal-600 transition-interactive" type="button">
+<svg class="w-4 h-4 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+<path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+<line x1="12" x2="12" y1="19" y2="23"></line>
+<line x1="8" x2="16" y1="23" y2="23"></line>
+</svg>
+</button>
+<!-- Primary Send Action Button (Anthropic Terracotta Accent) -->
+<button aria-label="Send message" class="w-8 h-8 rounded-full bg-brand hover:bg-brand-hover active:scale-95 text-white flex items-center justify-center shadow-sm transition-interactive" type="button">
+<svg class="w-4 h-4 stroke-[2.2] translate-y-[-0.5px]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<line x1="12" x2="12" y1="19" y2="5"></line>
+<polyline points="5 12 12 5 19 12"></polyline>
+</svg>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- END: BottomInputSection -->
+<!-- BEGIN: AndroidNavigationPill -->
+<!-- Standard Android gesture navigation bar indicator -->
+<footer aria-label="System navigation" class="w-full h-5 flex items-center justify-center shrink-0 mb-1">
+<div class="w-32 h-1 bg-charcoal-900/30 rounded-full"></div>
+</footer>
+<!-- END: AndroidNavigationPill -->
+</div>
+<!-- END: PhoneShellContainer -->
+</body></html>

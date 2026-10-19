@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1376" height="768" viewBox="0 0 1376 768">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#101813"/>
+    <stop offset="1" stop-color="#080B09"/>
+  </linearGradient>
+  <linearGradient id="dome" x1="0.15" y1="0" x2="0.85" y2="1">
+    <stop offset="0" stop-color="#3DDC84"/><stop offset="1" stop-color="#24B566"/>
+  </linearGradient>
+  <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#24B566"/><stop offset="1" stop-color="#1B8A4C"/>
+  </linearGradient>
+  <linearGradient id="termBody" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#E06D53"/><stop offset="1" stop-color="#C4553C"/>
+  </linearGradient>
+</defs>
+<rect width="1376" height="768" fill="url(#bg)"/>
+<path d="M254.0,372.0 a118.0,118.0 0 0 1 236.0,0 Z" fill="url(#dome)"/><rect x="288.2" y="270.5" width="167.6" height="51.9" rx="26.0" fill="#15201B"/><circle cx="333.5" cy="296.5" r="15.1" fill="#F2F7F3"/><circle cx="410.5" cy="296.5" r="15.1" fill="#F2F7F3"/><path d="M372.0,254.0 L372.0,204.4" stroke="#3DDC84" stroke-width="11.8" stroke-linecap="round"/><circle cx="372.0" cy="195.0" r="17.7" fill="#E06D53"/><rect x="280.6" y="372.0" width="182.9" height="85.0" rx="35.4" fill="url(#body)"/><path d="M445.2,411.1 L563.2,411.1" stroke="#24B566" stroke-width="30.7" stroke-linecap="round"/><rect x="500.3" y="230.9" width="219.5" height="153.4" rx="33.0" fill="url(#termBody)"/><rect x="522.2" y="256.9" width="175.6" height="101.2" rx="16.5" fill="#1B2420"/><path d="M560.8,289.3 L579.1,309.6 L560.8,329.8" fill="none" stroke="#3DDC84" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M591.2,340.0 L611.5,340.0" stroke="#3DDC84" stroke-width="6.5" stroke-linecap="round"/><rect x="591.1" y="384.3" width="37.8" height="23.6" fill="#E06D53"/><rect x="520.3" y="388.5" width="179.4" height="77.9" rx="33.0" fill="url(#termBody)"/><path d="M539.2,411.1 L423.6,411.1" stroke="#C4553C" stroke-width="29.5" stroke-linecap="round"/><circle cx="491.0" cy="411.1" r="22.4" fill="#F7FBF8"/><circle cx="491.0" cy="411.1" r="22.4" fill="none" stroke="#0C100E" stroke-width="4.1" opacity="0.22"/>
+<text x="838" y="424.0" font-family="Inter, Helvetica, Arial, sans-serif" font-size="82" font-weight="700" fill="#F7FBF8" letter-spacing="-2">Clau<tspan fill="#3DDC84">D</tspan>roide</text><path d="M838,456.0 L1138,456.0" stroke="#E06D53" stroke-width="3" stroke-linecap="round"/><text x="838" y="496.0" font-family="Inter, Helvetica, Arial, sans-serif" font-size="25" font-weight="400" fill="#9FB3A8" letter-spacing="0.3">Android native &#183; your own keys</text>
+</svg>

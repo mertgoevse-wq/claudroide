@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ClauDroide</string>
+    <string name="app_tagline">Mobile AI Coding Assistant</string>
+
+    <!-- Navigation -->
+    <string name="nav_chat">Chats</string>
+    <string name="nav_projects">Projects</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Disclaimer &amp; Info -->
+    <string name="disclaimer_title">Independent Open-Source Project</string>
+    <string name="disclaimer_text">ClauDroide is an independent open-source project and is not affiliated with or endorsed by Anthropic, PBC. Claude is a registered trademark of Anthropic. ClauDroide provides official API access using your own keys (BYOK).</string>
+
+    <!-- Empty States -->
+    <string name="empty_chat_title">No active conversations</string>
+    <string name="empty_chat_desc">Start a new chat or open a local project to begin.</string>
+    <string name="empty_chat_greeting">Good day</string>
+    <string name="empty_chat_subtitle">What would you like to build today?</string>
+    <string name="empty_project_title">No project open</string>
+    <string name="empty_project_desc">Select a project directory on your device to inspect and edit code.</string>
+
+    <!-- Brand imagery (accessibility text) -->
+    <string name="banner_alt_text">ClauDroide banner: a green Android dome and a terminal-screen bot standing side by side and holding hands, beside the product name.</string>
+    <string name="brand_mark_alt_text">ClauDroide mark: a green robot with a glowing terracotta spark.</string>
+
+    <!-- Chat screen -->
+    <string name="chat_session_title">Build session</string>
+    <string name="chat_local_only">Local only</string>
+    <string name="chat_composer_hint">Reply to ClauDroide…</string>
+    <string name="chat_composer_helper">Enter sends · Shift+Enter newline</string>
+    <string name="chat_composer_attachment">Add attachment</string>
+    <string name="chat_composer_mode">Composer mode</string>
+    <string name="chat_streaming">Streaming…</string>
+    <string name="chat_new_conversation">New conversation</string>
+    <string name="chat_send">Send</string>
+    <string name="chat_stop">Stop</string>
+    <string name="project_open_folder">Open project folder</string>
+
+    <!-- Accessibility Service -->
+    <string name="accessibility_service_description">Enables ClauDroide to inspect screen structure and dispatch touch gestures to automate mobile workflows on your behalf.</string>
+
+    <!-- Navigation Drawer -->
+    <string name="nav_drawer_subtitle">Mert · Pro Plan</string>
+    <string name="nav_drawer_new_chat">New Chat</string>
+    <string name="nav_drawer_close">Close</string>
+    <string name="nav_drawer_chats">Chats</string>
+    <string name="nav_drawer_projects">Projects</string>
+    <string name="nav_drawer_code_mcp">Code</string>
+    <string name="nav_drawer_artifacts">Artifacts</string>
+    <string name="nav_media_studio">Media Studio</string>
+    <string name="nav_drawer_recent_chats">Recent chats</string>
+    <string name="nav_drawer_no_recent">No recent conversations</string>
+    <string name="nav_drawer_docs">Documentation</string>
+    <string name="nav_drawer_subscribed">Subscribed</string>
+
+    <!-- Attachment Bottom Sheet -->
+    <string name="chat_attachment_title">Context &amp; Attachment</string>
+    <string name="chat_attachment_close">Close</string>
+    <string name="chat_attachment_files_code">Files &amp; Code</string>
+    <string name="chat_attachment_files_code_desc">Attach source files, Gradle builds or logs</string>
+    <string name="chat_attachment_photos_docs">Photos &amp; Documents</string>
+    <string name="chat_attachment_photos_docs_desc">Screenshots from gallery or design exports</string>
+    <string name="chat_attachment_camera">Camera</string>
+    <string name="chat_attachment_camera_desc">Scan architecture sketch or screen directly</string>
+    <string name="chat_attachment_project_context">Project Context</string>
+    <string name="chat_attachment_project_context_desc">Link repository, module or Git branch</string>
+    <string name="chat_attachment_logcat">Insert Logcat</string>
+    <string name="chat_attachment_logcat_desc">Analyze crashlog, ANR trace or stacktrace</string>
+    <string name="chat_attachment_context_memory">Context memory: %1$s / %2$s tokens free</string>
+    <string name="chat_attachment_manage">Manage</string>
+</resources>
